@@ -1,82 +1,107 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 
 interface Marker {
   id: number
-  x: number   // 0–100 percent of image width
-  y: number   // 0–100 percent of image height
+  x: number
+  y: number
   label: string
   color: string
 }
 
-const MAP_W = 1600
-const MAP_H = 900
-const MIN_ZOOM = 1.2   // never show boundary
 const MAX_ZOOM = 6
 
-const activeMap = ref<'A' | 'B'>('A')
-const zoom = ref(MIN_ZOOM)
+const activeMap = ref<'1920' | '2020'>('1920')
+
+const mapW = ref(1)
+const mapH = ref(1)
+
+const minZoom = ref(1)
+const zoom = ref(1)
 const offsetX = ref(0)
 const offsetY = ref(0)
+let initialized = false
 
-const mapSrc = computed(() => activeMap.value === 'A' ? '/map-a.jpg' : '/map-b.jpg')
+const mapSrc = computed(() => (activeMap.value === '1920' ? '/1920.png' : '/2020.png'))
 
-const markersA: Marker[] = [
-  { id: 1, x: 25, y: 30, label: 'Alpha Base', color: '#38bdf8' },
-  { id: 2, x: 55, y: 55, label: 'Lake Sector', color: '#38bdf8' },
-  { id: 3, x: 75, y: 45, label: 'Delta Post', color: '#38bdf8' },
-  { id: 4, x: 40, y: 70, label: 'Green Zone', color: '#4ade80' },
+const markers1920: Marker[] = [
+  { id: 1, x: 25, y: 30, label: '임의 마커1', color: '#38bdf8' },
+  { id: 2, x: 55, y: 55, label: '임의 마커2', color: '#38bdf8' },
+  { id: 3, x: 75, y: 45, label: '임의 마커3', color: '#38bdf8' },
+  { id: 4, x: 40, y: 70, label: '임의 마커4', color: '#4ade80' },
 ]
-
-const markersB: Marker[] = [
-  { id: 1, x: 20, y: 22, label: 'Ruins Site', color: '#c084fc' },
-  { id: 2, x: 50, y: 35, label: 'Outpost 7', color: '#c084fc' },
-  { id: 3, x: 65, y: 65, label: 'Badlands', color: '#fb923c' },
-  { id: 4, x: 82, y: 50, label: 'Echo Ridge', color: '#fb923c' },
-  { id: 5, x: 35, y: 60, label: 'Old Bridge', color: '#c084fc' },
+const markers2020: Marker[] = [
+  { id: 1, x: 20, y: 22, label: '임의 마커1', color: '#c084fc' },
+  { id: 2, x: 50, y: 35, label: '임의 마커2', color: '#c084fc' },
+  { id: 3, x: 65, y: 65, label: '임의 마커3', color: '#fb923c' },
+  { id: 4, x: 82, y: 50, label: '임의 마커4', color: '#fb923c' },
+  { id: 5, x: 35, y: 60, label: '임의 마커5', color: '#c084fc' },
 ]
+const markers = computed(() => (activeMap.value === '1920' ? markers1920 : markers2020))
 
-const markers = computed(() => activeMap.value === 'A' ? markersA : markersB)
-
-// Container ref for bounds
 const containerRef = ref<HTMLDivElement | null>(null)
+const imgRef = ref<HTMLImageElement | null>(null)
+
+const innerStyle = computed(() => ({
+  width: mapW.value + 'px',
+  height: mapH.value + 'px',
+  marginLeft: -mapW.value / 2 + 'px',
+  marginTop: -mapH.value / 2 + 'px',
+  transform: `translate(${offsetX.value}px, ${offsetY.value}px) scale(${zoom.value})`,
+}))
+
+function computeMinZoom() {
+  const cw = containerRef.value?.clientWidth ?? window.innerWidth
+  const ch = containerRef.value?.clientHeight ?? window.innerHeight
+  return Math.max(cw / mapW.value, ch / mapH.value) * 1.02
+}
 
 function clampOffset(x: number, y: number, z: number) {
   const cw = containerRef.value?.clientWidth ?? window.innerWidth
   const ch = containerRef.value?.clientHeight ?? window.innerHeight
-  const mapDisplayW = MAP_W * z
-  const mapDisplayH = MAP_H * z
-  // max offset: image edge stays inside container
-  const maxX = (mapDisplayW - cw) / 2
-  const maxY = (mapDisplayH - ch) / 2
+  const maxX = Math.max(0, (mapW.value * z - cw) / 2)
+  const maxY = Math.max(0, (mapH.value * z - ch) / 2)
   return {
     x: Math.max(-maxX, Math.min(maxX, x)),
     y: Math.max(-maxY, Math.min(maxY, y)),
   }
 }
 
-// ── Wheel zoom ──────────────────────────────────────────────────────────────
-function onWheel(e: WheelEvent) {
-  e.preventDefault()
-  const delta = e.deltaY < 0 ? 1.1 : 0.9
-  const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom.value * delta))
-  // zoom toward cursor position
-  const rect = containerRef.value!.getBoundingClientRect()
-  const cx = e.clientX - rect.left - rect.width / 2
-  const cy = e.clientY - rect.top - rect.height / 2
+function applyZoom(newZoomRaw: number, cx: number, cy: number) {
+  const newZoom = Math.min(MAX_ZOOM, Math.max(minZoom.value, newZoomRaw))
   const scale = newZoom / zoom.value
   const nx = cx + (offsetX.value - cx) * scale
   const ny = cy + (offsetY.value - cy) * scale
   zoom.value = newZoom
-  const clamped = clampOffset(nx, ny, newZoom)
-  offsetX.value = clamped.x
-  offsetY.value = clamped.y
+  const c = clampOffset(nx, ny, newZoom)
+  offsetX.value = c.x
+  offsetY.value = c.y
 }
 
-// ── Pan (mouse) ─────────────────────────────────────────────────────────────
-let dragging = false
-let lastMX = 0, lastMY = 0
+function onImgLoad() {
+  const img = imgRef.value
+  if (!img) return
+  mapW.value = img.naturalWidth || 1
+  mapH.value = img.naturalHeight || 1
+  if (!initialized) {
+    refresh(true)
+    initialized = true
+  } else {
+    refresh(false)
+  }
+}
 
+function onWheel(e: WheelEvent) {
+  e.preventDefault()
+  const rect = containerRef.value!.getBoundingClientRect()
+  const cx = e.clientX - rect.left - rect.width / 2
+  const cy = e.clientY - rect.top - rect.height / 2
+  applyZoom(zoom.value * (e.deltaY < 0 ? 1.1 : 0.9), cx, cy)
+}
+
+let dragging = false
+let lastMX = 0,
+  lastMY = 0
 function onMouseDown(e: MouseEvent) {
   dragging = true
   lastMX = e.clientX
@@ -88,28 +113,27 @@ function onMouseMove(e: MouseEvent) {
   const dy = e.clientY - lastMY
   lastMX = e.clientX
   lastMY = e.clientY
-  const clamped = clampOffset(offsetX.value + dx, offsetY.value + dy, zoom.value)
-  offsetX.value = clamped.x
-  offsetY.value = clamped.y
+  const c = clampOffset(offsetX.value + dx, offsetY.value + dy, zoom.value)
+  offsetX.value = c.x
+  offsetY.value = c.y
 }
-function onMouseUp() { dragging = false }
+function onMouseUp() {
+  dragging = false
+}
 
-// ── Touch (pinch + pan) ─────────────────────────────────────────────────────
 let lastTouchDist = 0
 let lastTouchMid = { x: 0, y: 0 }
 let touchCount = 0
-
 function getTouchDist(t: TouchList) {
-  const t0 = t.item(0)!, t1 = t.item(1)!
-  const dx = t0.clientX - t1.clientX
-  const dy = t0.clientY - t1.clientY
-  return Math.sqrt(dx * dx + dy * dy)
+  const a = t.item(0)!,
+    b = t.item(1)!
+  return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY)
 }
 function getTouchMid(t: TouchList) {
-  const t0 = t.item(0)!, t1 = t.item(1)!
-  return { x: (t0.clientX + t1.clientX) / 2, y: (t0.clientY + t1.clientY) / 2 }
+  const a = t.item(0)!,
+    b = t.item(1)!
+  return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }
 }
-
 function onTouchStart(e: TouchEvent) {
   touchCount = e.touches.length
   if (touchCount === 2) {
@@ -117,30 +141,28 @@ function onTouchStart(e: TouchEvent) {
     lastTouchMid = getTouchMid(e.touches)
   } else if (touchCount === 1) {
     const t0 = e.touches.item(0)
-    if (t0) { lastMX = t0.clientX; lastMY = t0.clientY }
+    if (t0) {
+      lastMX = t0.clientX
+      lastMY = t0.clientY
+    }
   }
 }
-
 function onTouchMove(e: TouchEvent) {
   e.preventDefault()
   if (e.touches.length === 2) {
     const dist = getTouchDist(e.touches)
     const mid = getTouchMid(e.touches)
-    const scale = dist / lastTouchDist
-    const newZoom = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, zoom.value * scale))
     const rect = containerRef.value!.getBoundingClientRect()
     const cx = mid.x - rect.left - rect.width / 2
     const cy = mid.y - rect.top - rect.height / 2
-    const zScale = newZoom / zoom.value
-    let nx = cx + (offsetX.value - cx) * zScale
-    let ny = cy + (offsetY.value - cy) * zScale
-    // also pan by mid-point movement
-    nx += mid.x - lastTouchMid.x
-    ny += mid.y - lastTouchMid.y
-    zoom.value = newZoom
-    const clamped = clampOffset(nx, ny, newZoom)
-    offsetX.value = clamped.x
-    offsetY.value = clamped.y
+    applyZoom(zoom.value * (dist / lastTouchDist), cx, cy)
+    const c = clampOffset(
+      offsetX.value + (mid.x - lastTouchMid.x),
+      offsetY.value + (mid.y - lastTouchMid.y),
+      zoom.value
+    )
+    offsetX.value = c.x
+    offsetY.value = c.y
     lastTouchDist = dist
     lastTouchMid = mid
   } else if (e.touches.length === 1) {
@@ -150,21 +172,36 @@ function onTouchMove(e: TouchEvent) {
     const dy = t0.clientY - lastMY
     lastMX = t0.clientX
     lastMY = t0.clientY
-    const clamped = clampOffset(offsetX.value + dx, offsetY.value + dy, zoom.value)
-    offsetX.value = clamped.x
-    offsetY.value = clamped.y
+    const c = clampOffset(offsetX.value + dx, offsetY.value + dy, zoom.value)
+    offsetX.value = c.x
+    offsetY.value = c.y
   }
 }
-function onTouchEnd(e: TouchEvent) { touchCount = e.touches.length }
+function onTouchEnd(e: TouchEvent) {
+  touchCount = e.touches.length
+}
 
-// ── Window resize re-clamp ──────────────────────────────────────────────────
+function refresh(resetZoom = false) {
+  minZoom.value = computeMinZoom()
+  if (resetZoom || zoom.value < minZoom.value) {
+    zoom.value = minZoom.value
+    offsetX.value = 0
+    offsetY.value = 0
+  }
+  const c = clampOffset(offsetX.value, offsetY.value, zoom.value)
+  offsetX.value = c.x
+  offsetY.value = c.y
+}
+
 function onResize() {
-  const clamped = clampOffset(offsetX.value, offsetY.value, zoom.value)
-  offsetX.value = clamped.x
-  offsetY.value = clamped.y
+  refresh()
 }
 
 onMounted(() => {
+  nextTick(() => {
+    const img = imgRef.value
+    if (img && img.complete && img.naturalWidth) onImgLoad()
+  })
   window.addEventListener('resize', onResize)
   window.addEventListener('mouseup', onMouseUp)
 })
@@ -173,28 +210,30 @@ onUnmounted(() => {
   window.removeEventListener('mouseup', onMouseUp)
 })
 
-function switchMap(val: 'A' | 'B') {
+function switchMap(val: '1920' | '2020') {
   activeMap.value = val
 }
 </script>
 
 <template>
   <div class="page">
-    <!-- Floating toggle -->
     <div class="toggle-wrap">
       <button
         class="toggle-btn"
-        :class="{ active: activeMap === 'A' }"
-        @click="switchMap('A')"
-      >Map A</button>
+        :class="{ active: activeMap === '1920' }"
+        @click="switchMap('1920')"
+      >
+        1920年
+      </button>
       <button
         class="toggle-btn"
-        :class="{ active: activeMap === 'B' }"
-        @click="switchMap('B')"
-      >Map B</button>
+        :class="{ active: activeMap === '2020' }"
+        @click="switchMap('2020')"
+      >
+        2020s
+      </button>
     </div>
 
-    <!-- Map canvas -->
     <div
       ref="containerRef"
       class="map-container"
@@ -205,15 +244,16 @@ function switchMap(val: 'A' | 'B') {
       @touchmove.prevent="onTouchMove"
       @touchend="onTouchEnd"
     >
-      <div
-        class="map-inner"
-        :style="{
-          transform: `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`,
-        }"
-      >
-        <img :src="mapSrc" :key="activeMap" class="map-img" draggable="false" />
+      <div class="map-inner" :style="innerStyle">
+        <img
+          ref="imgRef"
+          :src="mapSrc"
+          :key="activeMap"
+          class="map-img"
+          draggable="false"
+          @load="onImgLoad"
+        />
 
-        <!-- Markers -->
         <div
           v-for="m in markers"
           :key="m.id"
@@ -237,7 +277,6 @@ function switchMap(val: 'A' | 'B') {
   background: #0d1117;
 }
 
-/* ── Floating toggle ─────────────────────────────────────────────────────── */
 .toggle-wrap {
   position: absolute;
   top: 12px;
@@ -251,7 +290,6 @@ function switchMap(val: 'A' | 'B') {
   gap: 2px;
   backdrop-filter: blur(8px);
 }
-
 .toggle-btn {
   padding: 5px 20px;
   border: none;
@@ -273,7 +311,6 @@ function switchMap(val: 'A' | 'B') {
   color: #e6edf3;
 }
 
-/* ── Map container ───────────────────────────────────────────────────────── */
 .map-container {
   width: 100%;
   height: 100%;
@@ -282,27 +319,26 @@ function switchMap(val: 'A' | 'B') {
   cursor: grab;
   user-select: none;
 }
-.map-container:active { cursor: grabbing; }
+.map-container:active {
+  cursor: grabbing;
+}
 
 .map-inner {
   position: absolute;
-  top: 50%;
   left: 50%;
+  top: 50%;
   transform-origin: center center;
   will-change: transform;
-  /* translate -50%,-50% is baked in via JS offset */
-  translate: -50% -50%;
 }
 
 .map-img {
   display: block;
-  width: 1600px;
-  height: 900px;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   user-select: none;
 }
 
-/* ── Markers ─────────────────────────────────────────────────────────────── */
 .marker {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -312,15 +348,13 @@ function switchMap(val: 'A' | 'B') {
   gap: 4px;
   pointer-events: none;
 }
-
 .marker-dot {
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: var(--mc);
-  box-shadow: 0 0 0 3px rgba(255,255,255,0.15), 0 0 12px var(--mc);
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 0 12px var(--mc);
 }
-
 .marker-label {
   background: rgba(13, 17, 23, 0.85);
   color: var(--mc);
