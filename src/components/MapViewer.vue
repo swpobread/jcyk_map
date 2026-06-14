@@ -23,7 +23,7 @@ const offsetY = ref(0)
 let initialized = false
 
 const base = import.meta.env.BASE_URL
-const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.png' : '/2020.png'))
+const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.jpg' : '/2020.jpg'))
 
 const markers1920: Marker[] = [
   { id: 1, x: 25, y: 30, label: '임의 마커1', color: '#38bdf8' },
