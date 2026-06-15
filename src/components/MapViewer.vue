@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import markerData from '@/data/markers.json'
 
 interface Marker {
   id: number
@@ -7,6 +8,7 @@ interface Marker {
   y: number
   label: string
   color: string
+  tags: string[]
 }
 
 const MAX_ZOOM = 6
@@ -25,20 +27,8 @@ let initialized = false
 const base = import.meta.env.BASE_URL
 const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.jpg' : '/2020.jpg'))
 
-const markers1920: Marker[] = [
-  { id: 1, x: 25, y: 30, label: '임의 마커1', color: '#38bdf8' },
-  { id: 2, x: 55, y: 55, label: '임의 마커2', color: '#38bdf8' },
-  { id: 3, x: 75, y: 45, label: '임의 마커3', color: '#38bdf8' },
-  { id: 4, x: 40, y: 70, label: '임의 마커4', color: '#4ade80' },
-]
-const markers2020: Marker[] = [
-  { id: 1, x: 20, y: 22, label: '임의 마커1', color: '#c084fc' },
-  { id: 2, x: 50, y: 35, label: '임의 마커2', color: '#c084fc' },
-  { id: 3, x: 65, y: 65, label: '임의 마커3', color: '#fb923c' },
-  { id: 4, x: 82, y: 50, label: '임의 마커4', color: '#fb923c' },
-  { id: 5, x: 35, y: 60, label: '임의 마커5', color: '#c084fc' },
-]
-const markers = computed(() => (activeMap.value === '1920' ? markers1920 : markers2020))
+const allMarkers: Record<'1920' | '2020', Marker[]> = markerData
+const markers = computed<Marker[]>(() => allMarkers[activeMap.value])
 
 const containerRef = ref<HTMLDivElement | null>(null)
 const imgRef = ref<HTMLImageElement | null>(null)
