@@ -249,7 +249,7 @@ function switchMap(val: '1920' | '2020') {
           v-for="m in markers"
           :key="m.id"
           class="marker"
-          :style="{ left: m.x + '%', top: m.y + '%', '--mc': m.color }"
+          :style="{ left: m.x + '%', top: m.y + '%', '--mc': m.color, '--iz': 1 / zoom }"
         >
           <span class="marker-dot"></span>
           <span class="marker-label">{{ m.label }}</span>
@@ -332,7 +332,8 @@ function switchMap(val: '1920' | '2020') {
 
 .marker {
   position: absolute;
-  transform: translate(-50%, -50%);
+  /* counter-scale by 1/zoom so marker size stays constant regardless of map zoom */
+  transform: translate(-50%, -50%) scale(var(--iz, 1));
   display: flex;
   flex-direction: column;
   align-items: center;
