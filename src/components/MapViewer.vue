@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import markerData from '@/data/markers.json'
 
 interface Marker {
   id: number
@@ -7,9 +8,10 @@ interface Marker {
   y: number
   label: string
   color: string
+  tags: string[]
 }
 
-const MAX_ZOOM = 6
+const ZOOM_TOLERANCE = 1.5
 
 const activeMap = ref<'1920' | '2020'>('1920')
 
@@ -17,6 +19,7 @@ const mapW = ref(1)
 const mapH = ref(1)
 
 const minZoom = ref(1)
+const maxZoom = ref(1)
 const zoom = ref(1)
 const offsetX = ref(0)
 const offsetY = ref(0)
@@ -25,20 +28,8 @@ let initialized = false
 const base = import.meta.env.BASE_URL
 const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.jpg' : '/2020.jpg'))
 
-const markers1920: Marker[] = [
-  { id: 1, x: 25, y: 30, label: '임의 마커1', color: '#38bdf8' },
-  { id: 2, x: 55, y: 55, label: '임의 마커2', color: '#38bdf8' },
-  { id: 3, x: 75, y: 45, label: '임의 마커3', color: '#38bdf8' },
-  { id: 4, x: 40, y: 70, label: '임의 마커4', color: '#4ade80' },
-]
-const markers2020: Marker[] = [
-  { id: 1, x: 20, y: 22, label: '임의 마커1', color: '#c084fc' },
-  { id: 2, x: 50, y: 35, label: '임의 마커2', color: '#c084fc' },
-  { id: 3, x: 65, y: 65, label: '임의 마커3', color: '#fb923c' },
-  { id: 4, x: 82, y: 50, label: '임의 마커4', color: '#fb923c' },
-  { id: 5, x: 35, y: 60, label: '임의 마커5', color: '#c084fc' },
-]
-const markers = computed(() => (activeMap.value === '1920' ? markers1920 : markers2020))
+const allMarkers: Record<'1920' | '2020', Marker[]> = markerData
+const markers = computed<Marker[]>(() => allMarkers[activeMap.value])
 
 const containerRef = ref<HTMLDivElement | null>(null)
 const imgRef = ref<HTMLImageElement | null>(null)
@@ -51,10 +42,25 @@ const innerStyle = computed(() => ({
   transform: `translate(${offsetX.value}px, ${offsetY.value}px) scale(${zoom.value})`,
 }))
 
+function markerStyle(m: Marker) {
+  const localX = (m.x / 100 - 0.5) * mapW.value
+  const localY = (m.y / 100 - 0.5) * mapH.value
+  return {
+    left: `calc(50% + ${localX * zoom.value + offsetX.value}px)`,
+    top: `calc(50% + ${localY * zoom.value + offsetY.value}px)`,
+    '--mc': m.color,
+  }
+}
+
 function computeMinZoom() {
   const cw = containerRef.value?.clientWidth ?? window.innerWidth
   const ch = containerRef.value?.clientHeight ?? window.innerHeight
   return Math.max(cw / mapW.value, ch / mapH.value) * 1.02
+}
+
+function computeMaxZoom() {
+  const dpr = window.devicePixelRatio || 1
+  return Math.max(minZoom.value, (1 / dpr) * ZOOM_TOLERANCE)
 }
 
 function clampOffset(x: number, y: number, z: number) {
@@ -69,7 +75,7 @@ function clampOffset(x: number, y: number, z: number) {
 }
 
 function applyZoom(newZoomRaw: number, cx: number, cy: number) {
-  const newZoom = Math.min(MAX_ZOOM, Math.max(minZoom.value, newZoomRaw))
+  const newZoom = Math.min(maxZoom.value, Math.max(minZoom.value, newZoomRaw))
   const scale = newZoom / zoom.value
   const nx = cx + (offsetX.value - cx) * scale
   const ny = cy + (offsetY.value - cy) * scale
@@ -184,10 +190,13 @@ function onTouchEnd(e: TouchEvent) {
 
 function refresh(resetZoom = false) {
   minZoom.value = computeMinZoom()
+  maxZoom.value = computeMaxZoom()
   if (resetZoom || zoom.value < minZoom.value) {
     zoom.value = minZoom.value
     offsetX.value = 0
     offsetY.value = 0
+  } else if (zoom.value > maxZoom.value) {
+    zoom.value = maxZoom.value
   }
   const c = clampOffset(offsetX.value, offsetY.value, zoom.value)
   offsetX.value = c.x
@@ -254,12 +263,14 @@ function switchMap(val: '1920' | '2020') {
           draggable="false"
           @load="onImgLoad"
         />
+      </div>
 
+      <div class="marker-layer">
         <div
           v-for="m in markers"
           :key="m.id"
           class="marker"
-          :style="{ left: m.x + '%', top: m.y + '%', '--mc': m.color }"
+          :style="markerStyle(m)"
         >
           <span class="marker-dot"></span>
           <span class="marker-label">{{ m.label }}</span>
@@ -338,6 +349,13 @@ function switchMap(val: '1920' | '2020') {
   height: 100%;
   pointer-events: none;
   user-select: none;
+}
+
+.marker-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
 .marker {
