@@ -11,7 +11,7 @@ interface Marker {
   tags: string[]
 }
 
-const MAX_ZOOM = 6
+const ZOOM_TOLERANCE = 1.5
 
 const activeMap = ref<'1920' | '2020'>('1920')
 
@@ -19,6 +19,7 @@ const mapW = ref(1)
 const mapH = ref(1)
 
 const minZoom = ref(1)
+const maxZoom = ref(1)
 const zoom = ref(1)
 const offsetX = ref(0)
 const offsetY = ref(0)
@@ -41,10 +42,25 @@ const innerStyle = computed(() => ({
   transform: `translate(${offsetX.value}px, ${offsetY.value}px) scale(${zoom.value})`,
 }))
 
+function markerStyle(m: Marker) {
+  const localX = (m.x / 100 - 0.5) * mapW.value
+  const localY = (m.y / 100 - 0.5) * mapH.value
+  return {
+    left: `calc(50% + ${localX * zoom.value + offsetX.value}px)`,
+    top: `calc(50% + ${localY * zoom.value + offsetY.value}px)`,
+    '--mc': m.color,
+  }
+}
+
 function computeMinZoom() {
   const cw = containerRef.value?.clientWidth ?? window.innerWidth
   const ch = containerRef.value?.clientHeight ?? window.innerHeight
   return Math.max(cw / mapW.value, ch / mapH.value) * 1.02
+}
+
+function computeMaxZoom() {
+  const dpr = window.devicePixelRatio || 1
+  return Math.max(minZoom.value, (1 / dpr) * ZOOM_TOLERANCE)
 }
 
 function clampOffset(x: number, y: number, z: number) {
@@ -59,7 +75,7 @@ function clampOffset(x: number, y: number, z: number) {
 }
 
 function applyZoom(newZoomRaw: number, cx: number, cy: number) {
-  const newZoom = Math.min(MAX_ZOOM, Math.max(minZoom.value, newZoomRaw))
+  const newZoom = Math.min(maxZoom.value, Math.max(minZoom.value, newZoomRaw))
   const scale = newZoom / zoom.value
   const nx = cx + (offsetX.value - cx) * scale
   const ny = cy + (offsetY.value - cy) * scale
@@ -174,10 +190,13 @@ function onTouchEnd(e: TouchEvent) {
 
 function refresh(resetZoom = false) {
   minZoom.value = computeMinZoom()
+  maxZoom.value = computeMaxZoom()
   if (resetZoom || zoom.value < minZoom.value) {
     zoom.value = minZoom.value
     offsetX.value = 0
     offsetY.value = 0
+  } else if (zoom.value > maxZoom.value) {
+    zoom.value = maxZoom.value
   }
   const c = clampOffset(offsetX.value, offsetY.value, zoom.value)
   offsetX.value = c.x
@@ -244,12 +263,14 @@ function switchMap(val: '1920' | '2020') {
           draggable="false"
           @load="onImgLoad"
         />
+      </div>
 
+      <div class="marker-layer">
         <div
           v-for="m in markers"
           :key="m.id"
           class="marker"
-          :style="{ left: m.x + '%', top: m.y + '%', '--mc': m.color, '--iz': 1 / zoom }"
+          :style="markerStyle(m)"
         >
           <span class="marker-dot"></span>
           <span class="marker-label">{{ m.label }}</span>
@@ -330,10 +351,16 @@ function switchMap(val: '1920' | '2020') {
   user-select: none;
 }
 
+.marker-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 .marker {
   position: absolute;
-  /* counter-scale by 1/zoom so marker size stays constant regardless of map zoom */
-  transform: translate(-50%, -50%) scale(var(--iz, 1));
+  transform: translate(-50%, -50%);
   display: flex;
   flex-direction: column;
   align-items: center;
