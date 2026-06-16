@@ -67,15 +67,22 @@ const innerStyle = computed(() => ({
   transform: `translate(${offsetX.value}px, ${offsetY.value}px) scale(${zoom.value})`,
 }))
 
-function markerStyle(m: Marker) {
-  const localX = (m.x / 100 - 0.5) * mapW.value
-  const localY = (m.y / 100 - 0.5) * mapH.value
+function pointStyle(xPct: number, yPct: number) {
+  const localX = (xPct / 100 - 0.5) * mapW.value
+  const localY = (yPct / 100 - 0.5) * mapH.value
   return {
     left: `calc(50% + ${localX * zoom.value + offsetX.value}px)`,
     top: `calc(50% + ${localY * zoom.value + offsetY.value}px)`,
-    '--mc': m.color,
   }
 }
+
+function markerStyle(m: Marker) {
+  return { ...pointStyle(m.x, m.y), '--mc': m.color }
+}
+
+const pickPreviewStyle = computed(() =>
+  picked.value ? pointStyle(picked.value.x, picked.value.y) : {}
+)
 
 function computeMinZoom() {
   const cw = containerRef.value?.clientWidth ?? window.innerWidth
@@ -296,10 +303,7 @@ function switchMap(val: '1920' | '2020') {
       {{ editMode ? '편집 ON' : '편집 OFF' }}
     </button>
 
-    <div v-if="EDIT_MODE_AVAILABLE && editMode && picked" class="pick-panel">
-      <div class="pick-coord">x: {{ picked.x.toFixed(1) }}% · y: {{ picked.y.toFixed(1) }}%</div>
-      <pre class="pick-json">{{ pickedJson }}</pre>
-    </div>
+    <pre v-if="EDIT_MODE_AVAILABLE && editMode && picked" class="pick-json">{{ pickedJson }}</pre>
 
     <div
       ref="containerRef"
@@ -339,7 +343,7 @@ function switchMap(val: '1920' | '2020') {
         <div
           v-if="EDIT_MODE_AVAILABLE && editMode && picked"
           class="marker pick-preview"
-          :style="{ left: picked.x + '%', top: picked.y + '%', '--iz': 1 / zoom }"
+          :style="pickPreviewStyle"
         >
           <span class="marker-dot"></span>
         </div>
@@ -479,54 +483,31 @@ function switchMap(val: '1920' | '2020') {
   top: 12px;
   right: 12px;
   z-index: 100;
-  padding: 6px 14px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  width: 80px;
+  padding: 9px 0;
+  border: transparent;
   border-radius: 8px;
   background: rgba(13, 17, 23, 0.82);
-  color: rgba(230, 237, 243, 0.7);
-  font: 600 13px inherit;
+  color: rgba(230, 237, 243, 0.55);
+  font-weight: 600;
   font-family: inherit;
   cursor: pointer;
-  backdrop-filter: blur(8px);
 }
 .edit-toggle.on {
-  background: #58a6ff;
-  color: #0d1117;
-  border-color: #58a6ff;
-}
-.pick-panel {
-  position: absolute;
-  top: 56px;
-  right: 12px;
-  z-index: 100;
-  width: 220px;
-  padding: 10px 12px;
-  background: rgba(13, 17, 23, 0.92);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  backdrop-filter: blur(8px);
   color: #e6edf3;
 }
-.pick-coord {
-  font-size: 12px;
-  font-weight: 700;
-  color: #58a6ff;
-  margin-bottom: 6px;
-}
 .pick-json {
-  margin: 0 0 8px;
+  position: absolute;
+  top: 44px;
+  right: 12px;
+  z-index: 100;
   padding: 8px;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 5px;
-  font-size: 11px;
-  line-height: 1.4;
-  white-space: pre-wrap;
-  word-break: break-all;
+  background: rgba(0, 0, 0, 0.7);
+  white-space: pre;
   user-select: all;
 }
 .pick-preview .marker-dot {
   background: #fff;
-  box-shadow: 0 0 0 3px #58a6ff, 0 0 12px #58a6ff;
   pointer-events: none;
 }
 </style>
