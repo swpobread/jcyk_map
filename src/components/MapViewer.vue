@@ -31,6 +31,31 @@ const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.jpg' :
 const allMarkers: Record<'1920' | '2020', Marker[]> = markerData
 const markers = computed<Marker[]>(() => allMarkers[activeMap.value])
 
+// --- 좌표 픽커 (개발 모드 전용) ---
+const EDIT_MODE_AVAILABLE = import.meta.env.DEV
+const editMode = ref(false)
+const picked = ref<{ x: number; y: number } | null>(null)
+
+const nextId = computed(() => {
+  const ids = markers.value.map((m) => m.id)
+  return ids.length ? Math.max(...ids) + 1 : 1
+})
+const pickedJson = computed(() => {
+  if (!picked.value) return ''
+  return JSON.stringify(
+    {
+      id: nextId.value,
+      x: Math.round(picked.value.x * 10) / 10,
+      y: Math.round(picked.value.y * 10) / 10,
+      label: '',
+      color: '#58a6ff',
+      tags: [],
+    },
+    null,
+    2
+  )
+})
+
 const containerRef = ref<HTMLDivElement | null>(null)
 const imgRef = ref<HTMLImageElement | null>(null)
 
@@ -109,10 +134,16 @@ function onWheel(e: WheelEvent) {
 let dragging = false
 let lastMX = 0,
   lastMY = 0
+let downX = 0,
+  downY = 0
+let dragMoved = false
 function onMouseDown(e: MouseEvent) {
   dragging = true
   lastMX = e.clientX
   lastMY = e.clientY
+  downX = e.clientX
+  downY = e.clientY
+  dragMoved = false
 }
 function onMouseMove(e: MouseEvent) {
   if (!dragging) return
@@ -120,9 +151,21 @@ function onMouseMove(e: MouseEvent) {
   const dy = e.clientY - lastMY
   lastMX = e.clientX
   lastMY = e.clientY
+  if (Math.hypot(e.clientX - downX, e.clientY - downY) > 4) dragMoved = true
   const c = clampOffset(offsetX.value + dx, offsetY.value + dy, zoom.value)
   offsetX.value = c.x
   offsetY.value = c.y
+}
+
+function onMapClick(e: MouseEvent) {
+  if (!EDIT_MODE_AVAILABLE || !editMode.value) return
+  if (dragMoved) return
+  const img = imgRef.value
+  if (!img) return
+  const rect = img.getBoundingClientRect()
+  const x = ((e.clientX - rect.left) / rect.width) * 100
+  const y = ((e.clientY - rect.top) / rect.height) * 100
+  picked.value = { x, y }
 }
 function onMouseUp() {
   dragging = false
@@ -244,12 +287,28 @@ function switchMap(val: '1920' | '2020') {
       </button>
     </div>
 
+    <button
+      v-if="EDIT_MODE_AVAILABLE"
+      class="edit-toggle"
+      :class="{ on: editMode }"
+      @click="editMode = !editMode"
+    >
+      {{ editMode ? '편집 ON' : '편집 OFF' }}
+    </button>
+
+    <div v-if="EDIT_MODE_AVAILABLE && editMode && picked" class="pick-panel">
+      <div class="pick-coord">x: {{ picked.x.toFixed(1) }}% · y: {{ picked.y.toFixed(1) }}%</div>
+      <pre class="pick-json">{{ pickedJson }}</pre>
+    </div>
+
     <div
       ref="containerRef"
       class="map-container"
       @wheel.prevent="onWheel"
       @mousedown="onMouseDown"
       @mousemove="onMouseMove"
+      @click="onMapClick"
+      :class="{ picking: EDIT_MODE_AVAILABLE && editMode }"
       @touchstart.passive="onTouchStart"
       @touchmove.prevent="onTouchMove"
       @touchend="onTouchEnd"
@@ -275,6 +334,14 @@ function switchMap(val: '1920' | '2020') {
           <span class="marker-dot">
             <span class="marker-label">{{ m.label }}</span>
           </span>
+        </div>
+
+        <div
+          v-if="EDIT_MODE_AVAILABLE && editMode && picked"
+          class="marker pick-preview"
+          :style="{ left: picked.x + '%', top: picked.y + '%', '--iz': 1 / zoom }"
+        >
+          <span class="marker-dot"></span>
         </div>
       </div>
     </div>
@@ -401,5 +468,65 @@ function switchMap(val: '1920' | '2020') {
 }
 .marker-dot:hover .marker-label {
   opacity: 1;
+}
+
+/* --- 좌표 픽커 UI (개발 모드 전용) --- */
+.map-container.picking {
+  cursor: crosshair;
+}
+.edit-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  padding: 6px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.82);
+  color: rgba(230, 237, 243, 0.7);
+  font: 600 13px inherit;
+  font-family: inherit;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+}
+.edit-toggle.on {
+  background: #58a6ff;
+  color: #0d1117;
+  border-color: #58a6ff;
+}
+.pick-panel {
+  position: absolute;
+  top: 56px;
+  right: 12px;
+  z-index: 100;
+  width: 220px;
+  padding: 10px 12px;
+  background: rgba(13, 17, 23, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  color: #e6edf3;
+}
+.pick-coord {
+  font-size: 12px;
+  font-weight: 700;
+  color: #58a6ff;
+  margin-bottom: 6px;
+}
+.pick-json {
+  margin: 0 0 8px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-all;
+  user-select: all;
+}
+.pick-preview .marker-dot {
+  background: #fff;
+  box-shadow: 0 0 0 3px #58a6ff, 0 0 12px #58a6ff;
+  pointer-events: none;
 }
 </style>
