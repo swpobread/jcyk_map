@@ -272,8 +272,9 @@ function switchMap(val: '1920' | '2020') {
           class="marker"
           :style="markerStyle(m)"
         >
-          <span class="marker-dot"></span>
-          <span class="marker-label">{{ m.label }}</span>
+          <span class="marker-dot">
+            <span class="marker-label">{{ m.label }}</span>
+          </span>
         </div>
       </div>
     </div>
@@ -368,13 +369,21 @@ function switchMap(val: '1920' | '2020') {
   pointer-events: none;
 }
 .marker-dot {
+  position: relative;
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: var(--mc);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 0 12px var(--mc);
+  /* re-enable pointer events on the dot so it can be hovered (map drag still works elsewhere) */
+  pointer-events: auto;
+  cursor: pointer;
 }
 .marker-label {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
   background: rgba(13, 17, 23, 0.85);
   color: var(--mc);
   font-size: 11px;
@@ -385,5 +394,12 @@ function switchMap(val: '1920' | '2020') {
   border: 1px solid var(--mc);
   white-space: nowrap;
   text-transform: uppercase;
+  /* hidden by default, shown on hover */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.marker-dot:hover .marker-label {
+  opacity: 1;
 }
 </style>
