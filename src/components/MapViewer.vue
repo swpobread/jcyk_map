@@ -31,6 +31,31 @@ const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.jpg' :
 const allMarkers: Record<'1920' | '2020', Marker[]> = markerData
 const markers = computed<Marker[]>(() => allMarkers[activeMap.value])
 
+// --- 좌표 픽커 (개발 모드 전용) ---
+const EDIT_MODE_AVAILABLE = import.meta.env.DEV
+const editMode = ref(false)
+const picked = ref<{ x: number; y: number } | null>(null)
+
+const nextId = computed(() => {
+  const ids = markers.value.map((m) => m.id)
+  return ids.length ? Math.max(...ids) + 1 : 1
+})
+const pickedJson = computed(() => {
+  if (!picked.value) return ''
+  return JSON.stringify(
+    {
+      id: nextId.value,
+      x: Math.round(picked.value.x * 10) / 10,
+      y: Math.round(picked.value.y * 10) / 10,
+      label: '',
+      color: '#58a6ff',
+      tags: [],
+    },
+    null,
+    2
+  )
+})
+
 const containerRef = ref<HTMLDivElement | null>(null)
 const imgRef = ref<HTMLImageElement | null>(null)
 
@@ -42,15 +67,22 @@ const innerStyle = computed(() => ({
   transform: `translate(${offsetX.value}px, ${offsetY.value}px) scale(${zoom.value})`,
 }))
 
-function markerStyle(m: Marker) {
-  const localX = (m.x / 100 - 0.5) * mapW.value
-  const localY = (m.y / 100 - 0.5) * mapH.value
+function pointStyle(xPct: number, yPct: number) {
+  const localX = (xPct / 100 - 0.5) * mapW.value
+  const localY = (yPct / 100 - 0.5) * mapH.value
   return {
     left: `calc(50% + ${localX * zoom.value + offsetX.value}px)`,
     top: `calc(50% + ${localY * zoom.value + offsetY.value}px)`,
-    '--mc': m.color,
   }
 }
+
+function markerStyle(m: Marker) {
+  return { ...pointStyle(m.x, m.y), '--mc': m.color }
+}
+
+const pickPreviewStyle = computed(() =>
+  picked.value ? pointStyle(picked.value.x, picked.value.y) : {}
+)
 
 function computeMinZoom() {
   const cw = containerRef.value?.clientWidth ?? window.innerWidth
@@ -109,10 +141,16 @@ function onWheel(e: WheelEvent) {
 let dragging = false
 let lastMX = 0,
   lastMY = 0
+let downX = 0,
+  downY = 0
+let dragMoved = false
 function onMouseDown(e: MouseEvent) {
   dragging = true
   lastMX = e.clientX
   lastMY = e.clientY
+  downX = e.clientX
+  downY = e.clientY
+  dragMoved = false
 }
 function onMouseMove(e: MouseEvent) {
   if (!dragging) return
@@ -120,9 +158,21 @@ function onMouseMove(e: MouseEvent) {
   const dy = e.clientY - lastMY
   lastMX = e.clientX
   lastMY = e.clientY
+  if (Math.hypot(e.clientX - downX, e.clientY - downY) > 4) dragMoved = true
   const c = clampOffset(offsetX.value + dx, offsetY.value + dy, zoom.value)
   offsetX.value = c.x
   offsetY.value = c.y
+}
+
+function onMapClick(e: MouseEvent) {
+  if (!EDIT_MODE_AVAILABLE || !editMode.value) return
+  if (dragMoved) return
+  const img = imgRef.value
+  if (!img) return
+  const rect = img.getBoundingClientRect()
+  const x = ((e.clientX - rect.left) / rect.width) * 100
+  const y = ((e.clientY - rect.top) / rect.height) * 100
+  picked.value = { x, y }
 }
 function onMouseUp() {
   dragging = false
@@ -244,12 +294,25 @@ function switchMap(val: '1920' | '2020') {
       </button>
     </div>
 
+    <button
+      v-if="EDIT_MODE_AVAILABLE"
+      class="edit-toggle"
+      :class="{ on: editMode }"
+      @click="editMode = !editMode"
+    >
+      {{ editMode ? '편집 ON' : '편집 OFF' }}
+    </button>
+
+    <pre v-if="EDIT_MODE_AVAILABLE && editMode && picked" class="pick-json">{{ pickedJson }}</pre>
+
     <div
       ref="containerRef"
       class="map-container"
       @wheel.prevent="onWheel"
       @mousedown="onMouseDown"
       @mousemove="onMouseMove"
+      @click="onMapClick"
+      :class="{ picking: EDIT_MODE_AVAILABLE && editMode }"
       @touchstart.passive="onTouchStart"
       @touchmove.prevent="onTouchMove"
       @touchend="onTouchEnd"
@@ -272,8 +335,17 @@ function switchMap(val: '1920' | '2020') {
           class="marker"
           :style="markerStyle(m)"
         >
+          <span class="marker-dot">
+            <span class="marker-label">{{ m.label }}</span>
+          </span>
+        </div>
+
+        <div
+          v-if="EDIT_MODE_AVAILABLE && editMode && picked"
+          class="marker pick-preview"
+          :style="pickPreviewStyle"
+        >
           <span class="marker-dot"></span>
-          <span class="marker-label">{{ m.label }}</span>
         </div>
       </div>
     </div>
@@ -368,13 +440,21 @@ function switchMap(val: '1920' | '2020') {
   pointer-events: none;
 }
 .marker-dot {
+  position: relative;
   width: 12px;
   height: 12px;
   border-radius: 50%;
   background: var(--mc);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 0 12px var(--mc);
+  /* re-enable pointer events on the dot so it can be hovered (map drag still works elsewhere) */
+  pointer-events: auto;
+  cursor: pointer;
 }
 .marker-label {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
   background: rgba(13, 17, 23, 0.85);
   color: var(--mc);
   font-size: 11px;
@@ -385,5 +465,49 @@ function switchMap(val: '1920' | '2020') {
   border: 1px solid var(--mc);
   white-space: nowrap;
   text-transform: uppercase;
+  /* hidden by default, shown on hover */
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+}
+.marker-dot:hover .marker-label {
+  opacity: 1;
+}
+
+/* --- 좌표 픽커 UI (개발 모드 전용) --- */
+.map-container.picking {
+  cursor: crosshair;
+}
+.edit-toggle {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 100;
+  width: 80px;
+  padding: 9px 0;
+  border: transparent;
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.82);
+  color: rgba(230, 237, 243, 0.55);
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.edit-toggle.on {
+  color: #e6edf3;
+}
+.pick-json {
+  position: absolute;
+  top: 44px;
+  right: 12px;
+  z-index: 100;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  white-space: pre;
+  user-select: all;
+}
+.pick-preview .marker-dot {
+  background: #fff;
+  pointer-events: none;
 }
 </style>
