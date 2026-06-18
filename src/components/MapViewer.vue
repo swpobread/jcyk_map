@@ -1,23 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
+import type { Filter, Category, Marker } from '@/types'
 import markerData from '@/data/markers.json'
 import categoryData from '@/data/categories.json'
 import SidePanel from './SidePanel.vue'
-
-interface Category {
-  label: string
-  color: string
-}
-interface Marker {
-  id: string
-  x: number
-  y: number
-  label: string
-  category: string
-  isReal: boolean
-  tags: string[]
-  scenarios: string[]
-}
 
 const categories = categoryData as Record<string, Category>
 
@@ -42,7 +28,6 @@ const allMarkers = markerData as Record<'1920' | '2020', Marker[]>
 const currentMarkers = computed<Marker[]>(() => allMarkers[activeMap.value])
 
 // --- 좌측 패널 + 필터 상태 ---
-type Filter = { type: 'tag' | 'scenario' | 'category'; value: string }
 const panelOpen = ref(false)
 const panelView = ref<'list' | 'detail' | 'scenario'>('list')
 const selectedMarker = ref<Marker | null>(null)
@@ -63,6 +48,11 @@ const markers = computed<Marker[]>(() => {
   )
 })
 
+function resetSelection() {
+  selectedMarker.value = null
+  selectedScenario.value = null
+  panelView.value = 'list'
+}
 function openMenu() {
   if (panelOpen.value && panelView.value === 'list') {
     panelOpen.value = false
@@ -82,18 +72,14 @@ function openScenario(sid: string) {
   panelOpen.value = true
 }
 function backToList() {
-  selectedMarker.value = null
-  selectedScenario.value = null
-  panelView.value = 'list'
+  resetSelection()
 }
 function closePanel() {
   panelOpen.value = false
 }
 function setFilter(f: Filter | null) {
   activeFilter.value = f
-  selectedMarker.value = null
-  selectedScenario.value = null
-  panelView.value = 'list'
+  resetSelection()
   panelOpen.value = true
 }
 
@@ -345,9 +331,7 @@ onUnmounted(() => {
 function switchMap(val: '1920' | '2020') {
   activeMap.value = val
   activeFilter.value = null
-  selectedMarker.value = null
-  selectedScenario.value = null
-  panelView.value = 'list'
+  resetSelection()
 }
 </script>
 
@@ -453,7 +437,7 @@ function switchMap(val: '1920' | '2020') {
   width: 100vw;
   height: 100dvh;
   overflow: hidden;
-  background: #0d1117;
+  background: var(--bg);
 }
 
 .menu-btn {
@@ -463,9 +447,9 @@ function switchMap(val: '1920' | '2020') {
   z-index: 100;
   width: 38px;
   height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  background: rgba(13, 17, 23, 0.82);
+  background: var(--bg-blur);
   color: rgba(230, 237, 243, 0.7);
   font-size: 17px;
   line-height: 1;
@@ -474,11 +458,11 @@ function switchMap(val: '1920' | '2020') {
   transition: color 0.15s, background 0.15s;
 }
 .menu-btn:hover {
-  color: #e6edf3;
+  color: var(--fg);
 }
 .menu-btn.on {
-  color: #e6edf3;
-  background: rgba(255, 255, 255, 0.12);
+  color: var(--fg);
+  background: var(--surface-strong);
 }
 
 .toggle-wrap {
@@ -487,8 +471,8 @@ function switchMap(val: '1920' | '2020') {
   left: 58px;
   z-index: 100;
   display: flex;
-  background: rgba(13, 17, 23, 0.82);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-blur);
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 3px;
   gap: 2px;
@@ -508,11 +492,11 @@ function switchMap(val: '1920' | '2020') {
   font-family: inherit;
 }
 .toggle-btn.active {
-  background: rgba(255, 255, 255, 0.12);
-  color: #e6edf3;
+  background: var(--surface-strong);
+  color: var(--fg);
 }
 .toggle-btn:hover:not(.active) {
-  color: #e6edf3;
+  color: var(--fg);
 }
 
 .map-container {
@@ -566,7 +550,6 @@ function switchMap(val: '1920' | '2020') {
   border-radius: 50%;
   background: var(--mc);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 0 12px var(--mc);
-  /* re-enable pointer events on the dot so it can be hovered (map drag still works elsewhere) */
   pointer-events: auto;
   cursor: pointer;
 }
@@ -585,7 +568,6 @@ function switchMap(val: '1920' | '2020') {
   border: 1px solid var(--mc);
   white-space: nowrap;
   text-transform: uppercase;
-  /* hidden by default, shown on hover */
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.15s;
@@ -613,14 +595,14 @@ function switchMap(val: '1920' | '2020') {
   padding: 9px 0;
   border: transparent;
   border-radius: 8px;
-  background: rgba(13, 17, 23, 0.82);
+  background: var(--bg-blur);
   color: rgba(230, 237, 243, 0.55);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
 }
 .edit-toggle.on {
-  color: #e6edf3;
+  color: var(--fg);
 }
 .pick-json {
   position: absolute;

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import type { Filter, Category, Marker } from '@/types'
 import detailData from '@/data/details.json'
 import scenarioData from '@/data/scenarios.json'
 import tagData from '@/data/tags.json'
@@ -25,26 +26,13 @@ interface Tag {
   label: string
   description?: string
 }
-interface Category {
-  label: string
-  color: string
-}
-interface MarkerInfo {
-  id: string
-  label: string
-  category: string
-  isReal: boolean
-  tags: string[]
-  scenarios: string[]
-}
-type Filter = { type: 'tag' | 'scenario' | 'category'; value: string }
 
 const props = defineProps<{
   open: boolean
   view: 'list' | 'detail' | 'scenario'
-  marker: MarkerInfo | null
+  marker: Marker | null
   scenarioId: string | null
-  markers: MarkerInfo[]
+  markers: Marker[]
   activeFilter: Filter | null
 }>()
 const emit = defineEmits<{
@@ -68,19 +56,20 @@ const splitParagraphs = (text?: string) =>
     .filter(Boolean)
 
 /* ---------- 목록 뷰 ---------- */
-const scenarioCount = (sid: string) =>
-  props.markers.filter((m) => m.scenarios.includes(sid)).length
-const tagCount = (tid: string) => props.markers.filter((m) => m.tags.includes(tid)).length
-const categoryCount = (cid: string) => props.markers.filter((m) => m.category === cid).length
-
 const scenarioEntries = computed(() =>
-  Object.entries(scenarios).map(([id, s]) => ({ id, ...s, count: scenarioCount(id) }))
+  Object.entries(scenarios).map(([id, s]) => ({
+    id, ...s, count: props.markers.filter((m) => m.scenarios.includes(id)).length
+  }))
 )
 const tagEntries = computed(() =>
-  Object.entries(tags).map(([id, t]) => ({ id, label: t.label, count: tagCount(id) }))
+  Object.entries(tags).map(([id, t]) => ({
+    id, label: t.label, count: props.markers.filter((m) => m.tags.includes(id)).length
+  }))
 )
 const categoryEntries = computed(() =>
-  Object.entries(categories).map(([id, c]) => ({ id, label: c.label, color: c.color, count: categoryCount(id) }))
+  Object.entries(categories).map(([id, c]) => ({
+    id, label: c.label, color: c.color, count: props.markers.filter((m) => m.category === id).length
+  }))
 )
 
 function isActive(type: Filter['type'], value: string) {
@@ -216,7 +205,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           <button class="icon-btn" @click="emit('close')" aria-label="닫기">×</button>
         </header>
 
-        <h2 class="panel-title panel-title--neutral">{{ heading }}</h2>
+        <h2 class="panel-title">{{ heading }}</h2>
         <p v-if="detail?.summary" class="panel-summary">{{ detail.summary }}</p>
 
         <div class="badges">
@@ -227,7 +216,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           >{{ categories[marker.category]?.label ?? marker.category }}</span>
         </div>
 
-        <div v-if="markerTags.length" class="chips chips--tags">
+        <div v-if="markerTags.length" class="chips" style="margin-top: 10px">
           <button
             v-for="t in markerTags"
             :key="t.id"
@@ -280,10 +269,10 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   box-sizing: border-box;
   padding: 14px 22px 28px;
   overflow-y: auto;
-  background: rgba(13, 17, 23, 0.94);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--bg-panel);
+  border-right: 1px solid var(--border);
   backdrop-filter: blur(12px);
-  color: #e6edf3;
+  color: var(--fg);
   box-shadow: 8px 0 24px rgba(0, 0, 0, 0.35);
 }
 
@@ -312,7 +301,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 }
 .icon-btn:hover {
   background: rgba(255, 255, 255, 0.14);
-  color: #e6edf3;
+  color: var(--fg);
 }
 
 .filter-banner {
@@ -329,7 +318,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 .clear-btn {
   border: none;
   background: transparent;
-  color: #58a6ff;
+  color: var(--accent);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -343,7 +332,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   font-size: 12px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: rgba(230, 237, 243, 0.5);
+  color: var(--fg-muted);
   text-transform: uppercase;
 }
 .list {
@@ -360,12 +349,12 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   gap: 8px;
   padding: 11px 12px;
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--surface);
   cursor: pointer;
   transition: background 0.15s;
 }
 .item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-hover);
 }
 .item-title {
   flex: 1;
@@ -380,7 +369,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   font-weight: 700;
   padding: 1px 7px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--surface-hover);
   color: rgba(230, 237, 243, 0.7);
 }
 .chev {
@@ -394,7 +383,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   border: 1px solid rgba(88, 166, 255, 0.5);
   border-radius: 6px;
   background: transparent;
-  color: #58a6ff;
+  color: var(--accent);
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
@@ -405,9 +394,9 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   background: rgba(88, 166, 255, 0.12);
 }
 .filter-btn.on {
-  background: #58a6ff;
-  color: #0d1117;
-  border-color: #58a6ff;
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
 }
 
 /* 상세/시나리오 뷰 */
@@ -421,7 +410,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 .panel-summary {
   margin: 8px 0 0;
   font-size: 13px;
-  color: rgba(230, 237, 243, 0.65);
+  color: var(--fg-dim);
 }
 .badges {
   display: flex;
@@ -447,12 +436,6 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 .panel-title--neutral {
   border-left-color: rgba(230, 237, 243, 0.25);
 }
-.chips--tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 10px;
-}
 .image-fig {
   margin: 16px 0;
 }
@@ -464,7 +447,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 .image-fig figcaption {
   margin-top: 5px;
   font-size: 11px;
-  color: rgba(230, 237, 243, 0.5);
+  color: var(--fg-muted);
 }
 .description {
   margin-top: 16px;
@@ -490,10 +473,10 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 }
 .chip {
   padding: 5px 10px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid var(--border-mid);
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #e6edf3;
+  background: var(--surface);
+  color: var(--fg);
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
@@ -501,12 +484,12 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   transition: background 0.15s, color 0.15s;
 }
 .chip:hover {
-  background: rgba(255, 255, 255, 0.12);
+  background: var(--surface-strong);
 }
 .chip.on {
-  background: #58a6ff;
-  color: #0d1117;
-  border-color: #58a6ff;
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
 }
 .cat-chip {
   border-color: color-mix(in srgb, var(--cc) 40%, transparent);
@@ -514,7 +497,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 }
 .cat-chip.on {
   background: var(--cc);
-  color: #0d1117;
+  color: var(--bg);
   border-color: var(--cc);
 }
 
