@@ -1,15 +1,15 @@
 {
   "1920": [
-    { "id": 1, "x": 25, "y": 30, "label": "임의 마커1", "color": "#38bdf8", "tags": [] },
-    { "id": 2, "x": 55, "y": 55, "label": "임의 마커2", "color": "#38bdf8", "tags": [] },
-    { "id": 3, "x": 75, "y": 45, "label": "임의 마커3", "color": "#38bdf8", "tags": [] },
-    { "id": 4, "x": 40, "y": 70, "label": "임의 마커4", "color": "#4ade80", "tags": [] }
+    { "id": "1920-1", "x": 25, "y": 30, "label": "임의 마커1", "category": "cat1", "isReal": true, "tags": ["t2"], "scenarios": ["s1"] },
+    { "id": "1920-2", "x": 55, "y": 55, "label": "임의 마커2", "category": "cat1", "isReal": true, "tags": ["t3"], "scenarios": ["s1", "s2"] },
+    { "id": "1920-3", "x": 75, "y": 45, "label": "임의 마커3", "category": "cat1", "isReal": true, "tags": ["t4"], "scenarios": ["s2"] },
+    { "id": "1920-4", "x": 40, "y": 70, "label": "임의 마커4", "category": "cat2", "isReal": false, "tags": ["t1", "t2"], "scenarios": ["s3"] }
   ],
   "2020": [
-    { "id": 1, "x": 20, "y": 22, "label": "임의 마커1", "color": "#c084fc", "tags": [] },
-    { "id": 2, "x": 50, "y": 35, "label": "임의 마커2", "color": "#c084fc", "tags": [] },
-    { "id": 3, "x": 65, "y": 65, "label": "임의 마커3", "color": "#fb923c", "tags": [] },
-    { "id": 4, "x": 82, "y": 50, "label": "임의 마커4", "color": "#fb923c", "tags": [] },
-    { "id": 5, "x": 35, "y": 60, "label": "임의 마커5", "color": "#c084fc", "tags": [] }
+    { "id": "2020-1", "x": 20, "y": 22, "label": "임의 마커1", "category": "cat3", "isReal": true, "tags": ["t3"], "scenarios": [] },
+    { "id": "2020-2", "x": 50, "y": 35, "label": "임의 마커2", "category": "cat3", "isReal": true, "tags": ["t4"], "scenarios": ["s2"] },
+    { "id": "2020-3", "x": 65, "y": 65, "label": "임의 마커3", "category": "cat4", "isReal": true, "tags": ["t2"], "scenarios": ["s3"] },
+    { "id": "2020-4", "x": 82, "y": 50, "label": "임의 마커4", "category": "cat4", "isReal": false, "tags": ["t1", "t3"], "scenarios": ["s3"] },
+    { "id": "2020-5", "x": 35, "y": 60, "label": "임의 마커5", "category": "cat3", "isReal": true, "tags": ["t2"], "scenarios": ["s1"] }
   ]
 }
