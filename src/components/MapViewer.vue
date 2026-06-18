@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import markerData from '@/data/markers.json'
+import SidePanel from './SidePanel.vue'
 
 interface Marker {
-  id: number
+  id: string
   x: number
   y: number
   label: string
   color: string
+  isReal: boolean
   tags: string[]
+  scenarios: string[]
 }
 
 const ZOOM_TOLERANCE = 1.5
@@ -28,8 +31,60 @@ let initialized = false
 const base = import.meta.env.BASE_URL
 const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.jpg' : '/2020.jpg'))
 
-const allMarkers: Record<'1920' | '2020', Marker[]> = markerData
-const markers = computed<Marker[]>(() => allMarkers[activeMap.value])
+const allMarkers = markerData as Record<'1920' | '2020', Marker[]>
+const currentMarkers = computed<Marker[]>(() => allMarkers[activeMap.value])
+
+// --- 좌측 패널 + 필터 상태 ---
+type Filter = { type: 'tag' | 'scenario'; value: string }
+const panelOpen = ref(false)
+const panelView = ref<'list' | 'detail' | 'scenario'>('list')
+const selectedMarker = ref<Marker | null>(null)
+const selectedScenario = ref<string | null>(null)
+const activeFilter = ref<Filter | null>(null)
+
+// 지도에 표시되는 마커: 필터 매칭 안 되면 숨김
+const markers = computed<Marker[]>(() => {
+  const list = currentMarkers.value
+  const f = activeFilter.value
+  if (!f) return list
+  return list.filter((m) =>
+    f.type === 'tag' ? m.tags.includes(f.value) : m.scenarios.includes(f.value)
+  )
+})
+
+function openMenu() {
+  if (panelOpen.value && panelView.value === 'list') {
+    panelOpen.value = false
+  } else {
+    panelView.value = 'list'
+    panelOpen.value = true
+  }
+}
+function selectMarker(m: Marker) {
+  selectedMarker.value = m
+  panelView.value = 'detail'
+  panelOpen.value = true
+}
+function openScenario(sid: string) {
+  selectedScenario.value = sid
+  panelView.value = 'scenario'
+  panelOpen.value = true
+}
+function backToList() {
+  selectedMarker.value = null
+  selectedScenario.value = null
+  panelView.value = 'list'
+}
+function closePanel() {
+  panelOpen.value = false
+}
+function setFilter(f: Filter | null) {
+  activeFilter.value = f
+  selectedMarker.value = null
+  selectedScenario.value = null
+  panelView.value = 'list'
+  panelOpen.value = true
+}
 
 // --- 좌표 픽커 (개발 모드 전용) ---
 const EDIT_MODE_AVAILABLE = import.meta.env.DEV
@@ -37,8 +92,12 @@ const editMode = ref(false)
 const picked = ref<{ x: number; y: number } | null>(null)
 
 const nextId = computed(() => {
-  const ids = markers.value.map((m) => m.id)
-  return ids.length ? Math.max(...ids) + 1 : 1
+  const prefix = activeMap.value
+  const nums = currentMarkers.value
+    .map((m) => Number(m.id.split('-')[1]))
+    .filter((n) => !Number.isNaN(n))
+  const next = nums.length ? Math.max(...nums) + 1 : 1
+  return `${prefix}-${next}`
 })
 const pickedJson = computed(() => {
   if (!picked.value) return ''
@@ -49,7 +108,9 @@ const pickedJson = computed(() => {
       y: Math.round(picked.value.y * 10) / 10,
       label: '',
       color: '#58a6ff',
+      isReal: true,
       tags: [],
+      scenarios: [],
     },
     null,
     2
@@ -272,11 +333,17 @@ onUnmounted(() => {
 
 function switchMap(val: '1920' | '2020') {
   activeMap.value = val
+  activeFilter.value = null
+  selectedMarker.value = null
+  selectedScenario.value = null
+  panelView.value = 'list'
 }
 </script>
 
 <template>
   <div class="page">
+    <button class="menu-btn" :class="{ on: panelOpen }" @click="openMenu" aria-label="메뉴">☰</button>
+
     <div class="toggle-wrap">
       <button
         class="toggle-btn"
@@ -335,7 +402,11 @@ function switchMap(val: '1920' | '2020') {
           class="marker"
           :style="markerStyle(m)"
         >
-          <span class="marker-dot">
+          <span
+            class="marker-dot"
+            :class="{ selected: selectedMarker?.id === m.id }"
+            @click.stop="selectMarker(m)"
+          >
             <span class="marker-label">{{ m.label }}</span>
           </span>
         </div>
@@ -349,6 +420,19 @@ function switchMap(val: '1920' | '2020') {
         </div>
       </div>
     </div>
+
+    <SidePanel
+      :open="panelOpen"
+      :view="panelView"
+      :marker="selectedMarker"
+      :scenario-id="selectedScenario"
+      :markers="currentMarkers"
+      :active-filter="activeFilter"
+      @close="closePanel"
+      @back="backToList"
+      @open-scenario="openScenario"
+      @set-filter="setFilter"
+    />
   </div>
 </template>
 
@@ -361,10 +445,33 @@ function switchMap(val: '1920' | '2020') {
   background: #0d1117;
 }
 
-.toggle-wrap {
+.menu-btn {
   position: absolute;
   top: 12px;
   left: 12px;
+  z-index: 100;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(13, 17, 23, 0.82);
+  color: rgba(230, 237, 243, 0.7);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: color 0.15s, background 0.15s;
+}
+.menu-btn:hover,
+.menu-btn.on {
+  color: #e6edf3;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.toggle-wrap {
+  position: absolute;
+  top: 12px;
+  left: 58px;
   z-index: 100;
   display: flex;
   background: rgba(13, 17, 23, 0.82);
@@ -471,6 +578,12 @@ function switchMap(val: '1920' | '2020') {
   transition: opacity 0.15s;
 }
 .marker-dot:hover .marker-label {
+  opacity: 1;
+}
+.marker-dot.selected {
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.35), 0 0 16px var(--mc);
+}
+.marker-dot.selected .marker-label {
   opacity: 1;
 }
 
