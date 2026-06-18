@@ -1,0 +1,6 @@
+{
+  "cat1": { "label": "카테고리 1", "color": "#38bdf8" },
+  "cat2": { "label": "카테고리 2", "color": "#4ade80" },
+  "cat3": { "label": "카테고리 3", "color": "#c084fc" },
+  "cat4": { "label": "카테고리 4", "color": "#fb923c" }
+}

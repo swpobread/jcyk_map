@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue'
 import markerData from '@/data/markers.json'
+import categoryData from '@/data/categories.json'
 import SidePanel from './SidePanel.vue'
 
+interface Category {
+  label: string
+  color: string
+}
 interface Marker {
   id: string
   x: number
   y: number
   label: string
-  color: string
+  category: string
   isReal: boolean
   tags: string[]
   scenarios: string[]
 }
+
+const categories = categoryData as Record<string, Category>
 
 const ZOOM_TOLERANCE = 1.5
 
@@ -35,7 +42,7 @@ const allMarkers = markerData as Record<'1920' | '2020', Marker[]>
 const currentMarkers = computed<Marker[]>(() => allMarkers[activeMap.value])
 
 // --- 좌측 패널 + 필터 상태 ---
-type Filter = { type: 'tag' | 'scenario'; value: string }
+type Filter = { type: 'tag' | 'scenario' | 'category'; value: string }
 const panelOpen = ref(false)
 const panelView = ref<'list' | 'detail' | 'scenario'>('list')
 const selectedMarker = ref<Marker | null>(null)
@@ -48,7 +55,11 @@ const markers = computed<Marker[]>(() => {
   const f = activeFilter.value
   if (!f) return list
   return list.filter((m) =>
-    f.type === 'tag' ? m.tags.includes(f.value) : m.scenarios.includes(f.value)
+    f.type === 'category'
+      ? m.category === f.value
+      : f.type === 'tag'
+        ? m.tags.includes(f.value)
+        : m.scenarios.includes(f.value)
   )
 })
 
@@ -107,7 +118,7 @@ const pickedJson = computed(() => {
       x: Math.round(picked.value.x * 10) / 10,
       y: Math.round(picked.value.y * 10) / 10,
       label: '',
-      color: '#58a6ff',
+      category: 'cat1',
       isReal: true,
       tags: [],
       scenarios: [],
@@ -138,7 +149,7 @@ function pointStyle(xPct: number, yPct: number) {
 }
 
 function markerStyle(m: Marker) {
-  return { ...pointStyle(m.x, m.y), '--mc': m.color }
+  return { ...pointStyle(m.x, m.y), '--mc': categories[m.category]?.color ?? '#58a6ff' }
 }
 
 const pickPreviewStyle = computed(() =>
@@ -462,7 +473,9 @@ function switchMap(val: '1920' | '2020') {
   backdrop-filter: blur(8px);
   transition: color 0.15s, background 0.15s;
 }
-.menu-btn:hover,
+.menu-btn:hover {
+  color: #e6edf3;
+}
 .menu-btn.on {
   color: #e6edf3;
   background: rgba(255, 255, 255, 0.12);

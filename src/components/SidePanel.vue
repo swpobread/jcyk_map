@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import detailData from '@/data/details.json'
 import scenarioData from '@/data/scenarios.json'
 import tagData from '@/data/tags.json'
+import categoryData from '@/data/categories.json'
 
 interface DetailImage {
   src: string
@@ -24,15 +25,19 @@ interface Tag {
   label: string
   description?: string
 }
+interface Category {
+  label: string
+  color: string
+}
 interface MarkerInfo {
   id: string
   label: string
-  color: string
+  category: string
   isReal: boolean
   tags: string[]
   scenarios: string[]
 }
-type Filter = { type: 'tag' | 'scenario'; value: string }
+type Filter = { type: 'tag' | 'scenario' | 'category'; value: string }
 
 const props = defineProps<{
   open: boolean
@@ -52,6 +57,7 @@ const emit = defineEmits<{
 const details = detailData as Record<string, Detail>
 const scenarios = scenarioData as Record<string, Scenario>
 const tags = tagData as Record<string, Tag>
+const categories = categoryData as Record<string, Category>
 
 const base = import.meta.env.BASE_URL
 const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
@@ -65,12 +71,16 @@ const splitParagraphs = (text?: string) =>
 const scenarioCount = (sid: string) =>
   props.markers.filter((m) => m.scenarios.includes(sid)).length
 const tagCount = (tid: string) => props.markers.filter((m) => m.tags.includes(tid)).length
+const categoryCount = (cid: string) => props.markers.filter((m) => m.category === cid).length
 
 const scenarioEntries = computed(() =>
   Object.entries(scenarios).map(([id, s]) => ({ id, ...s, count: scenarioCount(id) }))
 )
 const tagEntries = computed(() =>
   Object.entries(tags).map(([id, t]) => ({ id, label: t.label, count: tagCount(id) }))
+)
+const categoryEntries = computed(() =>
+  Object.entries(categories).map(([id, c]) => ({ id, label: c.label, color: c.color, count: categoryCount(id) }))
 )
 
 function isActive(type: Filter['type'], value: string) {
@@ -83,7 +93,9 @@ function toggleFilter(type: Filter['type'], value: string) {
 const activeFilterLabel = computed(() => {
   const f = props.activeFilter
   if (!f) return ''
-  return f.type === 'tag' ? tags[f.value]?.label ?? f.value : scenarios[f.value]?.title ?? f.value
+  if (f.type === 'category') return categories[f.value]?.label ?? f.value
+  if (f.type === 'tag') return tags[f.value]?.label ?? f.value
+  return scenarios[f.value]?.title ?? f.value
 })
 
 /* ---------- 상세 뷰 (마커) ---------- */
@@ -104,7 +116,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 
 <template>
   <Transition name="panel">
-    <aside v-if="open" class="side-panel" :style="{ '--mc': marker?.color ?? '#58a6ff' }">
+    <aside v-if="open" class="side-panel" :style="{ '--mc': marker ? (categories[marker.category]?.color ?? '#58a6ff') : '#58a6ff' }">
       <!-- ===== 목록 뷰 ===== -->
       <template v-if="view === 'list'">
         <header class="panel-bar">
@@ -116,6 +128,22 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           <span>필터: <b>{{ activeFilterLabel }}</b></span>
           <button class="clear-btn" @click="emit('setFilter', null)">✕ 해제</button>
         </div>
+
+        <section class="group">
+          <h3 class="group-label">카테고리</h3>
+          <div class="chips">
+            <button
+              v-for="c in categoryEntries"
+              :key="c.id"
+              class="chip cat-chip"
+              :class="{ on: isActive('category', c.id) }"
+              :style="{ '--cc': c.color }"
+              @click="toggleFilter('category', c.id)"
+            >
+              {{ c.label }}
+            </button>
+          </div>
+        </section>
 
         <section class="group">
           <h3 class="group-label">태그</h3>
@@ -156,7 +184,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           <button class="icon-btn" @click="emit('close')" aria-label="닫기">×</button>
         </header>
 
-        <h2 class="panel-title">{{ scenario.title }}</h2>
+        <h2 class="panel-title panel-title--neutral">{{ scenario.title }}</h2>
         <p v-if="scenario.summary" class="panel-summary">{{ scenario.summary }}</p>
 
         <button
@@ -164,7 +192,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           :class="{ on: scenarioId && isActive('scenario', scenarioId) }"
           @click="scenarioId && toggleFilter('scenario', scenarioId)"
         >
-          {{ scenarioId && isActive('scenario', scenarioId) ? '필터 해제' : '이 장소만 보기' }}
+          {{ scenarioId && isActive('scenario', scenarioId) ? '필터 해제' : '관련 장소 확인' }}
         </button>
 
         <figure v-if="scenario.image" class="image-fig">
@@ -173,7 +201,6 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
             :alt="scenario.image.caption ?? scenario.title"
             loading="lazy"
           />
-          <figcaption v-if="scenario.image.caption">{{ scenario.image.caption }}</figcaption>
         </figure>
 
         <section v-if="scenarioParagraphs.length" class="description">
@@ -189,11 +216,26 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           <button class="icon-btn" @click="emit('close')" aria-label="닫기">×</button>
         </header>
 
-        <h2 class="panel-title">{{ heading }}</h2>
+        <h2 class="panel-title panel-title--neutral">{{ heading }}</h2>
         <p v-if="detail?.summary" class="panel-summary">{{ detail.summary }}</p>
 
-        <div v-if="marker.isReal" class="badges">
-          <span class="badge badge-real">실존 장소</span>
+        <div class="badges">
+          <span v-if="marker.isReal" class="badge badge-real">실존 장소</span>
+          <span
+            class="badge badge-cat"
+            :style="{ '--cc': categories[marker.category]?.color ?? '#58a6ff' }"
+          >{{ categories[marker.category]?.label ?? marker.category }}</span>
+        </div>
+
+        <div v-if="markerTags.length" class="chips chips--tags">
+          <button
+            v-for="t in markerTags"
+            :key="t.id"
+            class="chip"
+            @click="emit('setFilter', { type: 'tag', value: t.id })"
+          >
+            #{{ t.label }}
+          </button>
         </div>
 
         <figure v-if="detail?.image" class="image-fig">
@@ -202,27 +244,12 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
             :alt="detail.image.caption ?? heading"
             loading="lazy"
           />
-          <figcaption v-if="detail.image.caption">{{ detail.image.caption }}</figcaption>
         </figure>
 
         <section v-if="paragraphs.length" class="description">
           <p v-for="(p, i) in paragraphs" :key="i">{{ p }}</p>
         </section>
         <p v-else class="empty-note">상세 정보가 아직 등록되지 않았습니다.</p>
-
-        <section v-if="markerTags.length" class="chips-section">
-          <h3 class="group-label">태그</h3>
-          <div class="chips">
-            <button
-              v-for="t in markerTags"
-              :key="t.id"
-              class="chip"
-              @click="emit('setFilter', { type: 'tag', value: t.id })"
-            >
-              #{{ t.label }}
-            </button>
-          </div>
-        </section>
 
         <section v-if="markerScenarios.length" class="chips-section">
           <h3 class="group-label">등장 시나리오</h3>
@@ -413,6 +440,19 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   background: rgba(74, 222, 128, 0.16);
   color: #4ade80;
 }
+.badge-cat {
+  background: color-mix(in srgb, var(--cc) 16%, transparent);
+  color: var(--cc);
+}
+.panel-title--neutral {
+  border-left-color: rgba(230, 237, 243, 0.25);
+}
+.chips--tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
 .image-fig {
   margin: 16px 0;
 }
@@ -467,6 +507,15 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   background: #58a6ff;
   color: #0d1117;
   border-color: #58a6ff;
+}
+.cat-chip {
+  border-color: color-mix(in srgb, var(--cc) 40%, transparent);
+  color: var(--cc);
+}
+.cat-chip.on {
+  background: var(--cc);
+  color: #0d1117;
+  border-color: var(--cc);
 }
 
 .panel-enter-active,
