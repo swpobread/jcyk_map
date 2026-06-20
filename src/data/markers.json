@@ -1,9 +1,105 @@
 {
   "1920": [
-    { "id": "1920-1", "x": 25, "y": 30, "label": "임의 마커1", "category": "cat1", "isReal": true, "tags": ["t2"], "scenarios": ["s1"] },
-    { "id": "1920-2", "x": 55, "y": 55, "label": "임의 마커2", "category": "cat1", "isReal": true, "tags": ["t3"], "scenarios": ["s1", "s2"] },
-    { "id": "1920-3", "x": 75, "y": 45, "label": "임의 마커3", "category": "cat1", "isReal": true, "tags": ["t4"], "scenarios": ["s2"] },
-    { "id": "1920-4", "x": 40, "y": 70, "label": "임의 마커4", "category": "cat2", "isReal": false, "tags": ["t1", "t2"], "scenarios": ["s3"] }
+    {
+      "id": "1920-1",
+      "x": 51.8,
+      "y": 6.7,
+      "label": "김세미 집",
+      "category": "cat1",
+      "isReal": false,
+      "tags": ["재동 151"],
+      "scenarios": ["s1"]
+    },			
+    {
+      "id": "1920-2",
+      "x": 48.5,
+      "y": 6.3,
+      "label": "경성공립여자고등보통학교",
+      "category": "cat1",
+      "isReal": true,
+      "tags": ["재동 83"],
+      "scenarios": []
+    },
+    {
+      "id": "1920-3",
+      "x": 43,
+      "y": 19.2,
+      "label": "종로경찰서",
+      "category": "cat1",
+      "isReal": true,
+      "tags": ["공평동 163"],
+      "scenarios": ["s1"]
+    },
+    {
+      "id": "1920-4",
+      "x": 36.1,
+      "y": 27.1,
+      "label": "경성일보사, 매일신보사, 서울프레스",
+      "category": "cat1",
+      "isReal": true,
+      "tags": ["태평로 1가 30번지"],
+      "scenarios": []
+    },
+    {
+      "id": "1920-5",
+      "x": 45.2,
+      "y": 43.2,
+      "label": "길화관",
+      "category": "cat1",
+      "isReal": false,
+      "tags": ["회현동 2가 38", "모티브: 경희구(2가 39)"],
+      "scenarios": ["s1"]
+    },
+    {
+      "id": "1920-6",
+      "x": 26,
+      "y": 55.7,
+      "label": "미요시 주택지",
+      "category": "cat1",
+      "isReal": true,
+      "tags": ["동자동 35"],
+      "scenarios": ["s1", "s2"]
+    },
+    {
+      "id": "1920-7",
+      "x": 31.1,
+      "y": 53.6,
+      "label": "만령방",
+      "category": "cat1",
+      "isReal": false,
+      "tags": ["후암동"],
+      "scenarios": ["s1"]
+    },
+    {
+      "id": "1920-8",
+      "x": 13.7,
+      "y": 84.1,
+      "label": "전기수리점",
+      "category": "cat1",
+      "isReal": false,
+      "tags": ["문배동"],
+      "scenarios": ["s1"]
+    },
+    {
+      "id": "1920-9",
+      "x": 81.8,
+      "y": 6.2,
+      "label": "경성제국대학 의학부",
+      "category": "cat1",
+      "isReal": true,
+      "tags": ["연건동 28"],
+      "scenarios": ["s1"]
+    },
+    {
+      "id": "1920-10",
+      "x": 94.1,
+      "y": 31.2,
+      "label": "불법도박장",
+      "category": "cat1",
+      "isReal": false,
+      "tags": ["광희동"],
+      "scenarios": ["s1", "s2"]
+    }
   ],
   "2020": [
     { "id": "2020-1", "x": 20, "y": 22, "label": "임의 마커1", "category": "cat3", "isReal": true, "tags": ["t3"], "scenarios": [] },
