@@ -7,7 +7,7 @@
       "label": "김세미 집",
       "category": "cat1",
       "isReal": false,
-      "tags": ["재동 151"],
+      "tags": ["재동"],
       "scenarios": ["s1"]
     },			
     {
@@ -17,7 +17,7 @@
       "label": "경성공립여자고등보통학교",
       "category": "cat1",
       "isReal": true,
-      "tags": ["재동 83"],
+      "tags": ["재동"],
       "scenarios": []
     },
     {
@@ -27,7 +27,7 @@
       "label": "종로경찰서",
       "category": "cat1",
       "isReal": true,
-      "tags": ["공평동 163"],
+      "tags": ["공평동"],
       "scenarios": ["s1"]
     },
     {
@@ -37,7 +37,7 @@
       "label": "경성일보사, 매일신보사, 서울프레스",
       "category": "cat1",
       "isReal": true,
-      "tags": ["태평로 1가 30번지"],
+      "tags": ["태평로 1가"],
       "scenarios": []
     },
     {
@@ -47,7 +47,7 @@
       "label": "길화관",
       "category": "cat1",
       "isReal": false,
-      "tags": ["회현동 2가 38", "모티브: 경희구(2가 39)"],
+      "tags": ["회현동"],
       "scenarios": ["s1"]
     },
     {
@@ -57,7 +57,7 @@
       "label": "미요시 주택지",
       "category": "cat1",
       "isReal": true,
-      "tags": ["동자동 35"],
+      "tags": ["동자동"],
       "scenarios": ["s1", "s2"]
     },
     {
@@ -87,7 +87,7 @@
       "label": "경성제국대학 의학부",
       "category": "cat1",
       "isReal": true,
-      "tags": ["연건동 28"],
+      "tags": ["연건동"],
       "scenarios": ["s1"]
     },
     {
