@@ -7,17 +7,17 @@
       "label": "김세미 집",
       "category": "cat1",
       "isReal": false,
-      "tags": ["재동"],
+      "tags": ["t1"],
       "scenarios": ["s1"]
     },			
     {
       "id": "1920-2",
       "x": 48.5,
       "y": 6.3,
-      "label": "경성공립여자고등보통학교",
+      "label": "경성여고보",
       "category": "cat1",
       "isReal": true,
-      "tags": ["재동"],
+      "tags": ["t1"],
       "scenarios": []
     },
     {
@@ -27,17 +27,17 @@
       "label": "종로경찰서",
       "category": "cat1",
       "isReal": true,
-      "tags": ["공평동"],
+      "tags": ["t2"],
       "scenarios": ["s1"]
     },
     {
       "id": "1920-4",
       "x": 36.1,
       "y": 27.1,
-      "label": "경성일보사, 매일신보사, 서울프레스",
+      "label": "경성일보사",
       "category": "cat1",
       "isReal": true,
-      "tags": ["태평로 1가"],
+      "tags": ["t3"],
       "scenarios": []
     },
     {
@@ -47,7 +47,7 @@
       "label": "길화관",
       "category": "cat1",
       "isReal": false,
-      "tags": ["회현동"],
+      "tags": ["t4"],
       "scenarios": ["s1"]
     },
     {
@@ -57,7 +57,7 @@
       "label": "미요시 주택지",
       "category": "cat1",
       "isReal": true,
-      "tags": ["동자동"],
+      "tags": ["t5"],
       "scenarios": ["s1", "s2"]
     },
     {
@@ -67,7 +67,7 @@
       "label": "만령방",
       "category": "cat1",
       "isReal": false,
-      "tags": ["후암동"],
+      "tags": ["t6"],
       "scenarios": ["s1"]
     },
     {
@@ -77,17 +77,17 @@
       "label": "전기수리점",
       "category": "cat1",
       "isReal": false,
-      "tags": ["문배동"],
+      "tags": ["t7"],
       "scenarios": ["s1"]
     },
     {
       "id": "1920-9",
       "x": 81.8,
       "y": 6.2,
-      "label": "경성제국대학 의학부",
+      "label": "경성제국대학",
       "category": "cat1",
       "isReal": true,
-      "tags": ["연건동"],
+      "tags": ["t8"],
       "scenarios": ["s1"]
     },
     {
@@ -97,7 +97,7 @@
       "label": "불법도박장",
       "category": "cat1",
       "isReal": false,
-      "tags": ["광희동"],
+      "tags": ["t9"],
       "scenarios": ["s1", "s2"]
     }
   ],
