@@ -23,6 +23,7 @@ let initialized = false
 
 const base = import.meta.env.BASE_URL
 const mapSrc = computed(() => base + (activeMap.value === '1920' ? '/1920.jpg' : '/2020.jpg'))
+const markerSrc = computed(() => base + '/map_marker.svg')
 
 const allMarkers = markerData as Record<'1920' | '2020', Marker[]>
 const currentMarkers = computed<Marker[]>(() => allMarkers[activeMap.value])
@@ -135,7 +136,10 @@ function pointStyle(xPct: number, yPct: number) {
 }
 
 function markerStyle(m: Marker) {
-  return { ...pointStyle(m.x, m.y), '--mc': categories[m.category]?.color ?? '#58a6ff' }
+  return { 
+    ...pointStyle(m.x, m.y), 
+    '--mc': categories[m.category]?.color ?? '#58a6ff',
+    '--marker-mask': `url(${markerSrc.value})`, }
 }
 
 const pickPreviewStyle = computed(() =>
@@ -536,7 +540,7 @@ function switchMap(val: '1920' | '2020') {
 
 .marker {
   position: absolute;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -545,11 +549,13 @@ function switchMap(val: '1920' | '2020') {
 }
 .marker-dot {
   position: relative;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
+  width: 24px;
+  height: 30px;
   background: var(--mc);
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.15), 0 0 12px var(--mc);
+  -webkit-mask: var(--marker-mask) no-repeat center / contain;
+  mask: var(--marker-mask) no-repeat center / contain;
+  box-shadow: none;      /* 기존 원형 그림자 제거 */
+  border-radius: 0;
   pointer-events: auto;
   cursor: pointer;
 }
