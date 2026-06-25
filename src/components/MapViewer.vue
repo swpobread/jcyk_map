@@ -70,7 +70,7 @@ function dziUrl(map: '1920' | '2020') {
 
 function enforceMinZoom() {
   if (!viewer || viewer.world.getItemCount() === 0) return
-  const vp = viewer.viewport
+  const vp = viewer.viewport as OpenSeadragon.Viewport & { minZoomLevel: number }
   const img = viewer.world.getItemAt(0).getContentSize()
   const con = vp.getContainerSize()
   const minZoom = Math.max(1.0, (con.y * img.x) / (con.x * img.y))
@@ -177,7 +177,7 @@ function switchMap(val: '1920' | '2020') {
   activeFilter.value = null
   picked.value = null
   resetSelection()
-  viewer?.open(dziUrl(val))
+  viewer?.open({ tileSource: dziUrl(val) })
 }
 
 // --- 좌표 픽커 (개발 모드 전용) ---
@@ -263,7 +263,7 @@ onMounted(() => {
     nextTick(() => {
       enforceMinZoom()
       if (savedZoom !== null && savedCenter !== null) {
-        const minZ = viewer!.viewport.minZoomLevel ?? 0
+        const minZ = (viewer!.viewport as OpenSeadragon.Viewport & { minZoomLevel?: number }).minZoomLevel ?? 0
         viewer!.viewport.zoomTo(Math.max(savedZoom, minZ), undefined, true)
         viewer!.viewport.panTo(savedCenter, true)
         savedZoom = null
