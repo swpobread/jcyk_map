@@ -20,6 +20,10 @@ interface Scenario {
   title: string
   summary?: string
   description?: string
+  period?: string
+  characters?: string[]
+  scenarioLink?: string
+  backupLink?: string
   image?: DetailImage
 }
 interface Tag {
@@ -176,6 +180,35 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
         <h2 class="panel-title panel-title--neutral">{{ scenario.title }}</h2>
         <p v-if="scenario.summary" class="panel-summary">{{ scenario.summary }}</p>
 
+        <p v-if="scenario.period" class="period">{{ scenario.period }}</p>
+
+        <div v-if="scenario.scenarioLink || scenario.backupLink" class="links">
+          <a
+            v-if="scenario.scenarioLink"
+            class="link-btn"
+            :href="scenario.scenarioLink"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg class="link-ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14 3h7v7M21 3l-9 9M19 14v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" />
+            </svg>
+            시나리오
+          </a>
+          <a
+            v-if="scenario.backupLink"
+            class="link-btn link-btn--alt"
+            :href="scenario.backupLink"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <svg class="link-ico" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 8v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8M3 8l2.5-4h13L21 8M3 8h18M9 12h6" />
+            </svg>
+            백업
+          </a>
+        </div>
+
         <button
           class="filter-btn"
           :class="{ on: scenarioId && isActive('scenario', scenarioId) }"
@@ -196,6 +229,14 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           <p v-for="(p, i) in scenarioParagraphs" :key="i">{{ p }}</p>
         </section>
         <p v-else class="empty-note">상세 설명이 아직 등록되지 않았습니다.</p>
+
+        <section v-if="scenario.characters?.length" class="chips-section">
+          <div class="chips">
+            <span v-for="(c, i) in scenario.characters" :key="i" class="chip chip--static">
+              {{ c }}
+            </span>
+          </div>
+        </section>
       </template>
 
       <!-- ===== 상세 뷰 (마커) ===== -->
@@ -412,6 +453,53 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   font-size: 13px;
   color: var(--fg-dim);
 }
+.period {
+  margin: 10px 0 0;
+  font-size: 13px;
+  color: var(--fg-dim);
+  font-variant-numeric: tabular-nums;
+}
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 13px;
+  border: 1px solid var(--border-mid);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--fg-dim);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s;
+}
+.link-btn:hover {
+  background: var(--surface-strong);
+}
+.link-ico {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.link-btn--alt {
+  border-color: var(--border-mid);
+  background: var(--surface);
+  color: var(--fg-dim);
+}
+.link-btn--alt:hover {
+  background: var(--surface-strong);
+}
 .badges {
   display: flex;
   gap: 6px;
@@ -485,6 +573,12 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 }
 .chip:hover {
   background: var(--surface-strong);
+}
+.chip--static {
+  cursor: default;
+}
+.chip--static:hover {
+  background: var(--surface);
 }
 .chip.on {
   background: var(--accent);
