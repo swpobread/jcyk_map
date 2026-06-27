@@ -64,6 +64,11 @@ const viewerEl = ref<HTMLDivElement | null>(null)
 let viewer: OpenSeadragon.Viewer | null = null
 const markerSrc = `${baseUrl}map_marker.svg`
 
+// CSS 변수에서 색을 읽어옴 (main.css 단일 출처)
+function cssVar(name: string) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim()
+}
+
 function dziUrl(map: '1920' | '2020') {
   return `${baseUrl}tiles/${map}.dzi`
 }
@@ -100,11 +105,14 @@ function renderOverlays() {
   if (!viewer) return
   clearOverlays()
 
+  const accent = cssVar('--accent') || '#58a6ff'
+  const labelBg = cssVar('--bg-panel') || 'rgba(13,17,23,0.85)'
+
   markers.value.forEach((m) => {
     const pt = toViewportPoint(m.x, m.y)
     if (!pt) return
 
-    const color = categories[m.category]?.color ?? '#58a6ff'
+    const color = categories[m.category]?.color ?? accent
     const isSelected = selectedMarker.value?.id === m.id
 
     // wrap: 크기 0, OSD가 이 점을 viewport 좌표에 배치
@@ -133,7 +141,7 @@ function renderOverlays() {
       top: 4px;
       left: 50%;
       transform: translateX(-50%);
-      background: rgba(13,17,23,0.85);
+      background: ${labelBg};
       color: ${color};
       font-size: 11px;
       font-weight: 700;
@@ -346,7 +354,7 @@ onUnmounted(() => {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--bg-blur);
-  color: rgba(230, 237, 243, 0.7);
+  color: var(--fg-dim);
   font-size: 17px;
   line-height: 1;
   cursor: pointer;
@@ -374,7 +382,7 @@ onUnmounted(() => {
   border: none;
   border-radius: 5px;
   background: transparent;
-  color: rgba(230, 237, 243, 0.55);
+  color: var(--fg-muted);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -404,7 +412,7 @@ onUnmounted(() => {
   border: transparent;
   border-radius: 8px;
   background: var(--bg-blur);
-  color: rgba(230, 237, 243, 0.55);
+  color: var(--fg-muted);
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
