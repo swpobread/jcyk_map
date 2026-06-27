@@ -5,7 +5,7 @@ const router = createRouter({
   routes: [
     { path: '/', component: () => import('@/components/HomeView.vue') },
     { path: '/map', component: () => import('@/components/MapViewer.vue') },
-    { path: '/characters', component: () => import('@/components/MapViewer.vue') },
+    { path: '/characters', component: () => import('@/components/CharactersView.vue') },
     { path: '/scenarios', component: () => import('@/components/ScenariosView.vue') },
   ],
 })
