@@ -2,6 +2,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import scenarioData from '@/data/scenarios.json'
+import characterData from '@/data/characters.json'
 
 interface DetailImage {
   src: string
@@ -19,7 +20,22 @@ interface Scenario {
   image?: DetailImage
 }
 
+interface Character {
+  name: string
+  original?: string
+  nickname?: string
+  era?: string
+  age?: number
+  birth?: string
+  birthplace?: string
+  summary?: string
+  height?: number
+  description?: string
+}
+
 const scenarios = scenarioData as Record<string, Scenario>
+const characters = characterData as Record<string, Character>
+const characterName = (id: string) => characters[id]?.name ?? id
 const entries = computed(() => Object.entries(scenarios).map(([id, s]) => ({ id, ...s })))
 
 const base = import.meta.env.BASE_URL
@@ -34,8 +50,18 @@ const paragraphs = computed(() => splitParagraphs(selected.value?.description))
 function open(id: string) { selectedId.value = id }
 function close() { selectedId.value = null }
 
+const selectedCharId = ref<string | null>(null)
+const selectedChar = computed(() => selectedCharId.value ? characters[selectedCharId.value] : undefined)
+const charParagraphs = computed(() => splitParagraphs(selectedChar.value?.description))
+
+function openChar(id: string, e: Event) { e.stopPropagation(); selectedCharId.value = id }
+function closeChar() { selectedCharId.value = null }
+
 function onKey(e: KeyboardEvent) {
-  if (e.key === 'Escape') close()
+  if (e.key === 'Escape') {
+    if (selectedCharId.value) { closeChar(); return }
+    close()
+  }
 }
 watch(selectedId, (v) => {
   if (v) window.addEventListener('keydown', onKey)
@@ -56,12 +82,13 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
       <li v-for="s in entries" :key="s.id" class="card" @click="open(s.id)">
         <span v-if="s.rule" class="rule-tag">{{ s.rule }}</span>
         <h2 class="card-title">{{ s.title }}</h2>
-        <p v-if="s.writer" class="writer">{{ s.writer }}</p>
-        <p v-if="s.period" class="period">{{ s.period }}</p>
-        <div v-if="s.characters?.length" class="chips">
-          <span v-for="(c, i) in s.characters" :key="i" class="chip chip--sm">{{ c }}</span>
+        <div class="card-footer">
+          <p v-if="s.writer" class="writer">{{ s.writer }}</p>
+          <p v-if="s.period" class="period">{{ s.period }}</p>
+          <div v-if="s.characters?.length" class="chips">
+            <button v-for="(c, i) in s.characters" :key="i" class="chip chip--sm" @click="openChar(c, $event)">{{ characterName(c) }}</button>
+          </div>
         </div>
-        <span class="card-arrow" aria-hidden="true">→</span>
       </li>
     </ul>
   </main>
@@ -105,8 +132,45 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
         <section v-if="selected.characters?.length" class="chips-section">
           <h3 class="group-label">등장인물</h3>
           <div class="chips">
-            <span v-for="(c, i) in selected.characters" :key="i" class="chip">{{ c }}</span>
+            <button v-for="(c, i) in selected.characters" :key="i" class="chip chip--link" @click="openChar(c, $event)">{{ characterName(c) }}</button>
           </div>
+        </section>
+      </article>
+    </div>
+  </Transition>
+
+  <!-- ===== 인물 모달 ===== -->
+  <Transition name="modal">
+    <div v-if="selectedChar" class="overlay overlay--char" @click.self="closeChar">
+      <article class="modal">
+        <button class="close-btn" @click="closeChar" aria-label="닫기">×</button>
+
+        <p v-if="selectedChar.era" class="rule-tag">{{ selectedChar.era }}s</p>
+        <h2 class="detail-title">{{ selectedChar.name }}</h2>
+        <p v-if="selectedChar.original || selectedChar.nickname" class="char-meta">
+          <span v-if="selectedChar.original">{{ selectedChar.original }}</span>
+          <span v-if="selectedChar.original && selectedChar.nickname" class="meta-sep">·</span>
+          <span v-if="selectedChar.nickname">{{ selectedChar.nickname }}</span>
+        </p>
+        <p v-if="selectedChar.summary" class="writer">{{ selectedChar.summary }}</p>
+
+        <dl v-if="selectedChar.birth || selectedChar.birthplace || selectedChar.age || selectedChar.height" class="char-dl">
+          <template v-if="selectedChar.birth">
+            <dt>생년월일</dt><dd>{{ selectedChar.birth }}</dd>
+          </template>
+          <template v-if="selectedChar.birthplace">
+            <dt>출신지</dt><dd>{{ selectedChar.birthplace }}</dd>
+          </template>
+          <template v-if="selectedChar.age">
+            <dt>나이</dt><dd>{{ selectedChar.age }}세</dd>
+          </template>
+          <template v-if="selectedChar.height">
+            <dt>신장</dt><dd>{{ selectedChar.height }}cm</dd>
+          </template>
+        </dl>
+
+        <section v-if="charParagraphs.length" class="description">
+          <p v-for="(p, i) in charParagraphs" :key="i">{{ p }}</p>
         </section>
       </article>
     </div>
@@ -169,6 +233,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   background: var(--surface);
   cursor: pointer;
   overflow: hidden;
+  height: 200px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
   transition: border-color 0.18s, background 0.18s, transform 0.18s;
 }
 .card:hover {
@@ -183,17 +251,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   line-height: 1.4;
   padding-right: 18px;
 }
-.card-arrow {
-  position: absolute;
-  top: 18px;
-  right: 18px;
-  color: var(--fg-muted);
-  transition: color 0.18s, transform 0.18s;
-}
-.card:hover .card-arrow {
-  color: var(--accent);
-  transform: translateX(3px);
-}
 
 /* ---- 공통 메타 ---- */
 .rule-tag {
@@ -202,6 +259,8 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   font-weight: 600;
   color: var(--fg-muted);
 }
+.card-footer { margin-top: auto; }
+
 .writer {
   margin: 8px 0 0;
   font-size: 13px;
@@ -345,7 +404,42 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   padding: 3px 9px;
   font-size: 11px;
   color: var(--fg-dim);
+  font-family: inherit;
 }
+.chip--link {
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+.chip--link:hover {
+  background: var(--surface-strong);
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.overlay--char { z-index: 600; }
+
+.char-meta {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: var(--fg-dim);
+  letter-spacing: 0.05em;
+}
+.meta-sep { margin: 0 6px; color: var(--fg-muted); }
+
+.char-dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px 16px;
+  margin: 16px 0 0;
+  font-size: 13px;
+}
+.char-dl dt {
+  color: var(--fg-muted);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.char-dl dd { margin: 0; color: var(--fg); }
 
 /* ---- 전환 ---- */
 .modal-enter-active,

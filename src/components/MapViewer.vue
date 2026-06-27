@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
 import OpenSeadragon from 'openseadragon'
 import type { Filter, Category, Marker } from '@/types'
 import markerData from '@/data/markers.json'
@@ -8,6 +9,7 @@ import SidePanel from './SidePanel.vue'
 
 const categories = categoryData as Record<string, Category>
 const baseUrl = import.meta.env.BASE_URL + '/'
+const router = useRouter()
 
 const activeMap = ref<'1920' | '2020'>('1920')
 const allMarkers = markerData as Record<'1920' | '2020', Marker[]>
@@ -293,6 +295,7 @@ onUnmounted(() => {
 
 <template>
   <div class="page">
+    <button class="back-btn" @click="router.push('/')" aria-label="메인으로">←</button>
     <button class="menu-btn" :class="{ on: panelOpen }" @click="openMenu" aria-label="메뉴">☰</button>
 
     <div class="toggle-wrap">
@@ -344,10 +347,29 @@ onUnmounted(() => {
   overflow: hidden;
   background: var(--bg);
 }
-.menu-btn {
+.back-btn {
   position: absolute;
   top: 12px;
   left: 12px;
+  z-index: 100;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-blur);
+  color: var(--fg-dim);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: color 0.15s, background 0.15s;
+}
+.back-btn:hover { color: var(--fg); background: var(--surface-strong); }
+
+.menu-btn {
+  position: absolute;
+  top: 12px;
+  left: 58px;
   z-index: 100;
   width: 38px;
   height: 38px;
@@ -367,7 +389,7 @@ onUnmounted(() => {
 .toggle-wrap {
   position: absolute;
   top: 12px;
-  left: 58px;
+  left: 104px;
   z-index: 100;
   display: flex;
   background: var(--bg-blur);

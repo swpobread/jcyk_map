@@ -71,11 +71,6 @@ const splitParagraphs = (text?: string) =>
     .filter(Boolean)
 
 /* ---------- 목록 뷰 ---------- */
-const scenarioEntries = computed(() =>
-  Object.entries(scenarios).map(([id, s]) => ({
-    id, ...s, count: props.markers.filter((m) => m.scenarios.includes(id)).length
-  }))
-)
 const tagEntries = computed(() =>
   Object.entries(tags).map(([id, t]) => ({
     id, label: t.label, count: props.markers.filter((m) => m.tags.includes(id)).length
@@ -164,23 +159,6 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           </div>
         </section>
 
-        <section class="group">
-          <h3 class="group-label">시나리오</h3>
-          <ul class="list">
-            <li
-              v-for="s in scenarioEntries"
-              :key="s.id"
-              class="item"
-              @click="emit('openScenario', s.id)"
-            >
-              <span class="item-main">
-                <span class="item-title">{{ s.title }}</span>
-                <span v-if="s.period" class="item-desc">{{ s.period }}</span>
-              </span>
-              <span class="chev">›</span>
-            </li>
-          </ul>
-        </section>
       </template>
 
       <!-- ===== 시나리오 뷰 ===== -->
@@ -396,50 +374,6 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   color: var(--fg-muted);
   text-transform: uppercase;
 }
-.list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 11px 12px;
-  border-radius: 7px;
-  background: var(--surface);
-  cursor: pointer;
-  transition: background 0.15s;
-}
-.item:hover {
-  background: var(--surface-hover);
-}
-.item-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  min-width: 0;
-}
-.item-title {
-  font-size: 13px;
-  font-weight: 600;
-}
-.item-desc {
-  font-size: 11px;
-  color: var(--fg-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.chev {
-  color: var(--fg-muted);
-  font-size: 16px;
-}
-
 .filter-btn {
   margin-top: 14px;
   padding: 8px 14px;
