@@ -6,7 +6,7 @@ const router = createRouter({
     { path: '/', component: () => import('@/components/HomeView.vue') },
     { path: '/map', component: () => import('@/components/MapViewer.vue') },
     { path: '/characters', component: () => import('@/components/MapViewer.vue') },
-    { path: '/scenarios', component: () => import('@/components/HomeView.vue') },
+    { path: '/scenarios', component: () => import('@/components/ScenariosView.vue') },
   ],
 })
 export default router
