@@ -18,13 +18,14 @@ interface Detail {
 }
 interface Scenario {
   title: string
-  summary?: string
+  writer?: string
   description?: string
   period?: string
   characters?: string[]
   scenarioLink?: string
   backupLink?: string
   image?: DetailImage
+  rule?: string
 }
 interface Tag {
   label: string
@@ -162,8 +163,10 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
               class="item"
               @click="emit('openScenario', s.id)"
             >
-              <span class="item-title">{{ s.title }}</span>
-              <span class="count">{{ s.count }}</span>
+              <span class="item-main">
+                <span class="item-title">{{ s.title }}</span>
+                <span v-if="s.period" class="item-desc">{{ s.period }}</span>
+              </span>
               <span class="chev">›</span>
             </li>
           </ul>
@@ -177,8 +180,9 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           <button class="icon-btn" @click="emit('close')" aria-label="닫기">×</button>
         </header>
 
+        <span v-if="scenario.rule" class="rule-tag">{{ scenario.rule }}</span>
         <h2 class="panel-title panel-title--neutral">{{ scenario.title }}</h2>
-        <p v-if="scenario.summary" class="panel-summary">{{ scenario.summary }}</p>
+        <p v-if="scenario.writer" class="panel-summary">{{ scenario.writer }}</p>
 
         <p v-if="scenario.period" class="period">{{ scenario.period }}</p>
 
@@ -397,21 +401,23 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 .item:hover {
   background: var(--surface-hover);
 }
-.item-title {
+.item-main {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.item-title {
   font-size: 13px;
   font-weight: 600;
 }
-.count {
-  flex: none;
-  min-width: 20px;
-  text-align: center;
+.item-desc {
   font-size: 11px;
-  font-weight: 700;
-  padding: 1px 7px;
-  border-radius: 999px;
-  background: var(--surface-hover);
-  color: rgba(230, 237, 243, 0.7);
+  color: var(--fg-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .chev {
   color: rgba(230, 237, 243, 0.4);
@@ -458,6 +464,13 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   font-size: 13px;
   color: var(--fg-dim);
   font-variant-numeric: tabular-nums;
+}
+.rule-tag {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--fg-muted);
 }
 .links {
   display: flex;
