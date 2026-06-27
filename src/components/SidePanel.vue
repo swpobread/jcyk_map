@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import type { Filter, Category, Marker } from '@/types'
 import detailData from '@/data/details.json'
 import scenarioData from '@/data/scenarios.json'
 import tagData from '@/data/tags.json'
 import categoryData from '@/data/categories.json'
+import characterData from '@/data/characters.json'
 
 interface DetailImage {
   src: string
@@ -31,6 +33,9 @@ interface Tag {
   label: string
   description?: string
 }
+interface Character {
+  name: string
+}
 
 const props = defineProps<{
   open: boolean
@@ -51,6 +56,11 @@ const details = detailData as Record<string, Detail>
 const scenarios = scenarioData as Record<string, Scenario>
 const tags = tagData as Record<string, Tag>
 const categories = categoryData as Record<string, Category>
+const characters = characterData as Record<string, Character>
+
+const router = useRouter()
+const characterName = (id: string) => characters[id]?.name ?? id
+function goCharacter(id: string) { router.push({ path: '/characters', query: { id } }) }
 
 const base = import.meta.env.BASE_URL
 const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
@@ -235,10 +245,16 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
         <p v-else class="empty-note">상세 설명이 아직 등록되지 않았습니다.</p>
 
         <section v-if="scenario.characters?.length" class="chips-section">
+          <h3 class="group-label">등장인물</h3>
           <div class="chips">
-            <span v-for="(c, i) in scenario.characters" :key="i" class="chip chip--static">
-              {{ c }}
-            </span>
+            <button
+              v-for="(cid, i) in scenario.characters"
+              :key="i"
+              class="chip"
+              @click="goCharacter(cid)"
+            >
+              {{ characterName(cid) }}
+            </button>
           </div>
         </section>
       </template>
@@ -586,12 +602,6 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 }
 .chip:hover {
   background: var(--surface-strong);
-}
-.chip--static {
-  cursor: default;
-}
-.chip--static:hover {
-  background: var(--surface);
 }
 .chip.on {
   background: var(--accent);

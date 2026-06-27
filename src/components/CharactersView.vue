@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import characterData from '@/data/characters.json'
 
 interface Character {
@@ -18,6 +18,11 @@ interface Character {
   image?: string
 }
 
+const route = useRoute()
+onMounted(() => {
+  const id = route.query.id
+  if (typeof id === 'string' && characters[id]) open(id)
+})
 const characters = characterData as Record<string, Character>
 const entries = computed(() => Object.entries(characters).map(([id, c]) => ({ id, ...c })))
 
@@ -48,7 +53,6 @@ const fullMeta = computed(() => buildMeta(fullChar.value))
 const modalMeta = computed(() => buildMeta(modalChar.value))
 const fullParagraphs = computed(() => splitParagraphs(fullChar.value?.description))
 const modalParagraphs = computed(() => splitParagraphs(modalChar.value?.description))
-
 function open(id: string) {
   if (characters[id]?.playable) { fullId.value = id; window.scrollTo({ top: 0 }) }
   else { modalId.value = id }
