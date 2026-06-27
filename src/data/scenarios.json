@@ -1,18 +1,225 @@
 {
   "s1": {
-    "title": "시나리오 1 — 첫 번째 이야기",
-    "summary": "이 시나리오에 대한 한 줄 설명.",
-    "description": "시나리오 1의 상세 설명입니다.\n여러 문단으로 배경과 줄거리를 기술합니다. (임시)",
-    "image": { "src": "scenarios/s1.jpg" }
+    "title": "나의 작은 죽은 변호사",
+    "writer": "w. 미증유",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "드디어 아버지가 돌아가셨습니다!\n거스를 수 없던 억압으로부터의 자유, 경성에서 손꼽히는 저택, 그 모든 것이 당신을 기다리고 있습니다. 이제 아버지의 유언을 변호사가 집행하기만 하면 되는데.......\n설레는 마음을 가득 안고 눈을 뜬 다음날 아침, 변호사가 변사체로 발견되었다는 소식을 듣습니다. 아버지의 유언장은 흔적도 없이 사라진 채로.",
+    "period": "2020.11.06 ~ 2020.11.13",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://www.postype.com/@nevxrheard/post/6651937",
+    "backupLink": "https://ysback.tistory.com/211"
   },
   "s2": {
-    "title": "시나리오 2 — 두 번째 이야기",
-    "summary": "이 시나리오에 대한 한 줄 설명.",
-    "description": "시나리오 2의 상세 설명입니다. (임시)"
+    "title": "뭍 위의 인어",
+    "writer": "w. 미증유",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "드디어 바깥 세상으로 나가는 날입니다!\n관리자들은 당신이 인간으로서 마음이 없다고 했지만 그렇지 않습니다. 이 감정은 사랑이라고, 당신의 피와 살이 그렇게 이야기합니다.\n문틈 사이로 본 빛을 위해 목소리를 팔 필요까지는 없습니다. 그저 이 지하세계의 뒷문을 찾아내기만 하면 됐죠. 사랑이 분명 우리를 구원할겁니다.",
+    "period": "2021.01.05",
+    "characters": ["이현견","천유"],
+    "backupLink": "https://ysback.tistory.com/225"
   },
   "s3": {
-    "title": "시나리오 3 — 세 번째 이야기",
-    "summary": "이 시나리오에 대한 한 줄 설명.",
-    "description": "시나리오 3의 상세 설명입니다. (임시)"
+    "title": "완전범죄를 완성하는 가장 완벽한 방법",
+    "writer": "w. 닌",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "당신은 그를 죽였습니다. 실수였으나 살해했다는 사실은 바뀌지 않습니다. 하지만 목격자는 없습니다. 그 누구도 없는 최적의 장소와 시간.\n하지만 이게 어떻게 된 일인가요. 당신이 죽인 이가 상처라곤 하나 없는 평온한 얼굴로 숨을 쉬고 있습니다.",
+    "period": "2021.01.07",
+    "characters": ["이현견","천유"],
+    "scenarioLink": "https://www.postype.com/@ninniinim11/post/5069415",
+    "backupLink": "https://ysback.tistory.com/226"
+  },
+  "s4": {
+    "title": "BIG SECRET",
+    "writer": "w. COS",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "“나, 사람을··· 죽인 것 같아.”\n자정이 넘은 시각. 고요하기 짝이 없는 저택에 계단을 오르는 발소리가 들려옵니다. 사람을 모두 물린 사랑채, 급박한 발소리가 들려올 일은 없을텐데요.\n대체 뭐야? 하고 문을 열자···",
+    "period": "2021.01.15",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://www.postype.com/@cos1718/post/8440900",
+    "backupLink": "https://ysback.tistory.com/230"
+  },
+  "s5": {
+    "title": "호텔 스미스의 유령",
+    "writer": "w. 냠맹",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "그 변호사는 당신을 애로 보는 게 틀림없습니다. 그렇지 않고서야 고작 통금 시간을 가지고 잔소리를 하겠어요. 감정이 욱하고 못할 말이 오가고···\n충동적으로 호텔에 왔습니다. 어라, 그런데 저 사람. 한정호 변호사가 아닌가요?",
+    "period": "2021.01.16 ~ 2021.01.17",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://www.postype.com/@ink-loveletter/post/6410773",
+    "backupLink": "https://ysback.tistory.com/231"
+  },
+  "s6": {
+    "title": "CHEERS!!!",
+    "writer": "w. 캉캉",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "고급 TV에서 오랜 영화가 나옵니다. 공포 영화 클리셰를 알아냈다면서요.\n“돌아올게”라고 말하지 말 것. 성관계를 하지 말 것. 술을 마시지 말 것.\n그러거나 말거나 냉장고에서 술을 꺼내자 전화가 옵니다. 잔뜩 취한 목소리로 함께 술을 마시자 이야기하네요. 술 취한 거 처음 보는 거 같은데···",
+    "period": "2021.02.12 ~ 2021.02.14",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://www.postype.com/@kangkange1/post/8765384",
+    "backupLink": "https://ysback.tistory.com/241"
+  },
+  "s7": {
+    "title": "눈을 가린 탐정의 도시",
+    "writer": "w. 🌱",
+    "rule": "Unsung Duet",
+    "description": "이계는 언제나 현실세계와 인접해 있습니다. 늘 걷던 길이라도 아주 작은 계기만 있다면 시프터는 이계의 부름을 받게 되죠.\n당신이 그와 함께 길을 걷던 때였습니다. 누군가의 시선을 느끼고 그곳으로 고개를 돌리자, 중절모를 쓰고 검은 코트를 입은 이가 우두커니 서 있었습니다. 악연, 혹은 인연의 느낌입니다.",
+    "period": "2021.03.04 ~ 2021.03.14",
+    "characters": ["이현견","한정호"],
+    "scenarioLink": "https://www.postype.com/@logforme/post/8212127",
+    "backupLink": "https://ysback.tistory.com/246"
+  },
+  "s8": {
+    "title": "히스클리프",
+    "writer": "w. 숑곰",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "내일은 당신의 결혼식 날입니다. 감정 없는 건조한 정략 결혼입니다. 이 지진한 시대는 부를 거머쥔 당신이 홀몸으로 있게 내버려두질 않았습니다. 그에 당신은 편지를 보내 연을 맺기로 택했습니다.\n현실감과 별개로 시간은 다가오고 있습니다. 많은 이들이 당신을 맞아주고 있습니다.\n첫 만남부터 당신에게 구애하던 그를 제외하고.",
+    "period": "2021.05.07 ~ 2021.05.19",
+    "characters": ["이현견","한정호","천유","송연이"],
+    "backupLink": "https://ysback.tistory.com/253"
+  },
+  "s9": {
+    "title": "물거품 심포니",
+    "writer": "w. 쿠우",
+    "rule": "Unsung Duet",
+    "description": "에어컨 바람을 쐬며 게임을 하는 평화로운 일상이었습니다. 욕실에 들어간 동거인이 2시간이 넘게 소식이 없기 전까지는요.\n기절이라도 한 것일까요? 욕실의 문을 열면 벽을 세운 것처럼 물로 가득 차 있습니다. 놀라 그를 찾아보면 보이는 것은··· 인어가 된 그입니다.",
+    "period": "2021.08.05",
+    "characters": ["이현견","천유"],
+    "scenarioLink": "https://www.postype.com/@c-trpg/post/8783203",
+    "backupLink": "https://ysback.tistory.com/264"
+  },
+  "s10": {
+    "title": "모든 거만한 것들의 왕이 여기에 있다",
+    "writer": "w. 김이박",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "해가 떠 있음에도 밤과 같은 도시. 그 아래에 얄팍하게 놓여진 괴이들의 경계. 알 수 없고 이해할 수 없는 것들과 지독하게 휘말렸음에도 당신은 살아있습니다. 여전히 살아있습니다.\n이 경성에서 변한 것은 저택 뿐입니다. 서로의 존재가 서로에게 무슨 의미가 될까요. 당신이 욕망하는 것은 무엇인가요.",
+    "period": "2021.08.12 ~ 2021.08.20",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://kimpersonlee.tistory.com/2",
+    "backupLink": "https://ysback.tistory.com/266"
+  },
+  "s11": {
+    "title": "개같은 프롬",
+    "writer": "w. 럽피",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "고등학교 졸업을 향한 파티, 프롬. 신나는 노래, 환호하는 동기들, 하지만 이런 건 눈에 들어오지도 않습니다. 대학 원서 마감이 코앞인 걸요. 그리고 결국에 우리 모두는···\n그런데 들어오게 됩니다. 이 고등학교 최고의 갱생불가 망나니가 당신에게 졸업파티 파트너를 요청했으니까요. 당신의 졸업과제 USB를 들고요.",
+    "period": "2021.10.01 ~ 2021.10.02",
+    "characters": ["이현견","송연이"],
+    "scenarioLink": "https://www.postype.com/@love-p/post/7873563",
+    "backupLink": "https://ysback.tistory.com/273"
+  },
+  "s12": {
+    "title": "로얄 스트레이트 플러시!",
+    "writer": "w. 청서",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "자, 고작 52장 중의 7장입니다. 어렵지 않아요! 기적은 0.0032%의 확률로 일어나니까요.\n세 사람-사실은 두 '사람'에겐 많은 일이 일어났지만, 모든 날이 그렇진 않습니다. 오늘은 평범한 날입니다. “거기, 카지노가 있다더라?”고 망나니가 말하기 전까진요.",
+    "period": "2022.02.16 ~ 2022.02.18",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://www.postype.com/@dear-heresy/post/3118301",
+    "backupLink": "https://ysback.tistory.com/281"
+  },
+  "s13": {
+    "title": "관측자의 정리",
+    "writer": "w. 阿まね",
+    "rule": "inSANe",
+    "description": "이 이야기에 진상은 없으니 당신만의 진상을 확인하세요.\n이 희극적인 시대에 관찰의 의미가 있겠냐만은, 실로 아무것도 중요치 않겠다만은, 생각합시다. 우리는 문학이 될 잉크에 냉담해질 필요가 있습니다.",
+    "period": "2022.02.16 ~ 2022.02.18",
+    "characters": ["이현견","한정호"],
+    "scenarioLink": "https://www.postype.com/@hajintrpg/post/11224217",
+    "backupLink": "https://ysback.tistory.com/287"
+  },
+  "s14": {
+    "title": "숲속의 마녀와 사랑의 묘약",
+    "writer": "w. 용봉",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "그가 죽었습니다. 하루가 하루인 줄 모르고 시간만이 흐릅니다.\n다시 정신을 차렸을 때는, 빛이 드는 나무 바닥에 누워있습니다. 떠다니는 책, 복잡하게 그려진 마법진. 눈앞에는 익숙한 얼굴이 서 있습니다.\n오로지 사랑만이 구원할진데.",
+    "period": "2022.05.06 ~ 2022.05.08",
+    "characters": ["이현견","천유"],
+    "scenarioLink": "https://www.postype.com/@bongy-trpg/post/2797408",
+    "backupLink": "https://ysback.tistory.com/290"
+  },
+  "s15": {
+    "title": "별 조각들의 유언",
+    "writer": "w. 천재",
+    "rule": "둘이서 수사",
+    "description": "두 사람은 사업 차 초대를 받고 해주에 방문합니다. 오랜만에 온 바닷가의 별장에서 시간을 보내던 중, 발치에 유리병 하나가 툭 부딪힙니다. 병 안에는 작성된지 오래 되지 않은 것으로 보이는 편지가 들어 있습니다.",
+    "period": "2022.05.06 ~ 2022.05.08",
+    "characters": ["이현견","천유"],
+    "scenarioLink": "https://www.postype.com/@doublecross/post/10868380",
+    "backupLink": "https://ysback.tistory.com/308"
+  },
+  "s16": {
+    "title": "미네저리의 연인들",
+    "writer": "w. 쩨스케",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "당신은 미국의 친구에게 오랜만의 연락을 받습니다. 스케이트장과 극장, 뮤직홀을 가진 그랜드 마스틴 호텔의 VIP 숙박권입니다. 1960년대 동물원 마스틴 미네저리가 무너지고 그 자리에 세워진 거대한 호텔이라는군요.\n나는 1001호의 투숙객이다. 도저히 끝낼 수 없는 사랑의 열병을 앓고 있다. 이 마음을 당신에게 버리게 해줘.",
+    "period": "2022.08.02 ~ 2022.09.29",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://www.postype.com/@whathappennnn/post/9009120",
+    "backupLink": "https://ysback.tistory.com/301"
+  },
+  "s17": {
+    "title": "베이비시터",
+    "writer": "w. 短樂",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "비가 억수같이 내리는 날, 당신의 변호사가 급하게 방문합니다. 그가 또 사라졌다는군요. 전해주는 건 모호한 주소가 적힌 한 장의 전보입니다.\n나, 아이가 생겼어.",
+    "period": "2023.03.04 ~ 2023.03.05",
+    "characters": ["이현견","한정호","천유"],
+    "backupLink": "https://ysback.tistory.com/305"
+  },
+  "s18": {
+    "title": "스틱스 열차의 유령",
+    "writer": "w. 냠맹",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "유예 끝에 집안의 연락을 받고 결국 귀국했습니다. 집으로 돌아가는 열차 밖의 풍경이 빠르게 지나갑니다.\n깜빡 잠이 들었다가 눈을 뜨니 낯선 열차에 타고 있습니다. 열차의 안내 방송이 객석 내에 울립니다.\n《…본 열차는 스틱스. 스틱스 열차입니다.》",
+    "period": "2023.05.13 ~ 2023.07.24",
+    "characters": ["이현견","송연이"],
+    "backupLink": "https://ysback.tistory.com/305"
+  },
+  "s19": {
+    "title": "Blackout",
+    "writer": "w. 소쿠리단지",
+    "rule": "inSANe",
+    "description": "눈을 뜹니다. 깨질 듯한 두통이 느껴집니다. 당신은 무대 위에 서 있습니다. 곧 영문을 모를 나레이션이 들려옵니다.\n「지금부터 용의자의 사건 구성이 있겠습니다.」",
+    "period": "2023.05.13 ~ 2023.07.24",
+    "characters": ["이현견","한정호"],
+    "scenarioLink": "https://www.postype.com/@basketoftb/post/11363491",
+    "backupLink": "https://ysback.tistory.com/305"
+  },
+  "s20": {
+    "title": "붉은 안개",
+    "writer": "크툴루 컨피덴셜 공식 시나리오",
+    "rule": "Cthulhu Confidential",
+    "description": "늦은 밤, 저택 밖 골목에서 큰 소리가 들려옵니다.\n바깥에 나가보면 덩치 큰 사내가 피투성이가 된 채 쓰러져 있습니다.",
+    "period": "2024.06.05 ~ 2024.06.18",
+    "characters": ["이현견","한정호","천유"],
+    "scenarioLink": "https://cympub.kr/resource",
+    "backupLink": "https://ysback.tistory.com/330"
+  },
+  "s21": {
+    "title": "카지노 로맨스",
+    "writer": "w. 청서",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "두 사람은 낯선 사람에게서 초대장을 받습니다. 인천에서 부산까지 항해하는 왕복 여객선의 승선권입니다.\n세 사람은 낯선 회사에게서 초대장을 받습니다. 인천에서 부산까지 항해하는 왕복 유람선의 티켓입니다.",
+    "period": "2024.08.04 ~ 2024.09.16",
+    "characters": ["이현견","한정호","천유"],
+    "backupLink": "https://ysback.tistory.com/333"
+  },
+  "s22": {
+    "title": "경성과 사상 지평가",
+    "writer": "w. 묵퍄",
+    "rule": "inSANe",
+    "description": "지독한 열병에 시달립니다. 할 수 있는 것이라곤 꼼짝없이 누워있는 것뿐. 시간이 얼마나 흐른지 감이 오지 않습니다.\n이대로 죽을 수도 있겠다 생각한 순간, 내려앉는 감각과 함께 숨통이 트입니다. 이마에 올려져 있던 수건이 흘러내리면 한 인영이 당신을 보고 있습니다.",
+    "period": "2025.08.04 ~ 2025.09.16",
+    "characters": ["이선","한정호"],
+    "scenarioLink": "https://www.postype.com/@mjb-team/post/19229933",
+    "backupLink": "https://ysback.tistory.com/341"
+  },
+  "s23": {
+    "title": "죽음의 주파수",
+    "writer": "크툴루 컨피덴셜 공식 시나리오",
+    "rule": "Cthulhu Confidential",
+    "description": "",
+    "period": "2026.04.07 ~ ",
+    "characters": ["김세민"]
   }
 }
