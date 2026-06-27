@@ -120,7 +120,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 
 <template>
   <Transition name="panel">
-    <aside v-if="open" class="side-panel" :style="{ '--mc': marker ? (categories[marker.category]?.color ?? '#58a6ff') : '#58a6ff' }">
+    <aside v-if="open" class="side-panel" :style="{ '--mc': marker ? (categories[marker.category]?.color ?? 'var(--accent)') : 'var(--accent)' }">
       <!-- ===== 목록 뷰 ===== -->
       <template v-if="view === 'list'">
         <header class="panel-bar">
@@ -273,7 +273,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
           <span v-if="marker.isReal" class="badge badge-real">실존 장소</span>
           <span
             class="badge badge-cat"
-            :style="{ '--cc': categories[marker.category]?.color ?? '#58a6ff' }"
+            :style="{ '--cc': categories[marker.category]?.color ?? 'var(--accent)' }"
           >{{ categories[marker.category]?.label ?? marker.category }}</span>
         </div>
 
@@ -353,15 +353,15 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   height: 30px;
   border: none;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: rgba(230, 237, 243, 0.7);
+  background: color-mix(in srgb, var(--fg) 8%, transparent);
+  color: var(--fg-dim);
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
 }
 .icon-btn:hover {
-  background: rgba(255, 255, 255, 0.14);
+  background: color-mix(in srgb, var(--fg) 16%, transparent);
   color: var(--fg);
 }
 
@@ -373,7 +373,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   margin-bottom: 14px;
   padding: 8px 11px;
   border-radius: 7px;
-  background: rgba(88, 166, 255, 0.14);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
   font-size: 13px;
 }
 .clear-btn {
@@ -436,14 +436,14 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   white-space: nowrap;
 }
 .chev {
-  color: rgba(230, 237, 243, 0.4);
+  color: var(--fg-muted);
   font-size: 16px;
 }
 
 .filter-btn {
   margin-top: 14px;
   padding: 8px 14px;
-  border: 1px solid rgba(88, 166, 255, 0.5);
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
   border-radius: 6px;
   background: transparent;
   color: var(--accent);
@@ -454,7 +454,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   transition: background 0.15s;
 }
 .filter-btn:hover {
-  background: rgba(88, 166, 255, 0.12);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
 }
 .filter-btn.on {
   background: var(--accent);
@@ -551,7 +551,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   color: var(--cc);
 }
 .panel-title--neutral {
-  border-left-color: rgba(230, 237, 243, 0.25);
+  border-left-color: color-mix(in srgb, var(--fg) 25%, transparent);
 }
 .image-fig {
   margin: 16px 0;
@@ -577,7 +577,7 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 .empty-note {
   margin-top: 16px;
   font-size: 13px;
-  color: rgba(230, 237, 243, 0.45);
+  color: var(--fg-muted);
   font-style: italic;
 }
 .chips-section {

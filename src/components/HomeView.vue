@@ -5,29 +5,13 @@ interface Entry {
   to: string
   title: string
   sub: string
-  desc: string
   icon: 'map' | 'people' | 'scenario'
 }
 
 const entries: Entry[] = [
-  {
-    to: '/map',
-    title: '지도',
-    sub: 'MAP',
-    icon: 'map',
-  },
-  {
-    to: '/characters',
-    title: '인물',
-    sub: 'CHARACTERS',
-    icon: 'people',
-  },
-  {
-    to: '/scenarios',
-    title: '시나리오',
-    sub: 'SCENARIOS',
-    icon: 'scenario',
-  },
+  { to: '/map', title: '지도', sub: 'MAP', icon: 'map' },
+  { to: '/characters', title: '인물', sub: 'CHARACTERS', icon: 'people' },
+  { to: '/scenarios', title: '시나리오', sub: 'SCENARIOS', icon: 'scenario' },
 ]
 </script>
 
@@ -67,7 +51,6 @@ const entries: Entry[] = [
         <span class="card-body">
           <span class="card-sub">{{ e.sub }}</span>
           <span class="card-title">{{ e.title }}</span>
-          <span class="card-desc">{{ e.desc }}</span>
         </span>
 
         <span class="card-arrow" aria-hidden="true">→</span>
@@ -89,9 +72,9 @@ const entries: Entry[] = [
   gap: 48px;
   padding: 64px 24px;
   background:
-    radial-gradient(120% 80% at 50% -10%, rgba(88, 166, 255, 0.1), transparent 60%),
-    var(--bg, #0d1117);
-  color: var(--fg, #e6edf3);
+    radial-gradient(120% 80% at 50% -10%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+    var(--bg);
+  color: var(--fg);
 }
 
 /* ---- hero ---- */
@@ -103,7 +86,7 @@ const entries: Entry[] = [
   font-size: 13px;
   font-weight: 700;
   letter-spacing: 0.4em;
-  color: var(--accent, #58a6ff);
+  color: var(--accent);
 }
 .hero-title {
   margin: 0;
@@ -126,9 +109,9 @@ const entries: Entry[] = [
   flex-direction: column;
   gap: 18px;
   padding: 26px 22px 24px;
-  border: 1px solid var(--border, #30363d);
+  border: 1px solid var(--border);
   border-radius: 14px;
-  background: var(--surface, rgba(255, 255, 255, 0.03));
+  background: var(--surface);
   color: inherit;
   text-decoration: none;
   overflow: hidden;
@@ -138,13 +121,13 @@ const entries: Entry[] = [
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(120% 80% at 50% 0%, rgba(88, 166, 255, 0.12), transparent 55%);
+  background: radial-gradient(120% 80% at 50% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 55%);
   opacity: 0;
   transition: opacity 0.2s;
 }
 .card:hover {
-  border-color: var(--accent, #58a6ff);
-  background: var(--surface-hover, rgba(255, 255, 255, 0.06));
+  border-color: var(--accent);
+  background: var(--surface-hover);
   transform: translateY(-4px);
 }
 .card:hover::before { opacity: 1; }
@@ -155,8 +138,8 @@ const entries: Entry[] = [
   display: grid;
   place-items: center;
   border-radius: 11px;
-  background: color-mix(in srgb, var(--accent, #58a6ff) 14%, transparent);
-  color: var(--accent, #58a6ff);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--accent);
 }
 .card-icon svg {
   width: 24px;
@@ -177,7 +160,7 @@ const entries: Entry[] = [
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: var(--fg-muted, rgba(230, 237, 243, 0.5));
+  color: var(--fg-muted);
 }
 .card-title {
   font-size: 22px;
@@ -189,11 +172,11 @@ const entries: Entry[] = [
   top: 24px;
   right: 22px;
   font-size: 18px;
-  color: var(--fg-muted, rgba(230, 237, 243, 0.4));
+  color: var(--fg-muted);
   transition: transform 0.2s, color 0.2s;
 }
 .card:hover .card-arrow {
-  color: var(--accent, #58a6ff);
+  color: var(--accent);
   transform: translateX(4px);
 }
 
