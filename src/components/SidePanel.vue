@@ -308,11 +308,20 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
   box-sizing: border-box;
   padding: 14px 22px 28px;
   overflow-y: auto;
-  background: var(--bg-panel);
-  border-right: 1px solid var(--border);
-  backdrop-filter: blur(12px);
-  color: var(--fg);
-  box-shadow: 8px 0 24px rgba(0, 0, 0, 0.35);
+  background: #111111;
+  border-right: 1px solid rgba(255, 255, 255, 0.10);
+  color: #f5f2ec;
+  box-shadow: 8px 0 28px rgba(0, 0, 0, 0.25);
+
+  --fg: #f5f2ec;
+  --fg-dim: rgba(245, 242, 236, 0.58);
+  --fg-muted: rgba(245, 242, 236, 0.38);
+  --bg: #111111;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-strong: rgba(255, 255, 255, 0.12);
+  --border: rgba(255, 255, 255, 0.10);
+  --border-mid: rgba(255, 255, 255, 0.15);
+  --accent: #f5f2ec;
 }
 
 .panel-bar {

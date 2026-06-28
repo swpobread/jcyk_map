@@ -191,7 +191,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .text-btn {
   border: none;
   background: transparent;
-  color: var(--fg-dim);
+  color: #111;
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -228,22 +228,30 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .card {
   position: relative;
   padding: 20px 20px 22px;
-  border: 1px solid var(--border);
+  border: 1.5px solid #111;
   border-radius: 12px;
-  background: var(--surface);
+  background: transparent;
+  color: var(--fg);
   cursor: pointer;
   overflow: hidden;
   height: 200px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  transition: border-color 0.18s, background 0.18s, transform 0.18s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
 }
 .card:hover {
-  border-color: var(--accent);
-  background: var(--surface-hover);
+  border-color: #111;
+  background: #111;
+  color: #f5f2ec;
   transform: translateY(-3px);
 }
+.card:hover .rule-tag { color: rgba(245, 242, 236, 0.38); }
+.card:hover .writer,
+.card:hover .period { color: rgba(245, 242, 236, 0.58); }
+.card:hover .chip--sm { color: rgba(245, 242, 236, 0.5); }
+.card:hover .chip--sm::after { color: rgba(245, 242, 236, 0.5); }
+.card:hover .chip--sm:hover { color: #f5f2ec; }
 .card-title {
   margin: 6px 0 0;
   font-size: 17px;
@@ -264,12 +272,12 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .writer {
   margin: 8px 0 0;
   font-size: 13px;
-  color: var(--fg-dim);
+  color: #111;
 }
 .period {
   margin: 6px 0 0;
   font-size: 13px;
-  color: var(--fg-dim);
+  color: #111;
   font-variant-numeric: tabular-nums;
 }
 
@@ -294,10 +302,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   overflow-y: auto;
   box-sizing: border-box;
   padding: 32px 28px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-mid);
   border-radius: 14px;
   background: var(--bg-panel);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 .close-btn {
   position: absolute;
@@ -401,20 +409,34 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   font-weight: 600;
 }
 .chip--sm {
-  padding: 3px 9px;
-  font-size: 11px;
-  color: var(--fg-dim);
+  padding: 0;
+  font-size: 12px;
   font-family: inherit;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 0.15s;
 }
+.chip--sm:not(:last-child)::after {
+  content: ' ·';
+  color: var(--fg-muted);
+  pointer-events: none;
+}
+.chip--sm:hover { color: #111; }
 .chip--link {
   cursor: pointer;
   font-family: inherit;
+  background: #111;
+  color: #f5f2ec;
+  border-color: #111;
   transition: background 0.15s, color 0.15s;
 }
 .chip--link:hover {
-  background: var(--surface-strong);
-  color: var(--accent);
-  border-color: var(--accent);
+  background: #f5f2ec;
+  color: #111;
+  border-color: #111;
 }
 
 .overlay--char { z-index: 600; }
@@ -422,7 +444,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .char-meta {
   margin: 4px 0 0;
   font-size: 14px;
-  color: var(--fg-dim);
+  color: #111;
   letter-spacing: 0.05em;
 }
 .meta-sep { margin: 0 6px; color: var(--fg-muted); }
