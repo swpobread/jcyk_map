@@ -223,17 +223,24 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   gap: 16px;
 }
 .card {
-  border: 1px solid var(--border);
+  border: 1.5px solid #111;
   border-radius: 12px;
-  background: var(--surface);
+  background: transparent;
+  color: var(--fg);
   overflow: hidden;
   cursor: pointer;
-  transition: border-color 0.18s, transform 0.18s;
+  transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
 }
 .card:hover {
-  border-color: var(--accent);
+  border-color: #111;
+  background: #111;
+  color: #f5f2ec;
   transform: translateY(-3px);
 }
+.card:hover .thumb { background: rgba(255, 255, 255, 0.08); }
+.card:hover .monogram { color: rgba(245, 242, 236, 0.35); }
+.card:hover .card-original { color: rgba(245, 242, 236, 0.42); }
+.card:hover .pc-badge { background: #f5f2ec; color: #111; }
 .thumb {
   position: relative;
   aspect-ratio: 3 / 4;
@@ -339,10 +346,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   overflow-y: auto;
   box-sizing: border-box;
   padding: 28px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-mid);
   border-radius: 14px;
   background: var(--bg-panel);
-  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
 .close-btn {
   position: absolute;

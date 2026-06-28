@@ -354,17 +354,16 @@ onUnmounted(() => {
   z-index: 100;
   width: 38px;
   height: 38px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  background: var(--bg-blur);
-  color: var(--fg-dim);
+  background: #111;
+  color: rgba(245, 242, 236, 0.6);
   font-size: 17px;
   line-height: 1;
   cursor: pointer;
-  backdrop-filter: blur(8px);
   transition: color 0.15s, background 0.15s;
 }
-.back-btn:hover { color: var(--fg); background: var(--surface-strong); }
+.back-btn:hover { color: #f5f2ec; background: #1e1e1e; }
 
 .menu-btn {
   position: absolute;
@@ -373,18 +372,17 @@ onUnmounted(() => {
   z-index: 100;
   width: 38px;
   height: 38px;
-  border: 1px solid var(--border);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
-  background: var(--bg-blur);
-  color: var(--fg-dim);
+  background: #111;
+  color: rgba(245, 242, 236, 0.6);
   font-size: 17px;
   line-height: 1;
   cursor: pointer;
-  backdrop-filter: blur(8px);
   transition: color 0.15s, background 0.15s;
 }
-.menu-btn:hover { color: var(--fg); }
-.menu-btn.on { color: var(--fg); background: var(--surface-strong); }
+.menu-btn:hover { color: #f5f2ec; background: #1e1e1e; }
+.menu-btn.on { color: #f5f2ec; background: #222; }
 
 .toggle-wrap {
   position: absolute;
@@ -392,19 +390,18 @@ onUnmounted(() => {
   left: 104px;
   z-index: 100;
   display: flex;
-  background: var(--bg-blur);
-  border: 1px solid var(--border);
+  background: #111;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 8px;
   padding: 3px;
   gap: 2px;
-  backdrop-filter: blur(8px);
 }
 .toggle-btn {
   padding: 5px 20px;
   border: none;
   border-radius: 5px;
   background: transparent;
-  color: var(--fg-muted);
+  color: rgba(245, 242, 236, 0.42);
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.04em;
@@ -412,8 +409,8 @@ onUnmounted(() => {
   transition: background 0.18s, color 0.18s;
   font-family: inherit;
 }
-.toggle-btn.active { background: var(--surface-strong); color: var(--fg); }
-.toggle-btn:hover:not(.active) { color: var(--fg); }
+.toggle-btn.active { background: rgba(255, 255, 255, 0.14); color: #f5f2ec; }
+.toggle-btn:hover:not(.active) { color: #f5f2ec; }
 
 .map-container {
   position: absolute;
