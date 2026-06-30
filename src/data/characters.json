@@ -163,8 +163,8 @@
         "era": "1920",
         "playable": false,
         "name": "미야기 시노에",
-        "summary": "",
-        "description": "여기에 설명"
+        "summary": "박사",
+        "description": "신비를 연구하는 교수. 박성민을 비롯해 여러 제자를 두었다. 한때 요그소토스 다방의 연구원으로서 인어공주 프로젝트에 참여. 은퇴했으나 여전히 개인적인 관심을 이어간다.\n완고한 성격의 하인 곽용인에게 집의 경비를 맡기고 있다."
     },
     "c19": {
         "era": "1920",
@@ -217,14 +217,15 @@
         "name": "김경수",
         "summary": "형사",
         "image": "characters/c25.webp",
-        "description": ""
+        "description": "종로경찰서에 속한 형사. 직급은 경감."
     },
     "c26": {
         "era": "1920",
         "playable": false,
         "name": "이평갑",
-        "summary": "",
+        "original": "李平甲",
+        "summary": "지주",
         "image": "characters/c26.webp",
-        "description": ""
+        "description": "경성 제일의 지주. 민족보다 보신을 우선하여 대대로 쌓은 재산을 크게 불린 뛰어난 사업가지만, 폭력적이고 권위적인 행실로도 악명이 자자하다.\n큰 체격과 매서운 눈매, 악심으로 나이 든 주름, 위압적인 분위기. 정정했으나 어느 날 급사했다."
     }
 }
