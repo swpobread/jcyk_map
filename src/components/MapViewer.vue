@@ -8,7 +8,7 @@ import categoryData from '@/data/categories.json'
 import SidePanel from './SidePanel.vue'
 
 const categories = categoryData as Record<string, Category>
-const baseUrl = import.meta.env.BASE_URL + '/'
+const baseUrl = import.meta.env.BASE_URL
 const router = useRouter()
 
 const activeMap = ref<'1920' | '2020'>('1920')

@@ -10,7 +10,7 @@ export default defineConfig({
     vue(),
     vueDevTools(),
   ],
-  base: '/jcyk_map',
+  base: '/jcyk_map/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

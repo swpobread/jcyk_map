@@ -77,6 +77,7 @@
         "playable": false,
         "name": "임영길",
         "summary": "탐정",
+        "image": "characters/c7.webp",
         "description": "굳센 의지와 통찰력을 갖춘 유능한 탐정. 조수를 잃고 홀로 활동 중이다.\n주름 잡힌 눈가, 단정한 양장과 정돈된 턱수염, 풍부한 표정의 사백안."
     },
     "c8": {
@@ -84,6 +85,7 @@
         "playable": false,
         "name": "송진비",
         "summary": "가장 어린 하인",
+        "image": "characters/c8.webp",
         "description": "이 씨 집안의 식구. 몰살당한 송 씨 일가의 몇 안되는 생존자로, 아이호트의 일족이 되기 전 아버지에게서 도망쳐 이현견에게 거두어졌다.\n갈색 단발머리와 둥근 눈. 늘 조심스러운 태도로 눈치를 보고 있다."
     },
     "c9": {
@@ -91,6 +93,7 @@
         "playable": false,
         "name": "진우경",
         "summary": "덩치 큰 신참 하인",
+        "image": "characters/c9.webp",
         "description": "이 씨 집안의 식구. 선원으로 일하다 어느 섬에 정박하며 차토구아에게 침식되었다. 이후 김창선의 밑에서 도박장의 복서로 일하다 친구인 현승, 정은섭과 함께 이현견에게 거두어졌다.\n거구와 녹아내린 한쪽 눈이 특징적. 겉보기와 달리 순박하고 겁이 많다."
     },
     "c10": {
@@ -98,6 +101,7 @@
         "playable": false,
         "name": "김창선",
         "summary": "도박장 주인",
+        "image": "characters/c10.webp",
         "description": "불법 도박장을 운영하는 중개인. 중요한 경기를 망친 진우경과 이현견에게 앙심을 품고 있다.\n키는 작지만 다부진 체격, 주름진 얼굴에 툭 튀어나온 광대. 능청스럽고 교활하지만, 화를 참지 못한다."
     },
     "c11": {
@@ -129,6 +133,7 @@
         "name": "나석주",
         "nickname": "석이",
         "summary": "발이 빠르고 입이 무거운 하인",
+        "image": "characters/c14.webp",
         "description": "이 씨 집안의 식구. 중요한 심부름을 자주 맡는다. 작고한 유모의 아들로 이현견과 함께 자랐다. '견'이라고 불렀으나 현재는 존칭을 사용. \n20대 남성. 훤칠하지만 말라 날렵한 몸, 무뚝뚝한 표정, 검은 고무신."
     },
     "c15": {
@@ -136,6 +141,7 @@
         "playable": false,
         "name": "주미",
         "summary": "가장 부지런한 하인",
+        "image": "characters/c15.webp",
         "description": "이 씨 집안의 식구. 함평댁의 딸로 집안일과 각종 잔심부름을 담당한다.\n10대 여성. 땋은 머리, 야무진 성격, 툭 내민 입술, 종종걸음."
     },
     "c16": {
@@ -204,5 +210,21 @@
         "original": "Tom Collins",
         "summary": "불법 시간여행자",
         "description": "시공간관리청의 전 직원. 비품을 훔친 후 끝없는 도주 중이다.\n사교성이 좋고 자유분방한 성격. 시대를 짐작하기 어려운 중절모와 롱코트를 주로 입는다."
+    },
+    "c25": {
+        "era": "1920",
+        "playable": false,
+        "name": "김경수",
+        "summary": "형사",
+        "image": "characters/c25.webp",
+        "description": ""
+    },
+    "c26": {
+        "era": "1920",
+        "playable": false,
+        "name": "이평갑",
+        "summary": "",
+        "image": "characters/c26.webp",
+        "description": ""
     }
 }
