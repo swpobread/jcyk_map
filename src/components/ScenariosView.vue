@@ -33,7 +33,7 @@ interface Character {
   description?: string
 }
 
-const periodKey = (p?: string) => (p ?? '').split('~')[0].trim()
+const periodKey = (p?: string) => (p ?? '').split('~')[0]?.trim() ?? ''
 
 const scenarios = scenarioData as Record<string, Scenario>
 const characters = characterData as Record<string, Character>
