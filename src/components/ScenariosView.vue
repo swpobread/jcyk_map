@@ -33,10 +33,13 @@ interface Character {
   description?: string
 }
 
+const periodKey = (p?: string) => (p ?? '').split('~')[0].trim()
+
 const scenarios = scenarioData as Record<string, Scenario>
 const characters = characterData as Record<string, Character>
 const characterName = (id: string) => characters[id]?.name ?? id
-const entries = computed(() => Object.entries(scenarios).map(([id, s]) => ({ id, ...s })))
+const entries = computed(() => Object.entries(scenarios).map(([id, s]) => ({ id, ...s }))
+    .sort((a, b) => periodKey(a.period).localeCompare(periodKey(b.period))))
 
 const base = import.meta.env.BASE_URL
 const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
