@@ -12,6 +12,18 @@
         "height": 176,
         "description": "여기에 설명"
     },
+    "c1-1": {
+        "era": "2020",
+        "playable": true,
+        "name": "이현견",
+        "original": "Hyeon-kyeon Lee",
+        "age": 27,
+        "birth": "1902-03-04",
+        "birthplace": "Seoul, Korea",
+        "summary": "Celebrity",
+        "height": 188,
+        "description": "여기에 설명"
+    },
     "c2": {
         "era": "1920",
         "playable": true,

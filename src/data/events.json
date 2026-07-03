@@ -1,0 +1,56 @@
+{
+  "lines": {
+    "1920": { "label": "1920" },
+    "2020": { "label": "2020" },
+    "etc": { "label": "상자" }
+  },
+  "events": {
+    "e_jh1": {
+      "title": "한정호 출생",
+      "characters" : ["c2"],
+      "placements": [{ "line": "1920", "date": "1892.10.13" }]
+    },
+    "e_hk1": {
+      "title": "이현견 출생",
+      "characters" : ["c1"],
+      "placements": [{ "line": "1920", "date": "1902.03.04" }]
+    },
+    "e_yog1": {
+      "title": "요그소토스 다방 개업",
+      "scenarios": ["s1"],
+      "placements": [{ "line": "1920", "date": "1889.09" }]
+    },
+    "e_yog2": {
+      "title": "인어공주 실험 개시",
+      "scenarios": ["s1"],
+      "placements": [{ "line": "1920", "date": "1921.11.30" }]
+    },
+    "e_hotel": {
+      "title": "호텔 스미스의 유령",
+      "description": "개관 100주년이 지난 호텔 스미스. 사교도들의 보석을 두고 서로 다른 시대가 교차한다.",
+      "characters": [
+        { "id": "c2", "note": "100년 후의 이현견과 만나 목숨을 빚졌다." },
+        { "id": "c1-1", "note": "100년 전의 한정호와 만나 당부를 전했다." }
+      ],
+      "scenarios": ["s5"],
+      "placements": [{ "line": "1920", "date": "1923.01" }, { "line": "2020", "date": "2023.01" }]
+    },
+    "e_prom": {
+      "title": "개같은 프롬",
+      "description": "최악의 망나니가 말 한 마디 나눠보지 않은 동급생을 협박해 졸업 파티에 참여한다.",
+      "characters": [
+        { "id": "c1", "note": "스포트라이트를 받으며 고등학교를 졸업한다." },
+        { "id": "c4", "note": "낯선 이들을 만나며 고등학교를 졸업한다." }
+      ],
+      "placements": [{ "line": "2020", "date": "2020.05" }]
+    },
+    "e_return": {
+      "title": "이현견 귀국",
+      "description": "대학에서 퇴학당한 이현견이 동경에서 조선으로 귀국한다.",
+      "characters": [
+        { "id": "c1", "note": "조선으로 귀국한다." },
+        { "id": "c2", "note": "현재의 이현견을 대면한다." }
+      ],
+      "placements": [{ "line": "1920", "date": "1925" }]}
+  }
+}
