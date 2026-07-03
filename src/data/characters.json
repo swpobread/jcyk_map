@@ -12,6 +12,16 @@
         "height": 176,
         "description": "여기에 설명"
     },
+    "c1-1": {
+        "era": "2020",
+        "playable": true,
+        "name": "이현견",
+        "original": "Hyeon-kyeon Lee",
+        "birthplace": "Seoul, Korea",
+        "summary": "Celebrity",
+        "height": 188,
+        "description": "여기에 설명"
+    },
     "c2": {
         "era": "1920",
         "playable": true,
@@ -49,6 +59,17 @@
         "birthplace": "忠淸南道",
         "summary": "아이호트의 宿主",
         "height": 158,
+        "description": "여기에 설명"
+    },
+    "c4-1": {
+        "era": "2020",
+        "playable": true,
+        "name": "송연이",
+        "original": "Yeon-Yi Song",
+        "nickname": "Yu-ni",
+        "birthplace": "Chungcheongnam-do",
+        "summary": "아이호트의 宿主",
+        "height": 165,
         "description": "여기에 설명"
     },
     "c5": {

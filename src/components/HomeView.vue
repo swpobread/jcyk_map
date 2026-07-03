@@ -5,13 +5,14 @@ interface Entry {
   to: string
   title: string
   sub: string
-  icon: 'map' | 'people' | 'scenario'
+  icon: 'map' | 'people' | 'scenario' | 'timeline'
 }
 
 const entries: Entry[] = [
   { to: '/map', title: '지도', sub: 'MAP', icon: 'map' },
   { to: '/characters', title: '인물', sub: 'CHARACTERS', icon: 'people' },
   { to: '/scenarios', title: '시나리오', sub: 'SCENARIOS', icon: 'scenario' },
+  { to: '/timeline', title: '타임라인', sub: 'TIMELINE', icon: 'timeline' },
 ]
 </script>
 
