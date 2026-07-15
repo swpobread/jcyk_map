@@ -220,7 +220,8 @@
     "rule": "Cthulhu Confidential",
     "description": "",
     "period": "2026.04.07 ~ ",
-    "characters": ["c5"]
+    "characters": ["c5"],
+    "backupLink": "/jcyk_map/backups/s23.html"
   },
   "s24": {
     "title": "CHEERS!!!",

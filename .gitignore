@@ -27,6 +27,11 @@ coverage
 
 *.tsbuildinfo
 
+# 백업 원문(평문)과 비밀번호 — 절대 커밋 금지
+backups-src/*
+!backups-src/README.md
+.env
+
 .eslintcache
 
 # Cypress
