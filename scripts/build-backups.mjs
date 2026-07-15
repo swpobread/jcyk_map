@@ -100,12 +100,23 @@ function wrapDocument(content, id) {
 <meta name="robots" content="noindex, nofollow">
 <title>${escapeHtml(title)}</title>
 <style>
-body{max-width:860px;margin:0 auto;padding:32px 16px;font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;color:#222;background:#fff}
+body{margin:0;font-family:"Apple SD Gothic Neo","Malgun Gothic",sans-serif;line-height:1.7;color:#111;background:#f5f2ec}
+.site-bar{position:sticky;top:0;z-index:1000;display:flex;align-items:baseline;gap:12px;padding:12px 16px;background:rgba(245,242,236,0.92);backdrop-filter:blur(6px);border-bottom:1px solid rgba(0,0,0,0.10)}
+.site-bar a{color:#111;text-decoration:none;font-weight:600;font-size:14px}
+.site-bar a:hover{text-decoration:underline}
+.site-bar span{color:rgba(17,17,17,0.58);font-size:13px}
+main{max-width:860px;margin:0 auto;padding:32px 16px}
 img{max-width:100%;height:auto}
 </style>
 </head>
 <body>
+<header class="site-bar">
+  <a href="/jcyk_map/">← 현상 기록</a>
+  <span>${escapeHtml(sc ? sc.title : id)} — 백업 로그</span>
+</header>
+<main>
 ${content}
+</main>
 </body>
 </html>`
 }
@@ -121,8 +132,8 @@ function encrypt(plainPath, id) {
     '--template-placeholder', '비밀번호',
     '--template-error', '비밀번호가 올바르지 않습니다.',
     '--template-remember', '이 브라우저에서 기억하기',
-    '--template-color-primary', '#3f4b63',
-    '--template-color-secondary', '#232838',
+    '--template-color-primary', '#444444',
+    '--template-color-secondary', '#ece7dd',
   ], { cwd: root, env: { ...process.env, STATICRYPT_PASSWORD: PASSWORD }, stdio: 'inherit' })
 }
 
