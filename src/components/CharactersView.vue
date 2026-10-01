@@ -2,6 +2,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import characterData from '@/data/characters.json'
+import { avatarFor, defaultAvatars, scenarioAvatarsOf } from '@/data/avatars'
 
 interface Character {
   era?: string
@@ -28,6 +29,8 @@ const entries = computed(() => Object.entries(characters).map(([id, c]) => ({ id
 
 const base = import.meta.env.BASE_URL
 const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
+/* 썸네일: image → 기본 아바타 → 이니셜 */
+const thumbOf = (id: string) => characters[id]?.image ?? avatarFor(id)?.src
 const initial = (name: string) => name.trim().charAt(0)
 const splitParagraphs = (text?: string) =>
   (text ?? '').split('\n').map((p) => p.trim()).filter(Boolean)
@@ -53,6 +56,8 @@ const fullMeta = computed(() => buildMeta(fullChar.value))
 const modalMeta = computed(() => buildMeta(modalChar.value))
 const fullParagraphs = computed(() => splitParagraphs(fullChar.value?.description))
 const modalParagraphs = computed(() => splitParagraphs(modalChar.value?.description))
+const fullDefaultAvatars = computed(() => (fullId.value ? defaultAvatars(fullId.value) : []))
+const fullScenarioAvatars = computed(() => (fullId.value ? scenarioAvatarsOf(fullId.value) : []))
 function open(id: string) {
   if (characters[id]?.playable) { fullId.value = id; window.scrollTo({ top: 0 }) }
   else { modalId.value = id }
@@ -78,7 +83,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
       <div class="pd-head">
         <div class="pd-thumb">
-          <img v-if="fullChar.image" :src="resolveImg(fullChar.image)" :alt="fullChar.name" />
+          <img v-if="thumbOf(fullId!)" :src="resolveImg(thumbOf(fullId!)!)" :alt="fullChar.name" referrerpolicy="no-referrer" />
           <span v-else class="monogram" aria-hidden="true">{{ initial(fullChar.name) }}</span>
         </div>
         <div class="pd-id">
@@ -106,6 +111,35 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
         <p v-for="(p, i) in fullParagraphs" :key="i">{{ p }}</p>
       </section>
       <p v-else class="empty-note">상세 설명이 아직 등록되지 않았습니다.</p>
+
+      <section v-if="fullDefaultAvatars.length" class="avatar-section">
+        <ul class="avatar-grid">
+          <li v-for="(a, i) in fullDefaultAvatars" :key="i" class="avatar-tile">
+            <img :src="resolveImg(a.src)" :alt="fullChar.name" loading="lazy" referrerpolicy="no-referrer" />
+            <p class="avatar-cap">
+              <span v-if="a.label" class="avatar-label">{{ a.label }}</span>
+            </p>
+            <p v-if="a.credit" class="avatar-credit">{{ a.credit }}</p>
+          </li>
+        </ul>
+      </section>
+
+      <section v-if="fullScenarioAvatars.length" class="avatar-section">
+        <ul class="avatar-grid">
+          <template v-for="s in fullScenarioAvatars" :key="s.id">
+            <li v-for="(a, i) in s.avatars" :key="`${s.id}-${i}`" class="avatar-tile avatar-tile--link">
+              <RouterLink :to="{ path: '/scenarios', query: { id: s.id } }">
+                <img :src="resolveImg(a.src)" :alt="`${fullChar.name} — ${s.title}`" loading="lazy" referrerpolicy="no-referrer" />
+                <p class="avatar-cap">
+                  <span class="avatar-title">{{ s.title }}</span>
+                  <span v-if="a.label" class="avatar-label">{{ a.label }}</span>
+                </p>
+                <p v-if="a.credit" class="avatar-credit">{{ a.credit }}</p>
+              </RouterLink>
+            </li>
+          </template>
+        </ul>
+      </section>
     </article>
 
     <!-- ===== 그리드 ===== -->
@@ -119,7 +153,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
       <ul class="grid">
         <li v-for="c in entries" :key="c.id" class="card" @click="open(c.id)">
           <div class="thumb">
-            <img v-if="c.image" :src="resolveImg(c.image)" :alt="c.name" loading="lazy" />
+            <img v-if="thumbOf(c.id)" :src="resolveImg(thumbOf(c.id)!)" :alt="c.name" loading="lazy" referrerpolicy="no-referrer" />
             <span v-else class="monogram" aria-hidden="true">{{ initial(c.name) }}</span>
             <span v-if="c.playable" class="pc-badge">PC</span>
           </div>
@@ -140,7 +174,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
         <div class="modal-head">
           <div class="modal-thumb">
-            <img v-if="modalChar.image" :src="resolveImg(modalChar.image)" :alt="modalChar.name" />
+            <img v-if="thumbOf(modalId!)" :src="resolveImg(thumbOf(modalId!)!)" :alt="modalChar.name" referrerpolicy="no-referrer" />
             <span v-else class="monogram" aria-hidden="true">{{ initial(modalChar.name) }}</span>
           </div>
           <div class="modal-id">
@@ -323,6 +357,58 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+}
+
+/* ---- 아바타 갤러리 ---- */
+.avatar-section { margin-top: 36px; }
+.avatar-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 14px;
+}
+.avatar-tile img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+  background: var(--surface-strong);
+}
+.avatar-tile--link a {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.avatar-tile--link img { transition: transform 0.2s; }
+.avatar-tile--link a:hover img { transform: translateY(-3px); }
+.avatar-tile--link a:hover .avatar-title { text-decoration: underline; }
+.avatar-cap {
+  margin: 6px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  min-width: 0;
+}
+.avatar-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.avatar-label {
+  flex: none;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.avatar-credit {
+  margin: 2px 0 0;
+  font-size: 11px;
+  color: var(--fg-muted);
 }
 
 /* ---- 모달 ---- */

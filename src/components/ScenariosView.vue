@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import scenarioData from '@/data/scenarios.json'
 import characterData from '@/data/characters.json'
 
@@ -51,6 +51,12 @@ const selected = computed(() => (selectedId.value ? scenarios[selectedId.value] 
 const paragraphs = computed(() => splitParagraphs(selected.value?.description))
 
 function open(id: string) { selectedId.value = id }
+
+const route = useRoute()
+onMounted(() => {
+  const id = route.query.id
+  if (typeof id === 'string' && scenarios[id]) open(id)
+})
 function close() { selectedId.value = null }
 
 const selectedCharId = ref<string | null>(null)
