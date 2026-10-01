@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import scenarioData from '@/data/scenarios.json'
 import characterData from '@/data/characters.json'
+import { mainAvatar, castAvatars, type Avatar } from '@/data/avatars'
 
 interface DetailImage {
   src: string
@@ -49,9 +50,27 @@ const splitParagraphs = (text?: string) =>
 const selectedId = ref<string | null>(null)
 const selected = computed(() => (selectedId.value ? scenarios[selectedId.value] : undefined))
 const paragraphs = computed(() => splitParagraphs(selected.value?.description))
+const initial = (name: string) => name.trim().charAt(0)
+
+/* 등장인물 타일: 시나리오 아바타(버전별 1타일) → 기본 아바타 → 이니셜 */
+const cast = computed(() => {
+  const id = selectedId.value
+  if (!id) return []
+  const avatars = castAvatars(id)
+  return (selected.value?.characters ?? []).flatMap((c) => {
+    const list: (Avatar | undefined)[] = avatars[c]?.length ? avatars[c] : [mainAvatar(c)]
+    return list.map((a, i) => ({ key: `${c}-${i}`, id: c, name: characterName(c), avatar: a }))
+  })
+})
 
 function open(id: string) { selectedId.value = id }
 function close() { selectedId.value = null }
+
+const route = useRoute()
+onMounted(() => {
+  const id = route.query.id
+  if (typeof id === 'string' && scenarios[id]) open(id)
+})
 
 const selectedCharId = ref<string | null>(null)
 const selectedChar = computed(() => selectedCharId.value ? characters[selectedCharId.value] : undefined)
@@ -134,9 +153,21 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
         <section v-if="selected.characters?.length" class="chips-section">
           <h3 class="group-label">등장인물</h3>
-          <div class="chips">
-            <button v-for="(c, i) in selected.characters" :key="i" class="chip chip--link" @click="openChar(c, $event)">{{ characterName(c) }}</button>
-          </div>
+          <ul class="cast-grid">
+            <li v-for="m in cast" :key="m.key">
+              <button class="cast-tile" @click="openChar(m.id, $event)">
+                <span class="cast-thumb">
+                  <img v-if="m.avatar" :src="resolveImg(m.avatar.src)" :alt="m.name" loading="lazy" />
+                  <span v-else class="monogram" aria-hidden="true">{{ initial(m.name) }}</span>
+                </span>
+                <span class="cast-name">
+                  {{ m.name }}
+                  <span v-if="m.avatar?.label" class="cast-label">{{ m.avatar.label }}</span>
+                </span>
+                <span v-if="m.avatar?.credit" class="cast-credit">{{ m.avatar.credit }}</span>
+              </button>
+            </li>
+          </ul>
         </section>
       </article>
     </div>
@@ -428,18 +459,56 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   pointer-events: none;
 }
 .chip--sm:hover { color: #111; }
-.chip--link {
-  cursor: pointer;
-  font-family: inherit;
-  background: #111;
-  color: #f5f2ec;
-  border-color: #111;
-  transition: background 0.15s, color 0.15s;
+
+/* ---- 등장인물 타일 ---- */
+.cast-grid {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 12px;
 }
-.chip--link:hover {
-  background: #f5f2ec;
-  color: #111;
-  border-color: #111;
+.cast-tile {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cast-thumb {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-strong);
+  transition: transform 0.2s;
+}
+.cast-tile:hover .cast-thumb { transform: translateY(-3px); }
+.cast-tile:hover .cast-name { text-decoration: underline; }
+.cast-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cast-thumb .monogram {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--fg-muted);
+  user-select: none;
+}
+.cast-name {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.cast-label { margin-left: 4px; color: var(--accent); }
+.cast-credit {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--fg-muted);
 }
 
 .overlay--char { z-index: 600; }
