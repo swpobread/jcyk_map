@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import characterData from '@/data/characters.json'
-import { avatarFor, defaultAvatars, scenarioAvatarsOf } from '@/data/avatars'
+import { mainAvatar, defaultAvatars, scenarioAvatarsOf } from '@/data/avatars'
 
 interface Character {
   era?: string
@@ -30,7 +30,7 @@ const entries = computed(() => Object.entries(characters).map(([id, c]) => ({ id
 const base = import.meta.env.BASE_URL
 const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
 /* 썸네일: image → 기본 아바타 → 이니셜 */
-const thumbOf = (id: string) => characters[id]?.image ?? avatarFor(id)?.src
+const thumbOf = (id: string) => characters[id]?.image ?? mainAvatar(id)?.src
 const initial = (name: string) => name.trim().charAt(0)
 const splitParagraphs = (text?: string) =>
   (text ?? '').split('\n').map((p) => p.trim()).filter(Boolean)
@@ -83,7 +83,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
       <div class="pd-head">
         <div class="pd-thumb">
-          <img v-if="thumbOf(fullId!)" :src="resolveImg(thumbOf(fullId!)!)" :alt="fullChar.name" referrerpolicy="no-referrer" />
+          <img v-if="thumbOf(fullId!)" :src="resolveImg(thumbOf(fullId!)!)" :alt="fullChar.name" />
           <span v-else class="monogram" aria-hidden="true">{{ initial(fullChar.name) }}</span>
         </div>
         <div class="pd-id">
@@ -115,10 +115,8 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
       <section v-if="fullDefaultAvatars.length" class="avatar-section">
         <ul class="avatar-grid">
           <li v-for="(a, i) in fullDefaultAvatars" :key="i" class="avatar-tile">
-            <img :src="resolveImg(a.src)" :alt="fullChar.name" loading="lazy" referrerpolicy="no-referrer" />
-            <p class="avatar-cap">
-              <span v-if="a.label" class="avatar-label">{{ a.label }}</span>
-            </p>
+            <img :src="resolveImg(a.src)" :alt="fullChar.name" loading="lazy" />
+            <p v-if="a.label" class="avatar-cap avatar-label">{{ a.label }}</p>
             <p v-if="a.credit" class="avatar-credit">{{ a.credit }}</p>
           </li>
         </ul>
@@ -129,7 +127,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           <template v-for="s in fullScenarioAvatars" :key="s.id">
             <li v-for="(a, i) in s.avatars" :key="`${s.id}-${i}`" class="avatar-tile avatar-tile--link">
               <RouterLink :to="{ path: '/scenarios', query: { id: s.id } }">
-                <img :src="resolveImg(a.src)" :alt="`${fullChar.name} — ${s.title}`" loading="lazy" referrerpolicy="no-referrer" />
+                <img :src="resolveImg(a.src)" :alt="`${fullChar.name} — ${s.title}`" loading="lazy" />
                 <p class="avatar-cap">
                   <span class="avatar-title">{{ s.title }}</span>
                   <span v-if="a.label" class="avatar-label">{{ a.label }}</span>
@@ -153,7 +151,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
       <ul class="grid">
         <li v-for="c in entries" :key="c.id" class="card" @click="open(c.id)">
           <div class="thumb">
-            <img v-if="thumbOf(c.id)" :src="resolveImg(thumbOf(c.id)!)" :alt="c.name" loading="lazy" referrerpolicy="no-referrer" />
+            <img v-if="thumbOf(c.id)" :src="resolveImg(thumbOf(c.id)!)" :alt="c.name" loading="lazy" />
             <span v-else class="monogram" aria-hidden="true">{{ initial(c.name) }}</span>
             <span v-if="c.playable" class="pc-badge">PC</span>
           </div>
@@ -174,7 +172,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
         <div class="modal-head">
           <div class="modal-thumb">
-            <img v-if="thumbOf(modalId!)" :src="resolveImg(thumbOf(modalId!)!)" :alt="modalChar.name" referrerpolicy="no-referrer" />
+            <img v-if="thumbOf(modalId!)" :src="resolveImg(thumbOf(modalId!)!)" :alt="modalChar.name" />
             <span v-else class="monogram" aria-hidden="true">{{ initial(modalChar.name) }}</span>
           </div>
           <div class="modal-id">
