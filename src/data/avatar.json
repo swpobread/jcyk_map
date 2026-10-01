@@ -73,7 +73,7 @@
                 {"src": "https://i.imgur.com/NS62yY3.png"}
             ],
             "c3": [
-                {"src": "https://i.imgur.com/fIbE1JY.png", "label": "1"},
+                {"src": "https://i.imgur.com/fIbE1JY.png"},
                 {"src": "https://i.imgur.com/Olt4mPZ.png", "label": "2"}
             ],
             "c1": [
@@ -123,8 +123,10 @@
                 {"src": "https://i.imgur.com/iV7aIAh.png"}
             ],
             "c3": [
-                {"src": "https://i.imgur.com/u6sdt67.png", "label": "1"},
-                {"src": "https://i.imgur.com/UtwuqpE.png", "label": "2"}
+                {"src": "https://i.imgur.com/u6sdt67.png"}
+            ],
+            "c3-1": [
+                {"src": "https://i.imgur.com/UtwuqpE.png"}
             ],
             "c1-1": [
                 {"src": "https://i.imgur.com/LVpzovZ.png"}
@@ -163,7 +165,7 @@
                 {"src": "https://i.imgur.com/AlVcrLf.png"}
             ],
             "c3": [
-                {"src": "https://i.imgur.com/7xEe6RZ.png", "label": "2020"}
+                {"src": "https://i.imgur.com/7xEe6RZ.png"}
             ]
         },
         "s22": {
