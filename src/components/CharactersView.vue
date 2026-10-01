@@ -1,39 +1,19 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import characterData from '@/data/characters.json'
+import { characters, type Character } from '@/data/characters'
 import { mainAvatar, defaultAvatars, scenarioAvatarsOf } from '@/data/avatars'
-
-interface Character {
-  era?: string
-  playable?: boolean
-  name: string
-  original?: string
-  nickname?: string
-  age?: number
-  birth?: string
-  birthplace?: string
-  summary?: string
-  height?: number
-  description?: string
-  image?: string
-}
+import { resolveImg, splitParagraphs, initial } from '@/utils'
 
 const route = useRoute()
 onMounted(() => {
   const id = route.query.id
   if (typeof id === 'string' && characters[id]) open(id)
 })
-const characters = characterData as Record<string, Character>
 const entries = computed(() => Object.entries(characters).map(([id, c]) => ({ id, ...c })))
 
-const base = import.meta.env.BASE_URL
-const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
 /* 썸네일: image → 기본 아바타 → 이니셜 */
 const thumbOf = (id: string) => characters[id]?.image ?? mainAvatar(id)?.src
-const initial = (name: string) => name.trim().charAt(0)
-const splitParagraphs = (text?: string) =>
-  (text ?? '').split('\n').map((p) => p.trim()).filter(Boolean)
 
 const buildMeta = (c?: Character) => {
   if (!c) return []

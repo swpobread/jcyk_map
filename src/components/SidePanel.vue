@@ -1,47 +1,21 @@
 <script setup lang="ts">
 import { ref, computed, watch, onUnmounted } from 'vue'
-import type { Filter, Category, Marker } from '@/types'
+import type { Filter, Category, Marker, DetailImage } from '@/types'
 import detailData from '@/data/details.json'
-import scenarioData from '@/data/scenarios.json'
 import tagData from '@/data/tags.json'
 import categoryData from '@/data/categories.json'
-import characterData from '@/data/characters.json'
+import { scenarios } from '@/data/scenarios'
+import { characters, characterName } from '@/data/characters'
+import { resolveImg, splitParagraphs } from '@/utils'
 
-interface DetailImage {
-  src: string
-  caption?: string
-}
 interface Detail {
   name: string
   summary?: string
   description?: string
   image?: DetailImage
 }
-interface Scenario {
-  title: string
-  writer?: string
-  description?: string
-  period?: string
-  characters?: string[]
-  scenarioLink?: string
-  backupLink?: string
-  image?: DetailImage
-  rule?: string
-}
 interface Tag {
   label: string
-  description?: string
-}
-interface Character {
-  name: string
-  original?: string
-  nickname?: string
-  era?: string
-  age?: number
-  birth?: string
-  birthplace?: string
-  summary?: string
-  height?: number
   description?: string
 }
 
@@ -61,20 +35,8 @@ const emit = defineEmits<{
 }>()
 
 const details = detailData as Record<string, Detail>
-const scenarios = scenarioData as Record<string, Scenario>
 const tags = tagData as Record<string, Tag>
 const categories = categoryData as Record<string, Category>
-const characters = characterData as Record<string, Character>
-
-const characterName = (id: string) => characters[id]?.name ?? id
-
-const base = import.meta.env.BASE_URL
-const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
-const splitParagraphs = (text?: string) =>
-  (text ?? '')
-    .split('\n')
-    .map((p) => p.trim())
-    .filter(Boolean)
 
 /* ---------- 목록 뷰 ---------- */
 const tagEntries = computed(() =>

@@ -2,8 +2,8 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import eventData from '@/data/events.json'
-import scenarioData from '@/data/scenarios.json'
-import characterData from '@/data/characters.json'
+import { scenarios, scenarioTitle } from '@/data/scenarios'
+import { characters, characterName } from '@/data/characters'
 
 interface Placement { line: string; date: string }
 type CastMember = string | { id: string; note?: string }
@@ -15,21 +15,9 @@ interface TimelineEvent {
   placements: Placement[]
 }
 interface LineDef { label: string }
-interface Scenario {
-  title: string; writer?: string; rule?: string; description?: string
-  period?: string; characters?: string[]; scenarioLink?: string; backupLink?: string
-}
-interface Character {
-  name: string; original?: string; nickname?: string; era?: string; age?: number
-  birth?: string; birthplace?: string; summary?: string; height?: number; description?: string
-}
 
 const lineDefs = (eventData.lines ?? {}) as Record<string, LineDef>
 const events = (eventData.events ?? {}) as Record<string, TimelineEvent>
-const scenarios = scenarioData as Record<string, Scenario>
-const characters = characterData as Record<string, Character>
-const characterName = (id: string) => characters[id]?.name ?? id
-const scenarioTitle = (id: string) => scenarios[id]?.title ?? id
 
 const SLOT_W = 260
 const PAD_L = 40

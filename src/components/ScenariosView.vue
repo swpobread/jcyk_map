@@ -1,56 +1,17 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import scenarioData from '@/data/scenarios.json'
-import characterData from '@/data/characters.json'
+import { scenarios, periodKey } from '@/data/scenarios'
+import { characters, characterName } from '@/data/characters'
 import { mainAvatar, castAvatars, type Avatar } from '@/data/avatars'
+import { resolveImg, splitParagraphs, initial } from '@/utils'
 
-interface DetailImage {
-  src: string
-  caption?: string
-}
-interface Scenario {
-  title: string
-  writer?: string
-  rule?: string
-  description?: string
-  period?: string
-  characters?: string[]
-  scenarioLink?: string
-  backupLink?: string
-  image?: DetailImage
-}
-
-interface Character {
-  name: string
-  original?: string
-  nickname?: string
-  era?: string
-  age?: number
-  birth?: string
-  birthplace?: string
-  summary?: string
-  height?: number
-  description?: string
-}
-
-const periodKey = (p?: string) => (p ?? '').split('~')[0]?.trim() ?? ''
-
-const scenarios = scenarioData as Record<string, Scenario>
-const characters = characterData as Record<string, Character>
-const characterName = (id: string) => characters[id]?.name ?? id
 const entries = computed(() => Object.entries(scenarios).map(([id, s]) => ({ id, ...s }))
     .sort((a, b) => periodKey(a.period).localeCompare(periodKey(b.period))))
-
-const base = import.meta.env.BASE_URL
-const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
-const splitParagraphs = (text?: string) =>
-  (text ?? '').split('\n').map((p) => p.trim()).filter(Boolean)
 
 const selectedId = ref<string | null>(null)
 const selected = computed(() => (selectedId.value ? scenarios[selectedId.value] : undefined))
 const paragraphs = computed(() => splitParagraphs(selected.value?.description))
-const initial = (name: string) => name.trim().charAt(0)
 
 /* 등장인물 타일: 시나리오 아바타(버전별 1타일) → 기본 아바타 → 이니셜 */
 const cast = computed(() => {
