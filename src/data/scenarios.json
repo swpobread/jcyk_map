@@ -44,7 +44,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "그 변호사는 당신을 애로 보는 게 틀림없습니다. 그렇지 않고서야 고작 통금 시간을 가지고 잔소리를 하겠어요. 감정이 욱하고 못할 말이 오가고···\n충동적으로 호텔에 왔습니다. 어라, 그런데 저 사람. 한정호 변호사가 아닌가요?",
     "period": "2021.01.16 ~ 2021.01.17",
-    "characters": ["c1","c2","c3"],
+    "characters": ["c1-1","c2","c3"],
     "scenarioLink": "https://www.postype.com/@ink-loveletter/post/6410773",
     "backupLink": "https://ysback.tistory.com/231"
   },
@@ -54,7 +54,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "고급 TV에서 오랜 영화가 나옵니다. 공포 영화 클리셰를 알아냈다면서요.\n“돌아올게”라고 말하지 말 것. 성관계를 하지 말 것. 술을 마시지 말 것.\n그러거나 말거나 냉장고에서 술을 꺼내자 전화가 옵니다. 잔뜩 취한 목소리로 함께 술을 마시자 이야기하네요. 술 취한 거 처음 보는 거 같은데···",
     "period": "2021.02.12 ~ 2021.02.14",
-    "characters": ["c1","c2","c3","c24"],
+    "characters": ["c1-1","c2","c3","c24"],
     "scenarioLink": "https://www.postype.com/@kangkange1/post/8765384",
     "backupLink": "https://ysback.tistory.com/241"
   },
@@ -83,7 +83,7 @@
     "rule": "Unsung Duet",
     "description": "에어컨 바람을 쐬며 게임을 하는 평화로운 일상이었습니다. 욕실에 들어간 동거인이 2시간이 넘게 소식이 없기 전까지는요.\n기절이라도 한 것일까요? 욕실의 문을 열면 벽을 세운 것처럼 물로 가득 차 있습니다. 놀라 그를 찾아보면 보이는 것은··· 인어가 된 그입니다.",
     "period": "2021.08.05",
-    "characters": ["c1","c3"],
+    "characters": ["c1-1","c3"],
     "scenarioLink": "https://www.postype.com/@c-trpg/post/8783203",
     "backupLink": "https://ysback.tistory.com/264"
   },
@@ -103,7 +103,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "고등학교 졸업을 향한 파티, 프롬. 신나는 노래, 환호하는 동기들, 하지만 이런 건 눈에 들어오지도 않습니다. 대학 원서 마감이 코앞인 걸요. 그리고 결국에 우리 모두는···\n그런데 들어오게 됩니다. 이 고등학교 최고의 갱생불가 망나니가 당신에게 졸업파티 파트너를 요청했으니까요. 당신의 졸업과제 USB를 들고요.",
     "period": "2021.10.01 ~ 2021.10.02",
-    "characters": ["c1","c4"],
+    "characters": ["c1-1","c4-1"],
     "scenarioLink": "https://www.postype.com/@love-p/post/7873563",
     "backupLink": "https://ysback.tistory.com/273"
   },
@@ -113,7 +113,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "자, 고작 52장 중의 7장입니다. 어렵지 않아요! 기적은 0.0032%의 확률로 일어나니까요.\n세 사람-사실은 두 '사람'에겐 많은 일이 일어났지만, 모든 날이 그렇진 않습니다. 오늘은 평범한 날입니다. “거기, 카지노가 있다더라?”고 망나니가 말하기 전까진요.",
     "period": "2022.02.16 ~ 2022.02.18",
-    "characters": ["c1","c2","c3","c21","c22"],
+    "characters": ["c1-1","c2-1","c3","c21","c22"],
     "scenarioLink": "https://www.postype.com/@dear-heresy/post/3118301",
     "backupLink": "https://ysback.tistory.com/281"
   },
@@ -153,7 +153,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "당신은 미국의 친구에게 오랜만의 연락을 받습니다. 스케이트장과 극장, 뮤직홀을 가진 그랜드 마스틴 호텔의 VIP 숙박권입니다. 1960년대 동물원 마스틴 미네저리가 무너지고 그 자리에 세워진 거대한 호텔이라는군요.\n나는 1001호의 투숙객이다. 도저히 끝낼 수 없는 사랑의 열병을 앓고 있다. 이 마음을 당신에게 버리게 해줘.",
     "period": "2022.08.02 ~ 2022.09.29",
-    "characters": ["c1","c2","c3", "c27","c28","c29"],
+    "characters": ["c1-1","c2-1","c3","c27","c28","c29"],
     "scenarioLink": "https://www.postype.com/@whathappennnn/post/9009120",
     "backupLink": "https://ysback.tistory.com/301"
   },
@@ -172,7 +172,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "유예 끝에 집안의 연락을 받고 결국 귀국했습니다. 집으로 돌아가는 열차 밖의 풍경이 빠르게 지나갑니다.\n깜빡 잠이 들었다가 눈을 뜨니 낯선 열차에 타고 있습니다. 열차의 안내 방송이 객석 내에 울립니다.\n《…본 열차는 스틱스. 스틱스 열차입니다.》",
     "period": "2023.05.13 ~ 2023.07.24",
-    "characters": ["c1","c4"],
+    "characters": ["c1","c4-1"],
     "backupLink": "https://ysback.tistory.com/305"
   },
   "s19": {
@@ -201,7 +201,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "두 사람은 낯선 사람에게서 초대장을 받습니다. 인천에서 부산까지 항해하는 왕복 여객선의 승선권입니다.\n세 사람은 낯선 회사에게서 초대장을 받습니다. 인천에서 부산까지 항해하는 왕복 유람선의 티켓입니다.",
     "period": "2024.08.04 ~ 2024.09.16",
-    "characters": ["c1","c2","c3","c19","c21","c22"],
+    "characters": ["c1","c1-1","c2","c2-1","c3","c19","c21","c22"],
     "backupLink": "https://ysback.tistory.com/333"
   },
   "s22": {
@@ -229,7 +229,7 @@
     "rule": "Call of Cthulhu 7th Edition",
     "description": "",
     "period": "2021.06.27 ~ 2021.07.01",
-    "characters": ["c1","c2","c3","c6","c24"],
+    "characters": ["c1-1","c2","c3","c6","c24"],
     "scenarioLink": "https://www.postype.com/@kangkange1/post/8765384",
     "backupLink": "https://ysback.tistory.com/258"
   },

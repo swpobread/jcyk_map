@@ -35,6 +35,12 @@
         "height": 168.5,
         "description": "여기에 설명"
     },
+    "c2-1": {
+        "era": "2020",
+        "playable": true,
+        "name": "한정호",
+        "description": "여기에 설명"
+    },
     "c3": {
         "era": "1920",
         "playable": true,
@@ -46,6 +52,12 @@
         "birthplace": "ヨグソトス 茶房",
         "summary": "失敗作",
         "height": 168.5,
+        "description": "여기에 설명"
+    },
+    "c3-1": {
+        "era": "2020",
+        "playable": true,
+        "name": "?",
         "description": "여기에 설명"
     },
     "c4": {

@@ -10,11 +10,13 @@
         ],
         "c2": [
             {"src": "https://i.imgur.com/ptpxJus.png", "credit": "sulmmission"},
-            {"src": "https://i.imgur.com/EP1h8lu.png", "credit": "sulmmission", "label": "2020"},
             {"src": "https://i.imgur.com/ke0NN7y.png"},
             {"src": "https://i.imgur.com/Le55Uf7.png", "label": "2"},
-            {"src": "https://i.imgur.com/eUQ91Vv.png", "label": "슈뢰딩거"},
-            {"src": "https://i.imgur.com/ECelZIT.png", "label": "2020"}
+            {"src": "https://i.imgur.com/eUQ91Vv.png", "label": "슈뢰딩거"}
+        ],
+        "c2-1": [
+            {"src": "https://i.imgur.com/EP1h8lu.png", "credit": "sulmmission"},
+            {"src": "https://i.imgur.com/ECelZIT.png"}
         ],
         "c3": [
             {"src": "https://i.imgur.com/MZ2ACSY.png", "credit": "sulmmission"},
@@ -71,7 +73,7 @@
                 {"src": "https://i.imgur.com/NS62yY3.png"}
             ],
             "c3": [
-                {"src": "https://i.imgur.com/fIbE1JY.png", "label": "1"},
+                {"src": "https://i.imgur.com/fIbE1JY.png"},
                 {"src": "https://i.imgur.com/Olt4mPZ.png", "label": "2"}
             ],
             "c1": [
@@ -90,21 +92,21 @@
             ]
         },
         "s11": {
-            "c4": [
+            "c4-1": [
                 {"src": "https://i.imgur.com/SqwvJJX.png"}
             ],
-            "c1": [
+            "c1-1": [
                 {"src": "https://i.imgur.com/8nQkpFG.png"}
             ]
         },
         "s12": {
-            "c2": [
+            "c2-1": [
                 {"src": "https://i.imgur.com/Wgir2kE.png"}
             ],
             "c3": [
                 {"src": "https://i.imgur.com/KHwYYce.png"}
             ],
-            "c1": [
+            "c1-1": [
                 {"src": "https://i.imgur.com/MLbl0fj.png"}
             ]
         },
@@ -117,19 +119,21 @@
             ]
         },
         "s16": {
-            "c2": [
+            "c2-1": [
                 {"src": "https://i.imgur.com/iV7aIAh.png"}
             ],
             "c3": [
-                {"src": "https://i.imgur.com/u6sdt67.png", "label": "1"},
-                {"src": "https://i.imgur.com/UtwuqpE.png", "label": "2"}
+                {"src": "https://i.imgur.com/u6sdt67.png"}
             ],
-            "c1": [
+            "c3-1": [
+                {"src": "https://i.imgur.com/UtwuqpE.png"}
+            ],
+            "c1-1": [
                 {"src": "https://i.imgur.com/LVpzovZ.png"}
             ]
         },
         "s18": {
-            "c4": [
+            "c4-1": [
                 {"src": "https://i.imgur.com/p5xLXY5.png"}
             ],
             "c1": [
@@ -149,15 +153,19 @@
         },
         "s21": {
             "c2": [
-                {"src": "https://i.imgur.com/J5oZJIf.png"},
-                {"src": "https://i.imgur.com/3BWq6LL.png", "label": "2020"}
+                {"src": "https://i.imgur.com/J5oZJIf.png"}
+            ],
+            "c2-1": [
+                {"src": "https://i.imgur.com/3BWq6LL.png"}
             ],
             "c1": [
-                {"src": "https://i.imgur.com/GRx3Rci.png"},
-                {"src": "https://i.imgur.com/AlVcrLf.png", "label": "2020"}
+                {"src": "https://i.imgur.com/GRx3Rci.png"}
+            ],
+            "c1-1": [
+                {"src": "https://i.imgur.com/AlVcrLf.png"}
             ],
             "c3": [
-                {"src": "https://i.imgur.com/7xEe6RZ.png", "label": "2020"}
+                {"src": "https://i.imgur.com/7xEe6RZ.png"}
             ]
         },
         "s22": {
@@ -175,7 +183,7 @@
             "c3": [
                 {"src": "https://i.imgur.com/O9WwDKs.png"}
             ],
-            "c1": [
+            "c1-1": [
                 {"src": "https://i.imgur.com/On4q38F.png"}
             ]
         }
