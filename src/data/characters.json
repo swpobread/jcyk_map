@@ -56,9 +56,10 @@
     },
     "c3-1": {
         "era": "2020",
-        "playable": true,
+        "playable": false,
         "name": "?",
-        "description": "여기에 설명"
+        "summary": "고대종",
+        "description": "쇼고스에 의해 육신이 반으로 갈라진 고대종. 완전했던 자신과 옛 시절로 되돌아가길 원한다.\n현재는 그 원념만 남아 꿈으로 나타난다."
     },
     "c4": {
         "era": "1920",
@@ -179,7 +180,7 @@
     },
     "c16": {
         "era": "All",
-        "playable": true,
+        "playable": false,
         "name": "이선",
         "original": "Earline",
         "summary": "미래에서 온 의사",
