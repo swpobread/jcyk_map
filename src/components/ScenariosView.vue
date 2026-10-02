@@ -57,9 +57,11 @@ const cast = computed(() => {
   const id = selectedId.value
   if (!id) return []
   const avatars = castAvatars(id)
-  return (selected.value?.characters ?? []).flatMap((c) => {
-    const list: (Avatar | undefined)[] = avatars[c]?.length ? avatars[c] : [mainAvatar(c)]
-    return list.map((a, i) => ({ key: `${c}-${i}`, id: c, name: characterName(c), avatar: a }))
+  return (selected.value?.characters ?? []).map((c) => {
+    const list = avatars[c] ?? []
+    const avatar: Avatar | undefined =
+      list.find((a) => !a.label) ?? list[0] ?? mainAvatar(c)
+    return { key: c, id: c, name: characterName(c), avatar }
   })
 })
 
