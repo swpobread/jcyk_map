@@ -1,5 +1,5 @@
 import avatarData from '@/data/avatar.json'
-import scenarioData from '@/data/scenarios.json'
+import { scenarios, periodKey } from '@/data/scenarios'
 
 export interface Avatar {
   src: string
@@ -10,9 +10,6 @@ export interface Avatar {
 type AvatarMap = Record<string, Avatar[]>
 
 const data = avatarData as { default: AvatarMap; scenarios: Record<string, AvatarMap> }
-const scenarios = scenarioData as Record<string, { title: string; period?: string }>
-
-const periodKey = (p?: string) => (p ?? '').split('~')[0]?.trim() ?? ''
 
 /** 시나리오와 무관한 기본 아바타 */
 export const defaultAvatars = (charId: string): Avatar[] => data.default[charId] ?? []
