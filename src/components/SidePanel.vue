@@ -5,8 +5,9 @@ import detailData from '@/data/details.json'
 import tagData from '@/data/tags.json'
 import categoryData from '@/data/categories.json'
 import { scenarios, scenarioTitle } from '@/data/scenarios'
-import { characters, characterName } from '@/data/characters'
+import { characterName } from '@/data/characters'
 import { resolveImg, splitParagraphs } from '@/utils'
+import CharacterModal from './CharacterModal.vue'
 
 interface Detail {
   name: string
@@ -82,8 +83,6 @@ const scenarioParagraphs = computed(() => splitParagraphs(scenario.value?.descri
 
 /* ---------- 인물 모달 ---------- */
 const selectedCharId = ref<string | null>(null)
-const selectedChar = computed(() => (selectedCharId.value ? characters[selectedCharId.value] : undefined))
-const charParagraphs = computed(() => splitParagraphs(selectedChar.value?.description))
 
 function goCharacter(id: string) { selectedCharId.value = id }
 function closeChar() { selectedCharId.value = null }
@@ -282,41 +281,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   </Transition>
 
   <!-- ===== 인물 모달 ===== -->
-  <Transition name="modal">
-    <div v-if="selectedChar" class="overlay overlay--char" @click.self="closeChar">
-      <article class="modal">
-        <button class="close-btn" @click="closeChar" aria-label="닫기">×</button>
-
-        <p v-if="selectedChar.era" class="rule-tag">{{ selectedChar.era }}s</p>
-        <h2 class="detail-title">{{ selectedChar.name }}</h2>
-        <p v-if="selectedChar.original || selectedChar.nickname" class="char-meta">
-          <span v-if="selectedChar.original">{{ selectedChar.original }}</span>
-          <span v-if="selectedChar.original && selectedChar.nickname" class="meta-sep">·</span>
-          <span v-if="selectedChar.nickname">{{ selectedChar.nickname }}</span>
-        </p>
-        <p v-if="selectedChar.summary" class="writer">{{ selectedChar.summary }}</p>
-
-        <dl v-if="selectedChar.birth || selectedChar.birthplace || selectedChar.age || selectedChar.height" class="char-dl">
-          <template v-if="selectedChar.birth">
-            <dt>생년월일</dt><dd>{{ selectedChar.birth }}</dd>
-          </template>
-          <template v-if="selectedChar.birthplace">
-            <dt>출신지</dt><dd>{{ selectedChar.birthplace }}</dd>
-          </template>
-          <template v-if="selectedChar.age">
-            <dt>나이</dt><dd>{{ selectedChar.age }}세</dd>
-          </template>
-          <template v-if="selectedChar.height">
-            <dt>신장</dt><dd>{{ selectedChar.height }}cm</dd>
-          </template>
-        </dl>
-
-        <section v-if="charParagraphs.length" class="description">
-          <p v-for="(p, i) in charParagraphs" :key="i">{{ p }}</p>
-        </section>
-      </article>
-    </div>
-  </Transition>
+  <CharacterModal :id="selectedCharId" @close="closeChar" />
 </template>
 
 <style scoped>
@@ -447,8 +412,8 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   font-variant-numeric: tabular-nums;
 }
 .rule-tag {
-  display: block;
-  margin-bottom: 6px;
+  display: inline-block;
+  margin-bottom: 0;
   font-size: 11px;
   font-weight: 600;
   color: var(--fg-muted);
@@ -532,12 +497,12 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   color: var(--fg-muted);
 }
 .description {
-  margin-top: 16px;
-  font-size: 14px;
-  line-height: 1.7;
+  margin-top: 24px;
+  font-size: 15px;
+  line-height: 1.8;
 }
 .description p {
-  margin: 0 0 10px;
+  margin: 0 0 12px;
 }
 .empty-note {
   margin-top: 16px;
@@ -591,107 +556,4 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .panel-leave-to {
   transform: translateX(-100%);
 }
-
-/* ===== 인물 모달 (시나리오 화면과 동일, 라이트 테마) ===== */
-.overlay--char {
-  position: fixed;
-  inset: 0;
-  z-index: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 20px;
-  overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-}
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 640px;
-  max-height: calc(100dvh - 96px);
-  overflow-y: auto;
-  box-sizing: border-box;
-  padding: 32px 28px;
-  border: 1px solid var(--border-mid);
-  border-radius: 14px;
-  background: var(--bg-panel);
-  color: var(--fg);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-.close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  color: var(--fg-dim);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.close-btn:hover {
-  background: color-mix(in srgb, var(--fg) 16%, transparent);
-  color: var(--fg);
-}
-.rule-tag {
-  display: inline-block;
-  margin-bottom: 0;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--fg-muted);
-}
-.detail-title {
-  margin: 8px 0 0;
-  font-size: 24px;
-  font-weight: 800;
-  border-left: 3px solid var(--accent);
-  padding-left: 12px;
-  padding-right: 24px;
-}
-.writer {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: #111;
-}
-.char-meta {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: #111;
-  letter-spacing: 0.05em;
-}
-.meta-sep { margin: 0 6px; color: var(--fg-muted); }
-.char-dl {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 6px 16px;
-  margin: 16px 0 0;
-  font-size: 13px;
-}
-.char-dl dt {
-  color: var(--fg-muted);
-  font-weight: 600;
-  white-space: nowrap;
-}
-.char-dl dd { margin: 0; color: var(--fg); }
-.description {
-  margin-top: 24px;
-  font-size: 15px;
-  line-height: 1.8;
-}
-.description p { margin: 0 0 12px; }
-
-/* ---- 전환 ---- */
-.modal-enter-active,
-.modal-leave-active { transition: opacity 0.2s ease; }
-.modal-enter-from,
-.modal-leave-to { opacity: 0; }
-.modal-enter-active .modal,
-.modal-leave-active .modal { transition: transform 0.2s ease; }
-.modal-enter-from .modal,
-.modal-leave-to .modal { transform: translateY(12px); }
 </style>

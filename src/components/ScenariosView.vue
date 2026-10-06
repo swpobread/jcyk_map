@@ -2,9 +2,10 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { scenarios, periodKey } from '@/data/scenarios'
-import { characters, characterName } from '@/data/characters'
+import { characterName } from '@/data/characters'
 import { mainAvatar, castAvatars } from '@/data/avatars'
 import { resolveImg, splitParagraphs, initial } from '@/utils'
+import CharacterModal from './CharacterModal.vue'
 
 const entries = computed(() => Object.entries(scenarios).map(([id, s]) => ({ id, ...s }))
     .sort((a, b) => periodKey(a.period).localeCompare(periodKey(b.period))))
@@ -33,8 +34,6 @@ onMounted(() => {
 })
 
 const selectedCharId = ref<string | null>(null)
-const selectedChar = computed(() => selectedCharId.value ? characters[selectedCharId.value] : undefined)
-const charParagraphs = computed(() => splitParagraphs(selectedChar.value?.description))
 
 function openChar(id: string, e: Event) { e.stopPropagation(); selectedCharId.value = id }
 function closeChar() { selectedCharId.value = null }
@@ -131,41 +130,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   </Transition>
 
   <!-- ===== 인물 모달 ===== -->
-  <Transition name="modal">
-    <div v-if="selectedChar" class="overlay overlay--char" @click.self="closeChar">
-      <article class="modal">
-        <button class="close-btn" @click="closeChar" aria-label="닫기">×</button>
-
-        <p v-if="selectedChar.era" class="rule-tag">{{ selectedChar.era }}s</p>
-        <h2 class="detail-title">{{ selectedChar.name }}</h2>
-        <p v-if="selectedChar.original || selectedChar.nickname" class="char-meta">
-          <span v-if="selectedChar.original">{{ selectedChar.original }}</span>
-          <span v-if="selectedChar.original && selectedChar.nickname" class="meta-sep">·</span>
-          <span v-if="selectedChar.nickname">{{ selectedChar.nickname }}</span>
-        </p>
-        <p v-if="selectedChar.summary" class="writer">{{ selectedChar.summary }}</p>
-
-        <dl v-if="selectedChar.birth || selectedChar.birthplace || selectedChar.age || selectedChar.height" class="char-dl">
-          <template v-if="selectedChar.birth">
-            <dt>생년월일</dt><dd>{{ selectedChar.birth }}</dd>
-          </template>
-          <template v-if="selectedChar.birthplace">
-            <dt>출신지</dt><dd>{{ selectedChar.birthplace }}</dd>
-          </template>
-          <template v-if="selectedChar.age">
-            <dt>나이</dt><dd>{{ selectedChar.age }}세</dd>
-          </template>
-          <template v-if="selectedChar.height">
-            <dt>신장</dt><dd>{{ selectedChar.height }}cm</dd>
-          </template>
-        </dl>
-
-        <section v-if="charParagraphs.length" class="description">
-          <p v-for="(p, i) in charParagraphs" :key="i">{{ p }}</p>
-        </section>
-      </article>
-    </div>
-  </Transition>
+  <CharacterModal :id="selectedCharId" @close="closeChar" />
 </template>
 
 <style scoped>
@@ -467,29 +432,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   color: var(--fg-muted);
 }
 
-.overlay--char { z-index: 600; }
-
-.char-meta {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: #111;
-  letter-spacing: 0.05em;
-}
-.meta-sep { margin: 0 6px; color: var(--fg-muted); }
-
-.char-dl {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 6px 16px;
-  margin: 16px 0 0;
-  font-size: 13px;
-}
-.char-dl dt {
-  color: var(--fg-muted);
-  font-weight: 600;
-  white-space: nowrap;
-}
-.char-dl dd { margin: 0; color: var(--fg); }
 
 /* ---- 전환 ---- */
 .modal-enter-active,

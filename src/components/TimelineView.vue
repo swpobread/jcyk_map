@@ -3,8 +3,9 @@ import { ref, computed, watch, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import eventData from '@/data/events.json'
 import { scenarios, scenarioTitle } from '@/data/scenarios'
-import { characters, characterName } from '@/data/characters'
+import { characterName } from '@/data/characters'
 import { splitParagraphs } from '@/utils'
+import CharacterModal from './CharacterModal.vue'
 
 interface Placement { line: string; date: string }
 type CastMember = string | { id: string; note?: string }
@@ -196,8 +197,6 @@ function openEvent(evId: string) { selectedEvId.value = evId }
 function closeEvent() { selectedEvId.value = null }
 
 const selectedCharId = ref<string | null>(null)
-const selectedChar = computed(() => (selectedCharId.value ? characters[selectedCharId.value] : undefined))
-const charParagraphs = computed(() => splitParagraphs(selectedChar.value?.description))
 function openChar(id: string) { selectedCharId.value = id }
 function closeChar() { selectedCharId.value = null }
 
@@ -314,19 +313,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
     </div>
   </Transition>
 
-  <Transition name="modal">
-    <div v-if="selectedChar" class="overlay overlay--char" @click.self="closeChar">
-      <article class="modal">
-        <button class="close-btn" @click="closeChar" aria-label="닫기">×</button>
-        <p v-if="selectedChar.era" class="rule-tag">{{ selectedChar.era }}s</p>
-        <h2 class="detail-title">{{ selectedChar.name }}</h2>
-        <p v-if="selectedChar.summary" class="writer">{{ selectedChar.summary }}</p>
-        <section v-if="charParagraphs.length" class="description">
-          <p v-for="(p, i) in charParagraphs" :key="i">{{ p }}</p>
-        </section>
-      </article>
-    </div>
-  </Transition>
+  <CharacterModal :id="selectedCharId" @close="closeChar" />
 
   <Transition name="modal">
     <div v-if="selectedSc" class="overlay overlay--char" @click.self="closeScenario">
