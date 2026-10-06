@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import eventData from '@/data/events.json'
 import { scenarios, scenarioTitle } from '@/data/scenarios'
 import { characters, characterName } from '@/data/characters'
+import { splitParagraphs } from '@/utils'
 
 interface Placement { line: string; date: string }
 type CastMember = string | { id: string; note?: string }
@@ -185,8 +186,7 @@ function togglePin(id: string) { pinnedLine.value = pinnedLine.value === id ? nu
 
 const selectedEvId = ref<string | null>(null)
 const selectedEv = computed(() => (selectedEvId.value ? events[selectedEvId.value] : undefined))
-const evParagraphs = computed(() =>
-  (selectedEv.value?.description ?? '').split('\n').map((p) => p.trim()).filter(Boolean))
+const evParagraphs = computed(() => splitParagraphs(selectedEv.value?.description))
 const evPlacements = computed(() =>
   (selectedEv.value?.placements ?? []).map((p) => ({ label: lineDefs[p.line]?.label ?? p.line, date: p.date })))
 const evCast = computed(() =>
@@ -197,15 +197,13 @@ function closeEvent() { selectedEvId.value = null }
 
 const selectedCharId = ref<string | null>(null)
 const selectedChar = computed(() => (selectedCharId.value ? characters[selectedCharId.value] : undefined))
-const charParagraphs = computed(() =>
-  (selectedChar.value?.description ?? '').split('\n').map((p) => p.trim()).filter(Boolean))
+const charParagraphs = computed(() => splitParagraphs(selectedChar.value?.description))
 function openChar(id: string) { selectedCharId.value = id }
 function closeChar() { selectedCharId.value = null }
 
 const selectedScId = ref<string | null>(null)
 const selectedSc = computed(() => (selectedScId.value ? scenarios[selectedScId.value] : undefined))
-const scParagraphs = computed(() =>
-  (selectedSc.value?.description ?? '').split('\n').map((p) => p.trim()).filter(Boolean))
+const scParagraphs = computed(() => splitParagraphs(selectedSc.value?.description))
 function openScenario(id: string) { selectedScId.value = id }
 function closeScenario() { selectedScId.value = null }
 
@@ -477,8 +475,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   cursor: pointer; font-family: inherit; transition: background 0.15s, color 0.15s;
 }
 .chip:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
-.chip--link { background: #111; color: #f5f2ec; border-color: #111; }
-.chip--link:hover { background: #f5f2ec; color: #111; }
 
 .cast { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 .cast-row { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }

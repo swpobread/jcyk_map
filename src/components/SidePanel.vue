@@ -4,7 +4,7 @@ import type { Filter, Category, Marker, DetailImage } from '@/types'
 import detailData from '@/data/details.json'
 import tagData from '@/data/tags.json'
 import categoryData from '@/data/categories.json'
-import { scenarios } from '@/data/scenarios'
+import { scenarios, scenarioTitle } from '@/data/scenarios'
 import { characters, characterName } from '@/data/characters'
 import { resolveImg, splitParagraphs } from '@/utils'
 
@@ -62,7 +62,7 @@ const activeFilterLabel = computed(() => {
   if (!f) return ''
   if (f.type === 'category') return categories[f.value]?.label ?? f.value
   if (f.type === 'tag') return tags[f.value]?.label ?? f.value
-  return scenarios[f.value]?.title ?? f.value
+  return scenarioTitle(f.value)
 })
 
 /* ---------- 상세 뷰 (마커) ---------- */
@@ -70,7 +70,7 @@ const detail = computed(() => (props.marker ? details[props.marker.id] : undefin
 const heading = computed(() => detail.value?.name || props.marker?.label || '')
 const paragraphs = computed(() => splitParagraphs(detail.value?.description))
 const markerScenarios = computed(() =>
-  (props.marker?.scenarios ?? []).map((sid) => ({ id: sid, title: scenarios[sid]?.title ?? sid }))
+  (props.marker?.scenarios ?? []).map((sid) => ({ id: sid, title: scenarioTitle(sid) }))
 )
 const markerTags = computed(() =>
   (props.marker?.tags ?? []).map((tid) => ({ id: tid, label: tags[tid]?.label ?? tid }))
