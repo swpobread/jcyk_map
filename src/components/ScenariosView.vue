@@ -3,7 +3,7 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { scenarios, periodKey } from '@/data/scenarios'
 import { characters, characterName } from '@/data/characters'
-import { mainAvatar, castAvatars, type Avatar } from '@/data/avatars'
+import { mainAvatar, castAvatars } from '@/data/avatars'
 import { resolveImg, splitParagraphs, initial } from '@/utils'
 
 const entries = computed(() => Object.entries(scenarios).map(([id, s]) => ({ id, ...s }))
@@ -13,15 +13,14 @@ const selectedId = ref<string | null>(null)
 const selected = computed(() => (selectedId.value ? scenarios[selectedId.value] : undefined))
 const paragraphs = computed(() => splitParagraphs(selected.value?.description))
 
-/* 등장인물 타일: 시나리오 아바타(버전별 1타일) → 기본 아바타 → 이니셜 */
+/* 등장인물 타일: 시나리오 첫 아바타 → 기본 아바타 → 이니셜 (전체 버전은 캐릭터 페이지에서) */
 const cast = computed(() => {
   const id = selectedId.value
   if (!id) return []
   const avatars = castAvatars(id)
-  return (selected.value?.characters ?? []).flatMap((c) => {
-    const list: (Avatar | undefined)[] = avatars[c]?.length ? avatars[c] : [mainAvatar(c)]
-    return list.map((a, i) => ({ key: `${c}-${i}`, id: c, name: characterName(c), avatar: a }))
-  })
+  return (selected.value?.characters ?? []).map((c) => ({
+    id: c, name: characterName(c), avatar: avatars[c]?.[0] ?? mainAvatar(c),
+  }))
 })
 
 function open(id: string) { selectedId.value = id }
@@ -115,16 +114,13 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
         <section v-if="selected.characters?.length" class="chips-section">
           <h3 class="group-label">등장인물</h3>
           <ul class="cast-grid">
-            <li v-for="m in cast" :key="m.key">
+            <li v-for="m in cast" :key="m.id">
               <button class="cast-tile" @click="openChar(m.id, $event)">
                 <span class="cast-thumb">
                   <img v-if="m.avatar" :src="resolveImg(m.avatar.src)" :alt="m.name" loading="lazy" />
                   <span v-else class="monogram" aria-hidden="true">{{ initial(m.name) }}</span>
                 </span>
-                <span class="cast-name">
-                  {{ m.name }}
-                  <span v-if="m.avatar?.label" class="cast-label">{{ m.avatar.label }}</span>
-                </span>
+                <span class="cast-name">{{ m.name }}</span>
                 <span v-if="m.avatar?.credit" class="cast-credit">{{ m.avatar.credit }}</span>
               </button>
             </li>
@@ -464,7 +460,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   font-size: 12px;
   font-weight: 700;
 }
-.cast-label { margin-left: 4px; color: var(--accent); }
 .cast-credit {
   display: block;
   margin-top: 2px;
