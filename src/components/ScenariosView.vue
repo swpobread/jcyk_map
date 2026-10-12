@@ -1,61 +1,39 @@
 <script setup lang="ts">
-import { ref, computed, watch, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
-import scenarioData from '@/data/scenarios.json'
-import characterData from '@/data/characters.json'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+import { scenarios, periodKey } from '@/data/scenarios'
+import { characterName } from '@/data/characters'
+import { mainAvatar, castAvatars } from '@/data/avatars'
+import { resolveImg, splitParagraphs, initial } from '@/utils'
+import CharacterModal from './CharacterModal.vue'
 
-interface DetailImage {
-  src: string
-  caption?: string
-}
-interface Scenario {
-  title: string
-  writer?: string
-  rule?: string
-  description?: string
-  period?: string
-  characters?: string[]
-  scenarioLink?: string
-  backupLink?: string
-  image?: DetailImage
-}
-
-interface Character {
-  name: string
-  original?: string
-  nickname?: string
-  era?: string
-  age?: number
-  birth?: string
-  birthplace?: string
-  summary?: string
-  height?: number
-  description?: string
-}
-
-const periodKey = (p?: string) => (p ?? '').split('~')[0]?.trim() ?? ''
-
-const scenarios = scenarioData as Record<string, Scenario>
-const characters = characterData as Record<string, Character>
-const characterName = (id: string) => characters[id]?.name ?? id
 const entries = computed(() => Object.entries(scenarios).map(([id, s]) => ({ id, ...s }))
     .sort((a, b) => periodKey(a.period).localeCompare(periodKey(b.period))))
-
-const base = import.meta.env.BASE_URL
-const resolveImg = (src: string) => (src.startsWith('http') ? src : base + src)
-const splitParagraphs = (text?: string) =>
-  (text ?? '').split('\n').map((p) => p.trim()).filter(Boolean)
 
 const selectedId = ref<string | null>(null)
 const selected = computed(() => (selectedId.value ? scenarios[selectedId.value] : undefined))
 const paragraphs = computed(() => splitParagraphs(selected.value?.description))
 
+/* 등장인물 타일: 시나리오 첫 아바타 → 기본 아바타 → 이니셜 (전체 버전은 캐릭터 페이지에서) */
+const cast = computed(() => {
+  const id = selectedId.value
+  if (!id) return []
+  const avatars = castAvatars(id)
+  return (selected.value?.characters ?? []).map((c) => ({
+    id: c, name: characterName(c), avatar: avatars[c]?.[0] ?? mainAvatar(c),
+  }))
+})
+
 function open(id: string) { selectedId.value = id }
 function close() { selectedId.value = null }
 
+const route = useRoute()
+onMounted(() => {
+  const id = route.query.id
+  if (typeof id === 'string' && scenarios[id]) open(id)
+})
+
 const selectedCharId = ref<string | null>(null)
-const selectedChar = computed(() => selectedCharId.value ? characters[selectedCharId.value] : undefined)
-const charParagraphs = computed(() => splitParagraphs(selectedChar.value?.description))
 
 function openChar(id: string, e: Event) { e.stopPropagation(); selectedCharId.value = id }
 function closeChar() { selectedCharId.value = null }
@@ -134,50 +112,25 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
         <section v-if="selected.characters?.length" class="chips-section">
           <h3 class="group-label">등장인물</h3>
-          <div class="chips">
-            <button v-for="(c, i) in selected.characters" :key="i" class="chip chip--link" @click="openChar(c, $event)">{{ characterName(c) }}</button>
-          </div>
+          <ul class="cast-grid">
+            <li v-for="m in cast" :key="m.id">
+              <button class="cast-tile" @click="openChar(m.id, $event)">
+                <span class="cast-thumb">
+                  <img v-if="m.avatar" :src="resolveImg(m.avatar.src)" :alt="m.name" loading="lazy" />
+                  <span v-else class="monogram" aria-hidden="true">{{ initial(m.name) }}</span>
+                </span>
+                <span class="cast-name">{{ m.name }}</span>
+                <span v-if="m.avatar?.credit" class="cast-credit">{{ m.avatar.credit }}</span>
+              </button>
+            </li>
+          </ul>
         </section>
       </article>
     </div>
   </Transition>
 
   <!-- ===== 인물 모달 ===== -->
-  <Transition name="modal">
-    <div v-if="selectedChar" class="overlay overlay--char" @click.self="closeChar">
-      <article class="modal">
-        <button class="close-btn" @click="closeChar" aria-label="닫기">×</button>
-
-        <p v-if="selectedChar.era" class="rule-tag">{{ selectedChar.era }}s</p>
-        <h2 class="detail-title">{{ selectedChar.name }}</h2>
-        <p v-if="selectedChar.original || selectedChar.nickname" class="char-meta">
-          <span v-if="selectedChar.original">{{ selectedChar.original }}</span>
-          <span v-if="selectedChar.original && selectedChar.nickname" class="meta-sep">·</span>
-          <span v-if="selectedChar.nickname">{{ selectedChar.nickname }}</span>
-        </p>
-        <p v-if="selectedChar.summary" class="writer">{{ selectedChar.summary }}</p>
-
-        <dl v-if="selectedChar.birth || selectedChar.birthplace || selectedChar.age || selectedChar.height" class="char-dl">
-          <template v-if="selectedChar.birth">
-            <dt>생년월일</dt><dd>{{ selectedChar.birth }}</dd>
-          </template>
-          <template v-if="selectedChar.birthplace">
-            <dt>출신지</dt><dd>{{ selectedChar.birthplace }}</dd>
-          </template>
-          <template v-if="selectedChar.age">
-            <dt>나이</dt><dd>{{ selectedChar.age }}세</dd>
-          </template>
-          <template v-if="selectedChar.height">
-            <dt>신장</dt><dd>{{ selectedChar.height }}cm</dd>
-          </template>
-        </dl>
-
-        <section v-if="charParagraphs.length" class="description">
-          <p v-for="(p, i) in charParagraphs" :key="i">{{ p }}</p>
-        </section>
-      </article>
-    </div>
-  </Transition>
+  <CharacterModal :id="selectedCharId" @close="closeChar" />
 </template>
 
 <style scoped>
@@ -428,43 +381,57 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   pointer-events: none;
 }
 .chip--sm:hover { color: #111; }
-.chip--link {
-  cursor: pointer;
-  font-family: inherit;
-  background: #111;
-  color: #f5f2ec;
-  border-color: #111;
-  transition: background 0.15s, color 0.15s;
-}
-.chip--link:hover {
-  background: #f5f2ec;
-  color: #111;
-  border-color: #111;
-}
 
-.overlay--char { z-index: 600; }
-
-.char-meta {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: #111;
-  letter-spacing: 0.05em;
-}
-.meta-sep { margin: 0 6px; color: var(--fg-muted); }
-
-.char-dl {
+/* ---- 등장인물 타일 ---- */
+.cast-grid {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
   display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 6px 16px;
-  margin: 16px 0 0;
-  font-size: 13px;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 12px;
 }
-.char-dl dt {
+.cast-tile {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--fg);
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.cast-thumb {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-strong);
+  transition: transform 0.2s;
+}
+.cast-tile:hover .cast-thumb { transform: translateY(-3px); }
+.cast-tile:hover .cast-name { text-decoration: underline; }
+.cast-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cast-thumb .monogram {
+  font-size: 32px;
+  font-weight: 800;
   color: var(--fg-muted);
-  font-weight: 600;
-  white-space: nowrap;
+  user-select: none;
 }
-.char-dl dd { margin: 0; color: var(--fg); }
+.cast-name {
+  display: block;
+  margin-top: 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.cast-credit {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
 
 /* ---- 전환 ---- */
 .modal-enter-active,

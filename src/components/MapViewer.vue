@@ -53,7 +53,6 @@ function openScenario(sid: string) {
   panelView.value = 'scenario'
   panelOpen.value = true
 }
-function backToList() { resetSelection() }
 function closePanel() { panelOpen.value = false }
 function setFilter(f: Filter | null) {
   activeFilter.value = f
@@ -94,7 +93,6 @@ function toViewportPoint(xPct: number, yPct: number): OpenSeadragon.Point | null
   )
 }
 
-// overlay 요소 추적 (removeOverlay용)
 const overlayEls: HTMLElement[] = []
 
 function clearOverlays() {
@@ -167,9 +165,6 @@ function renderOverlays() {
     wrap.appendChild(dot)
     wrap.appendChild(label)
 
-    // placement: CENTER → wrap의 중심(= 크기 0이므로 wrap 자체)이 pt에 맞춰짐
-    // wrap이 크기 0이므로 dot을 left:-12px, top:-30px으로 올리면
-    // 마커 하단 중앙이 정확히 pt에 위치
     viewer!.addOverlay({ element: wrap, location: pt, placement: OpenSeadragon.Placement.CENTER })
     overlayEls.push(wrap)
   })
@@ -332,7 +327,7 @@ onUnmounted(() => {
       :markers="currentMarkers"
       :active-filter="activeFilter"
       @close="closePanel"
-      @back="backToList"
+      @back="resetSelection"
       @open-scenario="openScenario"
       @set-filter="setFilter"
     />

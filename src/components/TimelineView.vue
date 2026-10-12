@@ -2,8 +2,10 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import eventData from '@/data/events.json'
-import scenarioData from '@/data/scenarios.json'
-import characterData from '@/data/characters.json'
+import { scenarios, scenarioTitle } from '@/data/scenarios'
+import { characterName } from '@/data/characters'
+import { splitParagraphs } from '@/utils'
+import CharacterModal from './CharacterModal.vue'
 
 interface Placement { line: string; date: string }
 type CastMember = string | { id: string; note?: string }
@@ -15,21 +17,9 @@ interface TimelineEvent {
   placements: Placement[]
 }
 interface LineDef { label: string }
-interface Scenario {
-  title: string; writer?: string; rule?: string; description?: string
-  period?: string; characters?: string[]; scenarioLink?: string; backupLink?: string
-}
-interface Character {
-  name: string; original?: string; nickname?: string; era?: string; age?: number
-  birth?: string; birthplace?: string; summary?: string; height?: number; description?: string
-}
 
 const lineDefs = (eventData.lines ?? {}) as Record<string, LineDef>
 const events = (eventData.events ?? {}) as Record<string, TimelineEvent>
-const scenarios = scenarioData as Record<string, Scenario>
-const characters = characterData as Record<string, Character>
-const characterName = (id: string) => characters[id]?.name ?? id
-const scenarioTitle = (id: string) => scenarios[id]?.title ?? id
 
 const SLOT_W = 260
 const PAD_L = 40
@@ -197,8 +187,7 @@ function togglePin(id: string) { pinnedLine.value = pinnedLine.value === id ? nu
 
 const selectedEvId = ref<string | null>(null)
 const selectedEv = computed(() => (selectedEvId.value ? events[selectedEvId.value] : undefined))
-const evParagraphs = computed(() =>
-  (selectedEv.value?.description ?? '').split('\n').map((p) => p.trim()).filter(Boolean))
+const evParagraphs = computed(() => splitParagraphs(selectedEv.value?.description))
 const evPlacements = computed(() =>
   (selectedEv.value?.placements ?? []).map((p) => ({ label: lineDefs[p.line]?.label ?? p.line, date: p.date })))
 const evCast = computed(() =>
@@ -208,16 +197,12 @@ function openEvent(evId: string) { selectedEvId.value = evId }
 function closeEvent() { selectedEvId.value = null }
 
 const selectedCharId = ref<string | null>(null)
-const selectedChar = computed(() => (selectedCharId.value ? characters[selectedCharId.value] : undefined))
-const charParagraphs = computed(() =>
-  (selectedChar.value?.description ?? '').split('\n').map((p) => p.trim()).filter(Boolean))
 function openChar(id: string) { selectedCharId.value = id }
 function closeChar() { selectedCharId.value = null }
 
 const selectedScId = ref<string | null>(null)
 const selectedSc = computed(() => (selectedScId.value ? scenarios[selectedScId.value] : undefined))
-const scParagraphs = computed(() =>
-  (selectedSc.value?.description ?? '').split('\n').map((p) => p.trim()).filter(Boolean))
+const scParagraphs = computed(() => splitParagraphs(selectedSc.value?.description))
 function openScenario(id: string) { selectedScId.value = id }
 function closeScenario() { selectedScId.value = null }
 
@@ -328,19 +313,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
     </div>
   </Transition>
 
-  <Transition name="modal">
-    <div v-if="selectedChar" class="overlay overlay--char" @click.self="closeChar">
-      <article class="modal">
-        <button class="close-btn" @click="closeChar" aria-label="닫기">×</button>
-        <p v-if="selectedChar.era" class="rule-tag">{{ selectedChar.era }}s</p>
-        <h2 class="detail-title">{{ selectedChar.name }}</h2>
-        <p v-if="selectedChar.summary" class="writer">{{ selectedChar.summary }}</p>
-        <section v-if="charParagraphs.length" class="description">
-          <p v-for="(p, i) in charParagraphs" :key="i">{{ p }}</p>
-        </section>
-      </article>
-    </div>
-  </Transition>
+  <CharacterModal :id="selectedCharId" @close="closeChar" />
 
   <Transition name="modal">
     <div v-if="selectedSc" class="overlay overlay--char" @click.self="closeScenario">
@@ -489,8 +462,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   cursor: pointer; font-family: inherit; transition: background 0.15s, color 0.15s;
 }
 .chip:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
-.chip--link { background: #111; color: #f5f2ec; border-color: #111; }
-.chip--link:hover { background: #f5f2ec; color: #111; }
 
 .cast { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px; }
 .cast-row { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }

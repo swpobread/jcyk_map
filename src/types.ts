@@ -15,3 +15,8 @@ export interface Marker {
 }
 
 export type Filter = { type: 'tag' | 'scenario' | 'category'; value: string }
+
+export interface DetailImage {
+  src: string
+  caption?: string
+}
