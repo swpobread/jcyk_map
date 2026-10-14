@@ -218,9 +218,9 @@
     "title": "죽음의 주파수",
     "writer": "크툴루 컨피덴셜 공식 시나리오",
     "rule": "Cthulhu Confidential",
-    "description": "",
-    "period": "2026.04.07 ~ ",
-    "characters": ["c5"],
+    "description": "인간의 눈으로 볼 수 없는 것이 그 외에도 훨씬 더 많이 있다면? 유령이나 그 외의 기현상이 정말로 존재했지만, 인간이 감지할 수 있는 파장의 바로 너머에 존재한다면?\n수심이 깊어보이는 여성이 제 약혼자를 찾아달라고 합니다. 세상 모든걸 바꿀 기계를 만들고 있다던 약혼자를요.",
+    "period": "2026.04.07 ~ 2026.07.01",
+    "characters": ["c5", "c30", "c31", "c32", "c33"],
     "backupLink": "/jcyk_map/backups/s23.html"
   },
   "s24": {
@@ -266,5 +266,13 @@
     "description": "그가 고개를 숙이며 입을 벌립니다. 문이 열립니다. 그 안에 담겨 있는 것은······.",
     "period": "2026.03.14",
     "characters": ["c1","c4"]
+  },
+  "s29": {
+    "title": "JUNKRUSH",
+    "writer": "w. 캉캉",
+    "rule": "Call of Cthulhu 7th Edition",
+    "description": "예상치 못한 날씨로 인해 한 모텔에 숙박하게 됐습니다. 그런데 수상한 소리가 벽 너머에서 들려옵니다.\n너랑 있으면 쓰레기 같은 감정뿐이야.",
+    "period": "2026.08.11 ~",
+    "characters": ["c1-1","c4-1"]
   }
 }
