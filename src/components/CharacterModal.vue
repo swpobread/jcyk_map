@@ -8,7 +8,7 @@ const emit = defineEmits<{ close: [] }>()
 
 <template>
   <Transition name="modal">
-    <div v-if="id && characters[id]" class="char-overlay" @click.self="emit('close')">
+    <div v-if="id && characters[id]" class="overlay overlay--top" @click.self="emit('close')">
       <article class="modal">
         <button class="close-btn" @click="emit('close')" aria-label="닫기">×</button>
         <CharacterDetail :id="id" variant="modal" />
@@ -17,31 +17,3 @@ const emit = defineEmits<{ close: [] }>()
   </Transition>
 </template>
 
-<style scoped>
-.char-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 20px;
-  overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-}
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 560px;
-  max-height: calc(100dvh - 96px);
-  overflow-y: auto;
-  box-sizing: border-box;
-  padding: 28px;
-  border: 1px solid var(--border-mid);
-  border-radius: 14px;
-  background: var(--bg-panel);
-  color: var(--fg);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-</style>

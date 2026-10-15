@@ -316,7 +316,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   <CharacterModal :id="selectedCharId" @close="closeChar" />
 
   <Transition name="modal">
-    <div v-if="selectedSc" class="overlay overlay--char" @click.self="closeScenario">
+    <div v-if="selectedSc" class="overlay overlay--top" @click.self="closeScenario">
       <article class="modal">
         <button class="close-btn" @click="closeScenario" aria-label="닫기">×</button>
         <span v-if="selectedSc.rule" class="rule-tag">{{ selectedSc.rule }}</span>
@@ -406,19 +406,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   dominant-baseline: middle; font-variant-numeric: tabular-nums;
 }
 
-.overlay {
-  position: fixed; inset: 0; z-index: 500;
-  display: flex; align-items: center; justify-content: center;
-  padding: 48px 20px; overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
-}
-.overlay--char { z-index: 600; }
-.modal {
-  position: relative; width: 100%; max-width: 620px;
-  max-height: calc(100dvh - 96px); overflow-y: auto; box-sizing: border-box;
-  padding: 32px 28px; border: 1px solid var(--border-mid); border-radius: 14px;
-  background: var(--bg-panel); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
 .detail-title {
   margin: 8px 0 0; font-size: 24px; font-weight: 800;
   border-left: 3px solid var(--accent); padding-left: 12px; padding-right: 24px;

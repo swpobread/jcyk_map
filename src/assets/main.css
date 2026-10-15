@@ -30,7 +30,34 @@ html, body, #app {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--fg);
 }
-/* 모달 공통: 닫기 버튼 / 전환 */
+/* 모달 공통: 오버레이 / 박스 / 닫기 버튼 / 전환 */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+/* 다른 모달 위에 겹치는 모달 */
+.overlay--top { z-index: 600; }
+.modal {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  max-height: calc(100dvh - 96px);
+  overflow-y: auto;
+  box-sizing: border-box;
+  padding: 32px 28px;
+  border: 1px solid var(--border-mid);
+  border-radius: 14px;
+  background: var(--bg-panel);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
 .close-btn {
   position: absolute;
   top: 16px;

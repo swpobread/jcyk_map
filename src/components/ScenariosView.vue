@@ -238,31 +238,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 }
 
 /* ---- 모달 ---- */
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 20px;
-  overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-}
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 640px;
-  max-height: calc(100dvh - 96px);
-  overflow-y: auto;
-  box-sizing: border-box;
-  padding: 32px 28px;
-  border: 1px solid var(--border-mid);
-  border-radius: 14px;
-  background: var(--bg-panel);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
 .detail-title {
   margin: 8px 0 0;
   font-size: 24px;
