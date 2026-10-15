@@ -2,19 +2,18 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { characters } from '@/data/characters'
-import { mainAvatar, defaultAvatars, scenarioAvatarsOf } from '@/data/avatars'
+import { thumbOf, defaultAvatars, scenarioAvatarsOf } from '@/data/avatars'
 import { resolveImg, splitParagraphs, initial } from '@/utils'
 
 const props = defineProps<{ id: string; variant: 'page' | 'modal' }>()
 
 const isPage = computed(() => props.variant === 'page')
-const char = computed(() => characters[props.id])
-/* 썸네일: image → 기본 아바타 → 이니셜 */
-const thumb = computed(() => char.value?.image ?? mainAvatar(props.id)?.src)
+/* 존재 여부는 호출 측에서 확인 */
+const char = computed(() => characters[props.id]!)
+const thumb = computed(() => thumbOf(props.id))
 
 const meta = computed(() => {
   const c = char.value
-  if (!c) return []
   const rows: { label: string; value: string }[] = []
   if (c.age != null) rows.push({ label: '나이', value: `${c.age}` })
   if (c.birth) rows.push({ label: '생일', value: c.birth })
@@ -22,7 +21,7 @@ const meta = computed(() => {
   if (c.height != null) rows.push({ label: '키', value: `${c.height} cm` })
   return rows
 })
-const paragraphs = computed(() => splitParagraphs(char.value?.description))
+const paragraphs = computed(() => splitParagraphs(char.value.description))
 
 const defaults = computed(() => defaultAvatars(props.id))
 const scenarioSets = computed(() => scenarioAvatarsOf(props.id))
@@ -33,7 +32,7 @@ const showGallery = computed(
 </script>
 
 <template>
-  <div v-if="char" :class="['detail', `detail--${variant}`]">
+  <div :class="['detail', `detail--${variant}`]">
     <div class="head">
       <div class="thumb">
         <img v-if="thumb" :src="resolveImg(thumb)" :alt="char.name" />

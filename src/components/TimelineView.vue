@@ -419,14 +419,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   padding: 32px 28px; border: 1px solid var(--border-mid); border-radius: 14px;
   background: var(--bg-panel); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
-.close-btn {
-  position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
-  border: none; border-radius: 7px;
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  color: var(--fg-dim); font-size: 20px; line-height: 1; cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.close-btn:hover { background: color-mix(in srgb, var(--fg) 16%, transparent); color: var(--fg); }
 .detail-title {
   margin: 8px 0 0; font-size: 24px; font-weight: 800;
   border-left: 3px solid var(--accent); padding-left: 12px; padding-right: 24px;
@@ -472,11 +464,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 }
 .cast-name:hover { background: #f5f2ec; color: #111; }
 .cast-note { flex: 1; min-width: 180px; font-size: 14px; line-height: 1.6; color: var(--fg); }
-
-.modal-enter-active, .modal-leave-active { transition: opacity 0.2s ease; }
-.modal-enter-from, .modal-leave-to { opacity: 0; }
-.modal-enter-active .modal, .modal-leave-active .modal { transition: transform 0.2s ease; }
-.modal-enter-from .modal, .modal-leave-to .modal { transform: translateY(12px); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>

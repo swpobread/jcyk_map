@@ -2,7 +2,7 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { characters } from '@/data/characters'
-import { mainAvatar } from '@/data/avatars'
+import { thumbOf } from '@/data/avatars'
 import { resolveImg, initial } from '@/utils'
 import CharacterDetail from './CharacterDetail.vue'
 import CharacterModal from './CharacterModal.vue'
@@ -13,9 +13,6 @@ onMounted(() => {
   if (typeof id === 'string' && characters[id]) open(id)
 })
 const entries = computed(() => Object.entries(characters).map(([id, c]) => ({ id, ...c })))
-
-/* 썸네일: image → 기본 아바타 → 이니셜 */
-const thumbOf = (id: string) => characters[id]?.image ?? mainAvatar(id)?.src
 
 /* PC → 전체 페이지 / NPC → 모달 */
 const fullId = ref<string | null>(null)

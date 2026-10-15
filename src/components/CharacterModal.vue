@@ -44,32 +44,4 @@ const emit = defineEmits<{ close: [] }>()
   color: var(--fg);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
 }
-.close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  color: var(--fg-dim);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.close-btn:hover {
-  background: color-mix(in srgb, var(--fg) 16%, transparent);
-  color: var(--fg);
-}
-
-.modal-enter-active,
-.modal-leave-active { transition: opacity 0.2s ease; }
-.modal-enter-from,
-.modal-leave-to { opacity: 0; }
-.modal-enter-active .modal,
-.modal-leave-active .modal { transition: transform 0.2s ease; }
-.modal-enter-from .modal,
-.modal-leave-to .modal { transform: translateY(12px); }
 </style>
