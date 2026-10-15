@@ -67,7 +67,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           <p v-if="s.writer" class="writer">{{ s.writer }}</p>
           <p v-if="s.period" class="period">{{ s.period }}</p>
           <div v-if="s.characters?.length" class="chips">
-            <button v-for="(c, i) in s.characters" :key="i" class="chip chip--sm" @click="openChar(c, $event)">{{ characterName(c) }}</button>
+            <button v-for="(c, i) in s.characters" :key="i" class="chip--sm" @click="openChar(c, $event)">{{ characterName(c) }}</button>
           </div>
         </div>
       </li>
@@ -147,7 +147,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .text-btn {
   border: none;
   background: transparent;
-  color: #111;
+  color: var(--fg-dim);
   font-size: 13px;
   font-weight: 700;
   cursor: pointer;
@@ -197,7 +197,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
 }
 .card:hover {
-  border-color: #111;
   background: #111;
   color: #f5f2ec;
   transform: translateY(-3px);
@@ -311,21 +310,11 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   gap: 6px;
   margin-top: 12px;
 }
-.chip {
-  padding: 5px 11px;
-  border: 1px solid var(--border-mid);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--fg);
+.chip--sm {
   font-size: 12px;
   font-weight: 600;
-}
-.chip--sm {
-  padding: 0;
-  font-size: 12px;
   font-family: inherit;
   border: none;
-  border-radius: 0;
   background: transparent;
   color: var(--fg-muted);
   cursor: pointer;

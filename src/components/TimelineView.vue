@@ -38,7 +38,7 @@ interface LaidNode {
   title: string; date: string; showLabel: boolean
   labelX: number
 }
-interface LaidLine { id: string; label: string; index: number; x: number; topY: number; bottomY: number }
+interface LaidLine { id: string; label: string; x: number; topY: number; bottomY: number }
 interface Connector { key: string; x1: number; x2: number; y: number }
 
 type PP = { evId: string; line: string; day: number; isAnchor: boolean; date: string }
@@ -170,7 +170,7 @@ const layout = computed(() => {
     .map((id) => {
       const ys = (perLine.get(id) ?? []).map((p) => yPx(yOf.get(pkey(p.evId, id)) ?? 0))
       return {
-        id, label: lineDefs[id]?.label ?? id, index: lineIndex.get(id) ?? 0, x: dotX(id),
+        id, label: lineDefs[id]?.label ?? id, x: dotX(id),
         topY: Math.min(...ys), bottomY: Math.max(...ys),
       }
     })
@@ -347,7 +347,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   color: var(--fg);
 }
 .text-btn {
-  border: none; background: transparent; color: #111;
+  border: none; background: transparent; color: var(--fg-dim);
   font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; font-family: inherit;
 }
 .text-btn:hover { color: var(--fg); }
@@ -422,7 +422,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .link-btn {
   display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
-  border: 1px solid var(--border-mid); border-radius: 999px; background: var(--surface, transparent);
+  border: 1px solid var(--border-mid); border-radius: 999px; background: var(--surface);
   color: var(--fg-dim); font-size: 12px; font-weight: 700; text-decoration: none;
 }
 .link-btn:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }

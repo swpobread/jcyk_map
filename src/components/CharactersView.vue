@@ -129,7 +129,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
 }
 .card:hover {
-  border-color: #111;
   background: #111;
   color: #f5f2ec;
   transform: translateY(-3px);

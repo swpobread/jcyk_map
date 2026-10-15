@@ -105,8 +105,8 @@ function renderOverlays() {
   if (!viewer) return
   clearOverlays()
 
-  const accent = cssVar('--accent') || '#58a6ff'
-  const labelBg = cssVar('--bg-panel') || 'rgba(13,17,23,0.85)'
+  const accent = cssVar('--accent')
+  const labelBg = cssVar('--bg-panel')
 
   markers.value.forEach((m) => {
     const pt = toViewportPoint(m.x, m.y)
