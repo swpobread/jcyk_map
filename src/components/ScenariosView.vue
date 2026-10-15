@@ -53,10 +53,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 <template>
   <main class="scenarios">
-    <header class="head">
+    <header class="page-head">
       <RouterLink class="text-btn" to="/">←</RouterLink>
-      <h1 class="head-title">시나리오</h1>
-      <p class="head-sub">脚本</p>
+      <h1 class="page-head-title">시나리오</h1>
+      <p class="page-head-sub">脚本</p>
     </header>
 
     <ul class="grid">
@@ -67,7 +67,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           <p v-if="s.writer" class="writer">{{ s.writer }}</p>
           <p v-if="s.period" class="period">{{ s.period }}</p>
           <div v-if="s.characters?.length" class="chips">
-            <button v-for="(c, i) in s.characters" :key="i" class="chip chip--sm" @click="openChar(c, $event)">{{ characterName(c) }}</button>
+            <button v-for="(c, i) in s.characters" :key="i" class="chip--sm" @click="openChar(c, $event)">{{ characterName(c) }}</button>
           </div>
         </div>
       </li>
@@ -144,33 +144,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   color: var(--fg);
 }
 
-.text-btn {
-  border: none;
-  background: transparent;
-  color: #111;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: none;
-  font-family: inherit;
-}
-.text-btn:hover { color: var(--fg); }
-
-/* ---- 헤더 ---- */
-.head { max-width: 960px; margin: 0 auto 32px; }
-.head-title {
-  margin: 14px 0 0;
-  font-size: clamp(28px, 5vw, 40px);
-  font-weight: 800;
-}
-.head-sub {
-  margin: 4px 0 0;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  color: var(--accent);
-}
-
 /* ---- 그리드 ---- */
 .grid {
   list-style: none;
@@ -197,7 +170,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
 }
 .card:hover {
-  border-color: #111;
   background: #111;
   color: #f5f2ec;
   transform: translateY(-3px);
@@ -238,50 +210,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 }
 
 /* ---- 모달 ---- */
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 20px;
-  overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-}
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 640px;
-  max-height: calc(100dvh - 96px);
-  overflow-y: auto;
-  box-sizing: border-box;
-  padding: 32px 28px;
-  border: 1px solid var(--border-mid);
-  border-radius: 14px;
-  background: var(--bg-panel);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-.close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  color: var(--fg-dim);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.close-btn:hover {
-  background: color-mix(in srgb, var(--fg) 16%, transparent);
-  color: var(--fg);
-}
 .detail-title {
   margin: 8px 0 0;
   font-size: 24px;
@@ -355,21 +283,11 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   gap: 6px;
   margin-top: 12px;
 }
-.chip {
-  padding: 5px 11px;
-  border: 1px solid var(--border-mid);
-  border-radius: 999px;
-  background: var(--surface);
-  color: var(--fg);
+.chip--sm {
   font-size: 12px;
   font-weight: 600;
-}
-.chip--sm {
-  padding: 0;
-  font-size: 12px;
   font-family: inherit;
   border: none;
-  border-radius: 0;
   background: transparent;
   color: var(--fg-muted);
   cursor: pointer;
@@ -431,15 +349,4 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   font-size: 11px;
   color: var(--fg-muted);
 }
-
-
-/* ---- 전환 ---- */
-.modal-enter-active,
-.modal-leave-active { transition: opacity 0.2s ease; }
-.modal-enter-from,
-.modal-leave-to { opacity: 0; }
-.modal-enter-active .modal,
-.modal-leave-active .modal { transition: transform 0.2s ease; }
-.modal-enter-from .modal,
-.modal-leave-to .modal { transform: translateY(12px); }
 </style>

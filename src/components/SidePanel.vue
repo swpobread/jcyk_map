@@ -173,7 +173,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
           </a>
           <a
             v-if="scenario.backupLink"
-            class="link-btn link-btn--alt"
+            class="link-btn"
             :href="scenario.backupLink"
             target="_blank"
             rel="noopener noreferrer"
@@ -451,14 +451,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-.link-btn--alt {
-  border-color: var(--border-mid);
-  background: var(--surface);
-  color: var(--fg-dim);
-}
-.link-btn--alt:hover {
-  background: var(--surface-strong);
-}
 .badges {
   display: flex;
   gap: 6px;
@@ -490,11 +482,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   width: 100%;
   border-radius: 8px;
   display: block;
-}
-.image-fig figcaption {
-  margin-top: 5px;
-  font-size: 11px;
-  color: var(--fg-muted);
 }
 .description {
   margin-top: 24px;

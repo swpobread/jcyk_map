@@ -38,7 +38,7 @@ interface LaidNode {
   title: string; date: string; showLabel: boolean
   labelX: number
 }
-interface LaidLine { id: string; label: string; index: number; x: number; topY: number; bottomY: number }
+interface LaidLine { id: string; label: string; x: number; topY: number; bottomY: number }
 interface Connector { key: string; x1: number; x2: number; y: number }
 
 type PP = { evId: string; line: string; day: number; isAnchor: boolean; date: string }
@@ -170,7 +170,7 @@ const layout = computed(() => {
     .map((id) => {
       const ys = (perLine.get(id) ?? []).map((p) => yPx(yOf.get(pkey(p.evId, id)) ?? 0))
       return {
-        id, label: lineDefs[id]?.label ?? id, index: lineIndex.get(id) ?? 0, x: dotX(id),
+        id, label: lineDefs[id]?.label ?? id, x: dotX(id),
         topY: Math.min(...ys), bottomY: Math.max(...ys),
       }
     })
@@ -221,10 +221,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 <template>
   <main class="timeline">
-    <header class="head">
+    <header class="page-head">
       <RouterLink class="text-btn" to="/">←</RouterLink>
-      <h1 class="head-title">타임라인</h1>
-      <p class="head-sub">年 表</p>
+      <h1 class="page-head-title">타임라인</h1>
+      <p class="page-head-sub">年 表</p>
     </header>
 
     <div class="scroll">
@@ -316,7 +316,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   <CharacterModal :id="selectedCharId" @close="closeChar" />
 
   <Transition name="modal">
-    <div v-if="selectedSc" class="overlay overlay--char" @click.self="closeScenario">
+    <div v-if="selectedSc" class="overlay overlay--top" @click.self="closeScenario">
       <article class="modal">
         <button class="close-btn" @click="closeScenario" aria-label="닫기">×</button>
         <span v-if="selectedSc.rule" class="rule-tag">{{ selectedSc.rule }}</span>
@@ -346,15 +346,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   background: var(--bg);
   color: var(--fg);
 }
-.text-btn {
-  border: none; background: transparent; color: #111;
-  font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; font-family: inherit;
-}
-.text-btn:hover { color: var(--fg); }
-
-.head { flex: none; padding: 40px 24px 20px; max-width: 960px; width: 100%; margin: 0 auto; box-sizing: border-box; }
-.head-title { margin: 12px 0 0; font-size: clamp(28px, 5vw, 40px); font-weight: 800; }
-.head-sub { margin: 4px 0 0; font-size: 13px; font-weight: 700; letter-spacing: 0.3em; color: var(--accent); }
+.page-head { flex: none; padding: 40px 24px 20px; max-width: 960px; width: 100%; margin: 0 auto; box-sizing: border-box; }
 .scroll { flex: 1; overflow: auto; padding: 0 24px 48px; }
 .canvas { display: block; margin: 0 auto; }
 
@@ -406,27 +398,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   dominant-baseline: middle; font-variant-numeric: tabular-nums;
 }
 
-.overlay {
-  position: fixed; inset: 0; z-index: 500;
-  display: flex; align-items: center; justify-content: center;
-  padding: 48px 20px; overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px);
-}
-.overlay--char { z-index: 600; }
-.modal {
-  position: relative; width: 100%; max-width: 620px;
-  max-height: calc(100dvh - 96px); overflow-y: auto; box-sizing: border-box;
-  padding: 32px 28px; border: 1px solid var(--border-mid); border-radius: 14px;
-  background: var(--bg-panel); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-.close-btn {
-  position: absolute; top: 16px; right: 16px; width: 32px; height: 32px;
-  border: none; border-radius: 7px;
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  color: var(--fg-dim); font-size: 20px; line-height: 1; cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.close-btn:hover { background: color-mix(in srgb, var(--fg) 16%, transparent); color: var(--fg); }
 .detail-title {
   margin: 8px 0 0; font-size: 24px; font-weight: 800;
   border-left: 3px solid var(--accent); padding-left: 12px; padding-right: 24px;
@@ -443,7 +414,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 .links { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
 .link-btn {
   display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px;
-  border: 1px solid var(--border-mid); border-radius: 999px; background: var(--surface, transparent);
+  border: 1px solid var(--border-mid); border-radius: 999px; background: var(--surface);
   color: var(--fg-dim); font-size: 12px; font-weight: 700; text-decoration: none;
 }
 .link-btn:hover { background: color-mix(in srgb, var(--fg) 8%, transparent); }
@@ -472,11 +443,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 }
 .cast-name:hover { background: #f5f2ec; color: #111; }
 .cast-note { flex: 1; min-width: 180px; font-size: 14px; line-height: 1.6; color: var(--fg); }
-
-.modal-enter-active, .modal-leave-active { transition: opacity 0.2s ease; }
-.modal-enter-from, .modal-leave-to { opacity: 0; }
-.modal-enter-active .modal, .modal-leave-active .modal { transition: transform 0.2s ease; }
-.modal-enter-from .modal, .modal-leave-to .modal { transform: translateY(12px); }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>

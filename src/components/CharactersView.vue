@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { characters, type Character } from '@/data/characters'
-import { mainAvatar, defaultAvatars, scenarioAvatarsOf } from '@/data/avatars'
-import { resolveImg, splitParagraphs, initial } from '@/utils'
+import { characters } from '@/data/characters'
+import { thumbOf } from '@/data/avatars'
+import { resolveImg, initial } from '@/utils'
+import CharacterDetail from './CharacterDetail.vue'
+import CharacterModal from './CharacterModal.vue'
 
 const route = useRoute()
 onMounted(() => {
@@ -12,32 +14,10 @@ onMounted(() => {
 })
 const entries = computed(() => Object.entries(characters).map(([id, c]) => ({ id, ...c })))
 
-/* 썸네일: image → 기본 아바타 → 이니셜 */
-const thumbOf = (id: string) => characters[id]?.image ?? mainAvatar(id)?.src
-
-const buildMeta = (c?: Character) => {
-  if (!c) return []
-  const rows: { label: string; value: string }[] = []
-  if (c.age != null) rows.push({ label: '나이', value: `${c.age}` })
-  if (c.birth) rows.push({ label: '생일', value: c.birth })
-  if (c.birthplace) rows.push({ label: '출신', value: c.birthplace })
-  if (c.height != null) rows.push({ label: '키', value: `${c.height} cm` })
-  return rows
-}
-
 /* PC → 전체 페이지 / NPC → 모달 */
 const fullId = ref<string | null>(null)
 const modalId = ref<string | null>(null)
 
-const fullChar = computed(() => (fullId.value ? characters[fullId.value] : undefined))
-const modalChar = computed(() => (modalId.value ? characters[modalId.value] : undefined))
-
-const fullMeta = computed(() => buildMeta(fullChar.value))
-const modalMeta = computed(() => buildMeta(modalChar.value))
-const fullParagraphs = computed(() => splitParagraphs(fullChar.value?.description))
-const modalParagraphs = computed(() => splitParagraphs(modalChar.value?.description))
-const fullDefaultAvatars = computed(() => (fullId.value ? defaultAvatars(fullId.value) : []))
-const fullScenarioAvatars = computed(() => (fullId.value ? scenarioAvatarsOf(fullId.value) : []))
 function open(id: string) {
   if (characters[id]?.playable) { fullId.value = id; window.scrollTo({ top: 0 }) }
   else { modalId.value = id }
@@ -58,74 +38,17 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 <template>
   <main class="characters">
     <!-- ===== PC 전체 페이지 ===== -->
-    <article v-if="fullChar" class="page-detail">
+    <article v-if="fullId" class="page-detail">
       <button class="text-btn" @click="backToGrid">← 목록</button>
-
-      <div class="pd-head">
-        <div class="pd-thumb">
-          <img v-if="thumbOf(fullId!)" :src="resolveImg(thumbOf(fullId!)!)" :alt="fullChar.name" />
-          <span v-else class="monogram" aria-hidden="true">{{ initial(fullChar.name) }}</span>
-        </div>
-        <div class="pd-id">
-          <div class="badges">
-            <span class="badge badge-pc">PLAYER</span>
-            <span v-if="fullChar.era" class="badge badge-era">{{ fullChar.era }}</span>
-          </div>
-          <h1 class="pd-name">{{ fullChar.name }}</h1>
-          <p v-if="fullChar.original || fullChar.nickname" class="pd-sub">
-            <span v-if="fullChar.original">{{ fullChar.original }}</span>
-            <span v-if="fullChar.nickname" class="nick">{{ fullChar.nickname }}</span>
-          </p>
-          <p v-if="fullChar.summary" class="summary">{{ fullChar.summary }}</p>
-        </div>
-      </div>
-
-      <dl v-if="fullMeta.length" class="meta">
-        <div v-for="(m, i) in fullMeta" :key="i" class="meta-row">
-          <dt>{{ m.label }}</dt>
-          <dd>{{ m.value }}</dd>
-        </div>
-      </dl>
-
-      <section v-if="fullParagraphs.length" class="description">
-        <p v-for="(p, i) in fullParagraphs" :key="i">{{ p }}</p>
-      </section>
-      <p v-else class="empty-note">상세 설명이 아직 등록되지 않았습니다.</p>
-
-      <section v-if="fullDefaultAvatars.length" class="avatar-section">
-        <ul class="avatar-grid">
-          <li v-for="(a, i) in fullDefaultAvatars" :key="i" class="avatar-tile">
-            <img :src="resolveImg(a.src)" :alt="fullChar.name" loading="lazy" />
-            <p v-if="a.label" class="avatar-cap avatar-label">{{ a.label }}</p>
-            <p v-if="a.credit" class="avatar-credit">{{ a.credit }}</p>
-          </li>
-        </ul>
-      </section>
-
-      <section v-if="fullScenarioAvatars.length" class="avatar-section">
-        <ul class="avatar-grid">
-          <template v-for="s in fullScenarioAvatars" :key="s.id">
-            <li v-for="(a, i) in s.avatars" :key="`${s.id}-${i}`" class="avatar-tile avatar-tile--link">
-              <RouterLink :to="{ path: '/scenarios', query: { id: s.id } }">
-                <img :src="resolveImg(a.src)" :alt="`${fullChar.name} — ${s.title}`" loading="lazy" />
-                <p class="avatar-cap">
-                  <span class="avatar-title">{{ s.title }}</span>
-                  <span v-if="a.label" class="avatar-label">{{ a.label }}</span>
-                </p>
-                <p v-if="a.credit" class="avatar-credit">{{ a.credit }}</p>
-              </RouterLink>
-            </li>
-          </template>
-        </ul>
-      </section>
+      <CharacterDetail :id="fullId" variant="page" class="pd" />
     </article>
 
     <!-- ===== 그리드 ===== -->
     <template v-else>
-      <header class="head">
+      <header class="page-head">
         <RouterLink class="text-btn" to="/">←</RouterLink>
-        <h1 class="head-title">인물</h1>
-        <p class="head-sub">人物</p>
+        <h1 class="page-head-title">인물</h1>
+        <p class="page-head-sub">人物</p>
       </header>
 
       <ul class="grid">
@@ -145,45 +68,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   </main>
 
   <!-- ===== NPC 모달 ===== -->
-  <Transition name="modal">
-    <div v-if="modalChar" class="overlay" @click.self="closeModal">
-      <article class="modal">
-        <button class="close-btn" @click="closeModal" aria-label="닫기">×</button>
-
-        <div class="modal-head">
-          <div class="modal-thumb">
-            <img v-if="thumbOf(modalId!)" :src="resolveImg(thumbOf(modalId!)!)" :alt="modalChar.name" />
-            <span v-else class="monogram" aria-hidden="true">{{ initial(modalChar.name) }}</span>
-          </div>
-          <div class="modal-id">
-            <div class="badges">
-              <span class="badge badge-npc">NPC</span>
-              <span v-if="modalChar.era" class="badge badge-era">{{ modalChar.era }}</span>
-            </div>
-            <h2 class="modal-name">{{ modalChar.name }}</h2>
-            <p v-if="modalChar.original || modalChar.nickname" class="modal-sub">
-              <span v-if="modalChar.original">{{ modalChar.original }}</span>
-              <span v-if="modalChar.nickname" class="nick">{{ modalChar.nickname }}</span>
-            </p>
-          </div>
-        </div>
-
-        <p v-if="modalChar.summary" class="summary">{{ modalChar.summary }}</p>
-
-        <dl v-if="modalMeta.length" class="meta">
-          <div v-for="(m, i) in modalMeta" :key="i" class="meta-row">
-            <dt>{{ m.label }}</dt>
-            <dd>{{ m.value }}</dd>
-          </div>
-        </dl>
-
-        <section v-if="modalParagraphs.length" class="description">
-          <p v-for="(p, i) in modalParagraphs" :key="i">{{ p }}</p>
-        </section>
-        <p v-else class="empty-note">상세 설명이 아직 등록되지 않았습니다.</p>
-      </article>
-    </div>
-  </Transition>
+  <CharacterModal :id="modalId" @close="closeModal" />
 </template>
 
 <style scoped>
@@ -195,33 +80,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   padding: 48px 24px 72px;
   background: var(--bg);
   color: var(--fg);
-}
-
-.text-btn {
-  border: none;
-  background: transparent;
-  color: var(--fg-dim);
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: none;
-  font-family: inherit;
-}
-.text-btn:hover { color: var(--fg); }
-
-/* ---- 헤더 ---- */
-.head { max-width: 960px; margin: 0 auto 32px; }
-.head-title {
-  margin: 14px 0 0;
-  font-size: clamp(28px, 5vw, 40px);
-  font-weight: 800;
-}
-.head-sub {
-  margin: 4px 0 0;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.3em;
-  color: var(--accent);
 }
 
 /* ---- 그리드 ---- */
@@ -244,7 +102,6 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   transition: border-color 0.2s, background 0.2s, color 0.2s, transform 0.2s;
 }
 .card:hover {
-  border-color: #111;
   background: #111;
   color: #f5f2ec;
   transform: translateY(-3px);
@@ -298,244 +155,5 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 /* ---- PC 전체 페이지 ---- */
 .page-detail { max-width: 720px; margin: 0 auto; }
-.pd-head {
-  display: flex;
-  gap: 24px;
-  margin-top: 20px;
-  flex-wrap: wrap;
-}
-.pd-thumb {
-  flex: none;
-  width: 160px;
-  aspect-ratio: 3 / 4;
-  border-radius: 12px;
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-  background: var(--surface-strong);
-}
-.pd-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.pd-thumb .monogram { font-size: 56px; }
-.pd-id {
-  flex: 1;
-  min-width: 220px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.pd-name {
-  margin: 8px 0 0;
-  font-size: clamp(26px, 4vw, 34px);
-  font-weight: 800;
-}
-.pd-sub {
-  margin: 6px 0 0;
-  font-size: 15px;
-  color: var(--fg-dim);
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-/* ---- 아바타 갤러리 ---- */
-.avatar-section { margin-top: 36px; }
-.avatar-grid {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 14px;
-}
-.avatar-tile img {
-  width: 100%;
-  aspect-ratio: 1;
-  object-fit: cover;
-  display: block;
-  border-radius: 10px;
-  background: var(--surface-strong);
-}
-.avatar-tile--link a {
-  display: block;
-  color: inherit;
-  text-decoration: none;
-}
-.avatar-tile--link img { transition: transform 0.2s; }
-.avatar-tile--link a:hover img { transform: translateY(-3px); }
-.avatar-tile--link a:hover .avatar-title { text-decoration: underline; }
-.avatar-cap {
-  margin: 6px 0 0;
-  font-size: 12px;
-  font-weight: 600;
-  display: flex;
-  gap: 6px;
-  align-items: baseline;
-  min-width: 0;
-}
-.avatar-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.avatar-label {
-  flex: none;
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.avatar-credit {
-  margin: 2px 0 0;
-  font-size: 11px;
-  color: var(--fg-muted);
-}
-
-/* ---- 모달 ---- */
-.overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 20px;
-  overflow-y: auto;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-}
-.modal {
-  position: relative;
-  width: 100%;
-  max-width: 560px;
-  max-height: calc(100dvh - 96px);
-  overflow-y: auto;
-  box-sizing: border-box;
-  padding: 28px;
-  border: 1px solid var(--border-mid);
-  border-radius: 14px;
-  background: var(--bg-panel);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-}
-.close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 7px;
-  background: color-mix(in srgb, var(--fg) 8%, transparent);
-  color: var(--fg-dim);
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-}
-.close-btn:hover {
-  background: color-mix(in srgb, var(--fg) 16%, transparent);
-  color: var(--fg);
-}
-.modal-head {
-  display: flex;
-  gap: 18px;
-  padding-right: 28px;
-}
-.modal-thumb {
-  flex: none;
-  width: 96px;
-  aspect-ratio: 3 / 4;
-  border-radius: 10px;
-  overflow: hidden;
-  display: grid;
-  place-items: center;
-  background: var(--surface-strong);
-}
-.modal-thumb img { width: 100%; height: 100%; object-fit: cover; }
-.modal-thumb .monogram { font-size: 36px; }
-.modal-id {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-width: 0;
-}
-.modal-name {
-  margin: 0;
-  font-size: 24px;
-  font-weight: 800;
-}
-.modal-sub {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: var(--fg-dim);
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-/* ---- 공통 ---- */
-.badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-.badge {
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.04em;
-  padding: 3px 9px;
-  border-radius: 999px;
-}
-.badge-pc {
-  background: color-mix(in srgb, var(--accent) 18%, transparent);
-  color: var(--accent);
-}
-.badge-npc,
-.badge-era {
-  background: color-mix(in srgb, var(--fg) 10%, transparent);
-  color: var(--fg-dim);
-}
-.nick { color: var(--accent); font-weight: 700; }
-
-.summary {
-  margin: 20px 0 0;
-  font-size: 14px;
-  color: var(--fg-dim);
-}
-
-.meta {
-  margin: 20px 0 0;
-  display: grid;
-  gap: 10px;
-}
-.meta-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 14px;
-}
-.meta-row dt { color: var(--fg-muted); }
-.meta-row dd { margin: 0; font-weight: 600; }
-
-.description {
-  margin-top: 24px;
-  font-size: 15px;
-  line-height: 1.8;
-}
-.description p { margin: 0 0 12px; }
-.empty-note {
-  margin-top: 24px;
-  font-size: 14px;
-  color: var(--fg-muted);
-  font-style: italic;
-}
-
-/* ---- 전환 ---- */
-.modal-enter-active,
-.modal-leave-active { transition: opacity 0.2s ease; }
-.modal-enter-from,
-.modal-leave-to { opacity: 0; }
-.modal-enter-active .modal,
-.modal-leave-active .modal { transition: transform 0.2s ease; }
-.modal-enter-from .modal,
-.modal-leave-to .modal { transform: translateY(12px); }
+.pd { margin-top: 20px; }
 </style>

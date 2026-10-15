@@ -1,5 +1,6 @@
 import avatarData from '@/data/avatar.json'
 import { scenarios, periodKey } from '@/data/scenarios'
+import { characters } from '@/data/characters'
 
 export interface Avatar {
   src: string
@@ -19,6 +20,9 @@ export const castAvatars = (scenarioId: string): AvatarMap => data.scenarios[sce
 
 /** 대표 아바타: 첫 번째 기본 아바타 */
 export const mainAvatar = (charId: string): Avatar | undefined => defaultAvatars(charId)[0]
+
+/** 썸네일: image → 대표 아바타 (없으면 이니셜로 대체) */
+export const thumbOf = (charId: string) => characters[charId]?.image ?? mainAvatar(charId)?.src
 
 /** 캐릭터가 등장한 시나리오별 아바타 (기간순) */
 export const scenarioAvatarsOf = (charId: string) =>
