@@ -7,3 +7,11 @@
 암호화된 파일이 생성되고, 그 파일만 커밋/배포된다.
 
 비밀번호는 프로젝트 루트 `.env` 의 `BACKUP_PASSWORD` (`.env.example` 참고).
+
+## 복호화
+
+```sh
+npx staticrypt public/backups/*.html --decrypt -p "<비밀번호>" -d decrypted
+```
+
+`decrypted/` 에 래핑된 HTML이 생성된다 (티스토리 원문은 `<main>` 안쪽). 커밋하지 말 것.
