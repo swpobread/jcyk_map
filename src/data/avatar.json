@@ -46,14 +46,53 @@
         "c10": [
             {"src": "https://i.imgur.com/TPL8suo.png"}
         ],
+        "c11": [
+            {"src": "https://i.imgur.com/eG3ghtC.png"}
+        ],
         "c14": [
             {"src": "https://i.imgur.com/U95F3AD.png"}
         ],
         "c15": [
             {"src": "https://i.imgur.com/rKdO4QW.png"}
         ],
+        "c18": [
+            {"src": "https://i.imgur.com/8zZBky1.png"}
+        ],
+        "c19": [
+            {"src": "https://i.imgur.com/M69jU2v.png"}
+        ],
+        "c21" : [
+            {"src": "https://i.imgur.com/i9lUKVE.png"}
+        ],
+        "c22" : [
+            {"src": "https://i.imgur.com/Uw0j7eI.png"}
+        ],
+        "c23" : [
+            {"src": "https://i.imgur.com/ZqYhe0h.png"}
+        ],
         "c25": [
             {"src": "https://i.imgur.com/O4RNkJD.png"}
+        ],
+        "c27": [
+            {"src": "https://i.imgur.com/31WjUE6.png", "credit": "e_lsewher_e"}
+        ],
+        "c28": [
+            {"src": "https://i.imgur.com/S0LUVm3.png", "credit": "e_lsewher_e"}
+        ],
+        "c29": [
+            {"src": "https://i.imgur.com/pOJsGhv.png", "credit": "e_lsewher_e"}
+        ],
+        "c30": [
+            {"src": "https://i.imgur.com/dKdRO8P.png"}
+        ],
+        "c31": [
+            {"src": "https://i.imgur.com/wuCxYP3.png"}
+        ],
+        "c32": [
+            {"src": "https://i.imgur.com/3xp4abp.png"}
+        ],
+        "c33": [
+            {"src": "https://i.imgur.com/keX4jSS.png"}
         ]
     },
     "scenarios": {
