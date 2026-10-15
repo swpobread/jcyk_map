@@ -290,8 +290,8 @@ onUnmounted(() => {
 
 <template>
   <div class="page">
-    <button class="back-btn" @click="router.push('/')" aria-label="메인으로">←</button>
-    <button class="menu-btn" :class="{ on: panelOpen }" @click="openMenu" aria-label="메뉴">☰</button>
+    <button class="map-btn back-btn" @click="router.push('/')" aria-label="메인으로">←</button>
+    <button class="map-btn menu-btn" :class="{ on: panelOpen }" @click="openMenu" aria-label="메뉴">☰</button>
 
     <div class="toggle-wrap">
       <button class="toggle-btn" :class="{ active: activeMap === '1920' }" @click="switchMap('1920')">
@@ -342,10 +342,9 @@ onUnmounted(() => {
   overflow: hidden;
   background: var(--bg);
 }
-.back-btn {
+.map-btn {
   position: absolute;
   top: 12px;
-  left: 12px;
   z-index: 100;
   width: 38px;
   height: 38px;
@@ -358,25 +357,10 @@ onUnmounted(() => {
   cursor: pointer;
   transition: color 0.15s, background 0.15s;
 }
-.back-btn:hover { color: #f5f2ec; background: #1e1e1e; }
+.map-btn:hover { color: #f5f2ec; background: #1e1e1e; }
+.back-btn { left: 12px; }
 
-.menu-btn {
-  position: absolute;
-  top: 12px;
-  left: 58px;
-  z-index: 100;
-  width: 38px;
-  height: 38px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  background: #111;
-  color: rgba(245, 242, 236, 0.6);
-  font-size: 17px;
-  line-height: 1;
-  cursor: pointer;
-  transition: color 0.15s, background 0.15s;
-}
-.menu-btn:hover { color: #f5f2ec; background: #1e1e1e; }
+.menu-btn { left: 58px; }
 .menu-btn.on { color: #f5f2ec; background: #222; }
 
 .toggle-wrap {

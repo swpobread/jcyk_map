@@ -221,10 +221,10 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 <template>
   <main class="timeline">
-    <header class="head">
+    <header class="page-head">
       <RouterLink class="text-btn" to="/">←</RouterLink>
-      <h1 class="head-title">타임라인</h1>
-      <p class="head-sub">年 表</p>
+      <h1 class="page-head-title">타임라인</h1>
+      <p class="page-head-sub">年 表</p>
     </header>
 
     <div class="scroll">
@@ -346,15 +346,7 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   background: var(--bg);
   color: var(--fg);
 }
-.text-btn {
-  border: none; background: transparent; color: var(--fg-dim);
-  font-size: 13px; font-weight: 700; cursor: pointer; text-decoration: none; font-family: inherit;
-}
-.text-btn:hover { color: var(--fg); }
-
-.head { flex: none; padding: 40px 24px 20px; max-width: 960px; width: 100%; margin: 0 auto; box-sizing: border-box; }
-.head-title { margin: 12px 0 0; font-size: clamp(28px, 5vw, 40px); font-weight: 800; }
-.head-sub { margin: 4px 0 0; font-size: 13px; font-weight: 700; letter-spacing: 0.3em; color: var(--accent); }
+.page-head { flex: none; padding: 40px 24px 20px; max-width: 960px; width: 100%; margin: 0 auto; box-sizing: border-box; }
 .scroll { flex: 1; overflow: auto; padding: 0 24px 48px; }
 .canvas { display: block; margin: 0 auto; }
 

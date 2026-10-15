@@ -30,6 +30,32 @@ html, body, #app {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: var(--fg);
 }
+/* 목록 페이지 공통: 머리글 / 텍스트 버튼 */
+.text-btn {
+  border: none;
+  background: transparent;
+  color: var(--fg-dim);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  font-family: inherit;
+}
+.text-btn:hover { color: var(--fg); }
+.page-head { max-width: 960px; margin: 0 auto 32px; }
+.page-head-title {
+  margin: 14px 0 0;
+  font-size: clamp(28px, 5vw, 40px);
+  font-weight: 800;
+}
+.page-head-sub {
+  margin: 4px 0 0;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: var(--accent);
+}
+
 /* 모달 공통: 오버레이 / 박스 / 닫기 버튼 / 전환 */
 .overlay {
   position: fixed;
